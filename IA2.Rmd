@@ -8,22 +8,19 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Assigment Two
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Sarah Liddle
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+![](sarah.jpg)
 
-```{r cars}
-summary(cars)
-```
+As for my goals post-graduation go, my dreams consist of two parts: writing and math. In general, I want to write novels and work in data science and statistics. Six months after graduation, I would hope to have a job working with data, though I'm open to what company it's for. Five years later though, I hope to have experience working for a variety of places; I don't want to just stay stuck in the first job I get. I want to explore different locations, companies, projects, etc. and use data science to learn about many different facets of our world that I've never explored before. On the writing side, I hope to be writing and publishing books in my free time--something along the style of Annie Dillard meets Stephen King, if such a thing could possibly exist. 
 
-## Including Plots
+This leads me to one question I would like to know the answer to that could be answered by analyzing data: are there any significant patterns in traits of people who historically read more horror novels? It could be an interesting way to find out more about audiences I may be writing towards in the future. 
 
-You can also embed plots, for example:
+Thinking more in the long run about my goals, I admit that I don't know the full potential of what I could do with data science, or what my greatest career accomplishment could be. I feel there's so much unexplored territory that there is potential to use data to give a company information to make very great change in the world, and I hope I can be a part of that. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+Given these goals, I hope to get all the essential tools for data science in this course that will be readily applicable to the real world. I have relatively little experience, and I'm hoping by the end of the course I feel confident in my ability to turn large data sets into knowledge that can be used. 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+And as for something that's not included in the questions, I love animals. I have two dogs and two cats at home where I grew up, and my roommates and I just adopted a kitten this summer names Pants. Below, is a picture of one of my dogs, Max.
+![](max.jpg)

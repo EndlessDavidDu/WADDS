@@ -1,8 +1,7 @@
----
-title: "IA2"
 author: "Sarah"
-date: "January 24, 2018"
-output: html_document
+---
+title: "IA2 - WADDS"
+output: word_document
 ---
 
 ```{r setup, include=FALSE}

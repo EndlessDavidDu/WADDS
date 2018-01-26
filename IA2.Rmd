@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 
 ---
 title: "IA2 - WADDS"
@@ -71,6 +72,7 @@ I am an excellent cook.
 
 ###David Du
 
+<<<<<<< Updated upstream
 ![](David_Du.jpg)
 
 At least one (non-statistics) question you would like to know the answer to that could be answered by analyzing data
@@ -89,3 +91,37 @@ I hope to use my statistics knowledge and programming skills to get my jobs and 
 You must also include something of your own choosing not described above. Anything. Be creative!
 
 If I become a statistician, I would like to establish some statistics lab in all parts of the world, and help them in different areas based knowledge of statistics.
+=======
+=======
+author: "Xinzhi Rao"
+---
+title: "IA2 - WADDS"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Individual Part
+
+### What you would love to be doing six months after graduation and then five years after that
+
+##### After six months from graduating, I am going to be a graduate student major in statistics or data science. After five years, I'm very excited to be a data scientist by collecting data, analyzing data and using my data science skills connected to the real problem.
+
+### What my greatest career accomplishment will be?
+
+##### I hope I could be the chief data scientist in the futruew.
+
+##### In this class, I hope to learn more about R programming language and use the R to do the project with statistical problem. For this class, my goal is improving my both statistical and programming skills. 
+
+### The Question
+
+##### I'm curious about the rates for university students could graduate in 4 years in the US.
+
+### More about me
+##### I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work.
+
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes

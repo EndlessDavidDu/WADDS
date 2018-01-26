@@ -78,11 +78,11 @@ My hobbies include paddleboarding, hiking, ice skating, tennis, and organizing. 
 #### Will: 
   Our meeting was short and efficient, in large part because you came prepared and on time. Since you had your written portion completed we were easily able to add it to the master like we did with everyone else. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
 
-##Derek Thomas
+## Derek Thomas
 
 ![](derek_photo.jpg)
 
-####A question I would like to know the answer to that could be answered by analyzing data?
+#### A question I would like to know the answer to that could be answered by analyzing data?
 
 Is there an easy and objective way to distinguish fake news and propaganda from factual journalism?
 
@@ -90,17 +90,17 @@ Is there an easy and objective way to distinguish fake news and propaganda from 
 Performing services in exchange for currency  
 (real answer: getting a masters in machine learning, the level at which I would like to work in this field requires at least a masters,... maybe a PhD.)
 
-####What would I love to be doing 5 years after that?
+#### What would I love to be doing 5 years after that?
 Performing comparable services in exchange for more currency  
 (real answer: I would love to be working at a machine learning startup, and I am planning on doing the entrepreneurial senior captione in a few years)
 
-####What you hope your greatest career accomplishment will be? 
+#### What you hope your greatest career accomplishment will be? 
 Contributing in a non-negligible way to the development of AGI (Artificial General Intelligence)
 
-####What am I hoping to learn in this course?
+#### What am I hoping to learn in this course?
 Useful data science and collaboration skills 
 
-####What is something else about me?
+#### What is something else about me?
 I am an excellent cook.
 
 ### Feedback:
@@ -118,7 +118,7 @@ You figured out how to embed pictures in the the knitted R document.
 #### Will
 You persisted through all the issues with gitkraken, also we should talk about finance sometime, one of my interests is applying machine learning for financial applications.
 
-##David Du
+## David Du
 
 ![](David_Du.jpg)
 

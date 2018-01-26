@@ -9,6 +9,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Assigment Two
+The Team:
+
+![](team_photo.jpg)
+
+Our Team Name is WADDS, which consists of the first letters of each of our names. Our goal for this semester is to learn how to use R to solve problems in a data science team setting. We hope to learn how to effectively communicate results and processes so we can analyze the world around us.
 
 ### Sarah Liddle
 
@@ -24,3 +29,44 @@ Given these goals, I hope to get all the essential tools for data science in thi
 
 And as for something that's not included in the questions, I love animals. I have two dogs and two cats at home where I grew up, and my roommates and I just adopted a kitten this summer names Pants. Below, is a picture of one of my dogs, Max.
 ![](max.jpg)
+
+### Abby Nay
+
+![](abby.jpg)
+
+One question I would like to know the answer to that could be answered by analyzing data: is a carbon tax the most effective way to combat anthropogenic climate change?
+
+Six months after graduation I would like to be working at a bigger company such as HP or Intel, who offer student loan repayment assistance. I would like to be close to paying off my debts the six months immediately following graduation. Five years after that I would like to be working in research that can make a positive impact on the world. I would love to be paid to analyze data related to climate change, poverty programs, or human rights campaigns across the world.
+
+I hope my greatest career accomplishment will be in the research I hope to be a part of later in life. If I can find a significant way to protect the environment I would consider that my greatest accomplishment. I aim to use data to successfully argue for worldwide change.
+
+In this course I'm hoping to gain skills to become a better data scientist. I hope to build a solid foundation in R and R Studio and am excited to learn more about interpreting data without being misleading. I also hope to be part of a successful team in this class, where we can all grow our skills and learn about how to effectively collaborate in business and research conditions.
+
+My hobbies include paddleboarding, hiking, ice skating, tennis, and organizing. In fact, if I didn't love Statistics as much as I do, I would be going to school for psychology in order to become a professional organizer.
+
+###Derek
+
+![](derek_photo.jpg)
+
+A question I would like to know the answer to that could be answered by analyzing data?
+
+Is there an easy and objective way to distinguish fake news and propaganda from factual journalism?
+
+What would I love to be doing six months after graduation?
+Performing services in exchange for currency
+(real answer: getting a masters in machine learning)
+
+What would I love to be doing 5 years after that?
+Performing comparable services in exchange for more currency
+(real answer: working at a machine learning startup)
+
+What you hope your greatest career accomplishment will be?
+Contributing in a non-negligible way to the development of AGI
+
+What am I hoping to learn in this course?
+Usefull data science and collaboration skills 
+
+What is something else about me?
+I am an excellent cook.
+
+

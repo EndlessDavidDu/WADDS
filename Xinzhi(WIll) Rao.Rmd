@@ -13,7 +13,7 @@ author: "Xinzhi Rao"
 
 ![Travelling.](Will.JPG)
 
-##What you would love to be doing six months after graduation and then five years after that
+## What you would love to be doing six months after graduation and then five years after that
 
  After six months from graduating, I am going to be a graduate student major in statistics or data science, which just starts the first semester. I hope I could take many statistics class and do the project with my partners. After five years, I'm very excited to be a data scientist by collecting data, analyzing data and using my data science skills connected to the real problem.
 
@@ -28,6 +28,15 @@ author: "Xinzhi Rao"
 
 ## More about me
  I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work. By the way, I'm very enjoy fried chicken in US especially "Popeyes".
+
+## Feedback
+Sarah: I am very interested in reading scientific novels, and I hope one day we can read the novels that you write. By the way, your dog is pretty cute, and I also have one dog in my home.
+
+Du: I'm very gald to see that you have nearly the same goals as mine after graduation. I have also want to establish some statistics lab based on helping other people learning statistics. Maybe we can do it together.
+
+Derek: It seems like you are very interested in machine learning, which I do not know much about it. But I love cooking pretty much and I can do many different kinds of Chinese dishes.
+
+Abby: Your hobbies are very attractive to me and I am also playing ice skating. Protecting environment now plays an important part in this world. I hope you could find an effective way to protect environment.
 
 
 ```

@@ -1,6 +1,6 @@
 
 ---
-title: "IA2 - WADDS"
+title: "Assignment Two - WADDS"
 output:
   html_document:
     df_print: paged
@@ -10,14 +10,13 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Assignment Two
-The Team:
+## The Team:
 
 ![Sarah, Abbey, Derek, Will, David](team_photo.jpg)
 
 Our Team Name is WADDS, which consists of the first letters of each of our names. Our goal for this semester is to learn how to use R to solve problems in a data science team setting. We hope to learn how to effectively communicate results and processes so we can analyze the world around us.
 
-### Sarah Liddle
+## Sarah Liddle
 
 ![](sarah.jpg)
 
@@ -51,7 +50,7 @@ You contributed your portion to the assignment and were easy to work with. I lik
 You were also good to work with and did your share in a timely manner. It was cool to see how all your goals related to different aspects of statistics. Some answers could benefit from a little editing for wording and grammatical issues, but other than that, it is straightforward and interesting. 
 
 
-### Abby Nay
+## Abby Nay
 
 ![](abby.jpg)
 
@@ -65,41 +64,61 @@ In this course I'm hoping to gain skills to become a better data scientist. I ho
 
 My hobbies include paddleboarding, hiking, ice skating, tennis, and organizing. In fact, if I didn't love Statistics as much as I do, I would be going to school for psychology in order to become a professional organizer.
 
-Feedback
+### Feedback
 
-Sarah: I really appreciated how you came to our group meeting on time and prepared. It was so helpful to the team when you already knew how to add a picture and were able to teach that to all of us as well! Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+#### Sarah: 
+  I really appreciated how you came to our group meeting on time and prepared. It was so helpful to the team when you already knew how to add a picture and were able to teach that to all of us as well! Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
 
-Derek: You showed up to our group meeting on time, with your individual part already done. You had a great understanding of Github and Gitkraken which was very helpful to all of us. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
-David: We all appreciated how you showed up to our meeting on time and had everything prepared for merging like we had planned. We saved a lot of time meeting since you came ready with everything. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+#### Derek: 
+  You showed up to our group meeting on time, with your individual part already done. You had a great understanding of Github and Gitkraken which was very helpful to all of us. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
 
-Will: Our meeting was short and efficient, in large part because you came prepared and on time. Since you had your written portion completed we were easily able to add it to the master like we did with everyone else. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+#### David: 
+  We all appreciated how you showed up to our meeting on time and had everything prepared for merging like we had planned. We saved a lot of time meeting since you came ready with everything. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
 
-###Derek Thomas
+#### Will: 
+  Our meeting was short and efficient, in large part because you came prepared and on time. Since you had your written portion completed we were easily able to add it to the master like we did with everyone else. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+
+##Derek Thomas
 
 ![](derek_photo.jpg)
 
-A question I would like to know the answer to that could be answered by analyzing data?
+####A question I would like to know the answer to that could be answered by analyzing data?
 
 Is there an easy and objective way to distinguish fake news and propaganda from factual journalism?
 
-What would I love to be doing six months after graduation?
-Performing services in exchange for currency
-(real answer: getting a masters in machine learning)
+#### What would I love to be doing six months after graduation?
+Performing services in exchange for currency  
+(real answer: getting a masters in machine learning, the level at which I would like to work in this field requires at least a masters,... maybe a PhD.)
 
-What would I love to be doing 5 years after that?
-Performing comparable services in exchange for more currency
-(real answer: working at a machine learning startup)
+####What would I love to be doing 5 years after that?
+Performing comparable services in exchange for more currency  
+(real answer: I would love to be working at a machine learning startup, and I am planning on doing the entrepreneurial senior captione in a few years)
 
-What you hope your greatest career accomplishment will be?
-Contributing in a non-negligible way to the development of AGI
+####What you hope your greatest career accomplishment will be? 
+Contributing in a non-negligible way to the development of AGI (Artificial General Intelligence)
 
-What am I hoping to learn in this course?
+####What am I hoping to learn in this course?
 Useful data science and collaboration skills 
 
-What is something else about me?
+####What is something else about me?
 I am an excellent cook.
 
-###David Du
+### Feedback:
+Everyone showed up to the group meeting on time, prepared and enthusiastic.
+
+#### Abbey:
+You took the first steps to merging our individual responses into a single document.
+
+#### David
+I am glad you are also interested in machine learing, we should get together and talk about it sometime, maybe we can apply it to one of the projects we do in this course.
+
+#### Sarah
+You figured out how to embed pictures in the the knitted R document.
+
+#### Will
+You persisted through all the issues with gitkraken, also we should talk about finance sometime, one of my interests is applying machine learning for financial applications.
+
+##David Du
 
 ![](David_Du.jpg)
 
@@ -120,48 +139,55 @@ You must also include something of your own choosing not described above. Anythi
 
 If I become a statistician, I would like to establish some statistics lab in all parts of the world, and help them in different areas based knowledge of statistics.
 
-Feedback:
+### Feedback:
 
-Sarah: I really love dogs and I also have dogs in my home and I also love reading novel􀀏 and I hope for some day I can
+#### Sarah: 
+  I really love dogs and I also have dogs in my home and I also love reading novel􀀏 and I hope for some day I can
 read novel written by you
 
-Will: I am very surprised that you have the same goal with me and I also curious about the graduate rate for math students in
+#### Will: 
+  I am very surprised that you have the same goal with me and I also curious about the graduate rate for math students in
 four years because it􀅇s actually a difficult major. The only thing I think need to prove is some grammar problem.
 
-Derek: Machine Learning is a very cool area􀀏 and it has actually used a lot for now. I really love it. I could also consider it as an option for my future career development.
+#### Derek: 
+  Machine Learning is a very cool area and it is actually being used a lot now. I really love it. I could also consider it as an option for my future career development.
 
-Abby: Environment is definitely a very important problem in the real world and I hope you can think about an effective way to
+#### Abby: 
+  Environment is definitely a very important problem in the real world and I hope you can think about an effective way to
 protect the environment.
 
 
 
-author: "Xinzhi Rao"
-## Individual Part
+## Xinzhi "Will" Rao
 
 ![Travelling.](Will.JPG)
 
-## What you would love to be doing six months after graduation and then five years after that
+#### What you would love to be doing six months after graduation and then five years after that
 
  After six months from graduating, I am going to be a graduate student major in statistics or data science, which just starts the first semester. I hope I could take many statistics class and do the project with my partners. After five years, I'm very excited to be a data scientist by collecting data, analyzing data and using my data science skills connected to the real problem.
 
-## What my greatest career accomplishment will be?
+#### What my greatest career accomplishment will be?
  I hope I could be the chief data scientist in a IT company. I could manage and study the core data in the company. 
 
- In this class, I hope to learn more about R programming language and use the R to do the project with statistical problem. For this class, my goal is improving my both statistical and programming skills. 
+ In this class, I hope to learn more about R programming language and use R to do the project with statistical problem. For this class, my goal is improving my both statistical and programming skills. 
 
-## The Question
+#### The Question
 
  I'm curious about the rates for university students could graduate in 4 years with major in math in the US.
 
-## More about me
- I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work. By the way, I'm very enjoy fried chicken in US especially "Popeyes".
+#### More about me
+ I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work. By the way, I very much enjoy fried chicken in US especially "Popeyes".
 
-## Feedback
-Sarah: I am very interested in reading scientific novels, and I hope one day we can read the novels that you write. By the way, your dog is pretty cute, and I also have one dog in my home.
+### Feedback
+#### Sarah: 
+  I am very interested in reading scientific novels, and I hope one day we can read the novels that you write. By the way, your dog is pretty cute, and I also have one dog in my home.
 
-Du: I'm very gald to see that you have nearly the same goals as mine after graduation. I have also want to establish some statistics lab based on helping other people learning statistics. Maybe we can do it together.
+#### Du: 
+  I'm very gald to see that you have nearly the same goals as mine after graduation. I also want to establish some statistics labs based around helping other people learn statistics. Maybe we can do it together.
 
-Derek: It seems like you are very interested in machine learning, which I do not know much about it. But I love cooking pretty much and I can do many different kinds of Chinese dishes.
+#### Derek: 
+  It seems like you are very interested in machine learning, which I do not know much about. I love cooking and I can prepare many different kinds of Chinese dishes.
 
-Abby: Your hobbies are very attractive to me and I am also playing ice skating. Protecting environment now plays an important part in this world. I hope you could find an effective way to protect environment.
+#### Abby: 
+  Your hobbies are very attractive to me and I am also playing ice skating. Protecting environment now plays an important part in this world. I hope you could find an effective way to protect environment.
 

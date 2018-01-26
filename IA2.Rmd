@@ -44,6 +44,15 @@ In this course I'm hoping to gain skills to become a better data scientist. I ho
 
 My hobbies include paddleboarding, hiking, ice skating, tennis, and organizing. In fact, if I didn't love Statistics as much as I do, I would be going to school for psychology in order to become a professional organizer.
 
+Feedback
+
+Sarah: I really appreciated how you came to our group meeting on time and prepared. It was so helpful to the team when you already knew how to add a picture and were able to teach that to all of us as well! Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+
+Derek: You showed up to our group meeting on time, with your individual part already done. You had a great understanding of Github and Gitkraken which was very helpful to all of us. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+David: We all appreciated how you showed up to our meeting on time and had everything prepared for merging like we had planned. We saved a lot of time meeting since you came ready with everything. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+
+Will: Our meeting was short and efficient, in large part because you came prepared and on time. Since you had your written portion completed we were easily able to add it to the master like we did with everyone else. Everyone could generally use more practice with Github and editing the master document at the same time as everyone else.
+
 ###Derek Thomas
 
 ![](derek_photo.jpg)
@@ -71,7 +80,6 @@ I am an excellent cook.
 
 ###David Du
 
-<<<<<<< Updated upstream
 ![](David_Du.jpg)
 
 At least one (non-statistics) question you would like to know the answer to that could be answered by analyzing data
@@ -92,6 +100,7 @@ You must also include something of your own choosing not described above. Anythi
 If I become a statistician, I would like to establish some statistics lab in all parts of the world, and help them in different areas based knowledge of statistics.
 
 ###Will Rao
+
 ![](Will.jpg)
 
 What you would love to be doing six months after graduation and then five years after that?

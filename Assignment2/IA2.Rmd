@@ -32,6 +32,25 @@ Given these goals, I hope to get all the essential tools for data science in thi
 And as for something that's not included in the questions, I love animals. I have two dogs and two cats at home where I grew up, and my roommates and I just adopted a kitten this summer names Pants. Below, is a picture of one of my dogs, Max.
 ![](max.jpg)
 
+### Feedback
+
+#### Abby
+
+You were easy and enjoyable to work with and efficiently did your share of the assignment. Your individual portion was interesting and concise. My only suggestion would be to make the first sentence of your career accomplishment paragraph more clearly worded. 
+
+#### Derek
+
+It was easy to work with you, and you completed your part of the assignment by our group's decided time. Your individual portion was clear and to-the-point. The answers to the questions about what you want to be doing in the future threw me off slightly, but I enjoyed the satirical tone. 
+
+#### Will
+
+You contributed your portion to the assignment and were easy to work with. I liked how you expressed your excitement when talking about your goals. There were minor typos and grammar issues, and it might be helpful to clarify what "the question" section refers to. 
+
+#### David
+
+You were also good to work with and did your share in a timely manner. It was cool to see how all your goals related to different aspects of statistics. Some answers could benefit from a little editing for wording and grammatical issues, but other than that, it is straightforward and interesting. 
+
+
 ### Abby Nay
 
 ![](abby.jpg)

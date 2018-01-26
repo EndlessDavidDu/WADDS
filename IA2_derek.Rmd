@@ -1,0 +1,29 @@
+---
+title: "APPM 2720 Assignment 2"
+date: 2018-01-24
+output: html_document
+---
+
+Derek Thomas
+
+A question I would like to know the answer to that could be answered by analyzing data?
+
+Is there an easy and objective way to distinguish fake news and propaganda from factual journalism?
+
+What would I love to be doing six months after graduation?
+Performing services in exchange for currency
+(real answer: getting a masters in machine learning)
+
+What would I love to be doing 5 years after that?
+Performing comparable services in exchange for more currency
+(real answer: working at a machine learning startup)
+
+What you hope your greatest career accomplishment will be?
+Contributing in a non-negligible way to the development of AGI
+
+What am I hoping to learn in this course?
+Usefull data science and collaboration skills 
+
+What is something else about me?
+I am an excellent cook.
+

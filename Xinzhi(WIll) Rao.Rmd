@@ -5,26 +5,30 @@ date: "1/25/2018"
 output: html_document
 ---
 
+
+
+
+author: "Xinzhi Rao"
+## Individual Part
+
+![Travelling.](Will.JPG)
+
+##What you would love to be doing six months after graduation and then five years after that
+
+ After six months from graduating, I am going to be a graduate student major in statistics or data science, which just starts the first semester. I hope I could take many statistics class and do the project with my partners. After five years, I'm very excited to be a data scientist by collecting data, analyzing data and using my data science skills connected to the real problem.
+
+## What my greatest career accomplishment will be?
+ I hope I could be the chief data scientist in a IT company. I could manage and study the core data in the company. 
+
+ In this class, I hope to learn more about R programming language and use the R to do the project with statistical problem. For this class, my goal is improving my both statistical and programming skills. 
+
+## The Question
+
+ I'm curious about the rates for university students could graduate in 4 years with major in math in the US.
+
+## More about me
+ I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work. By the way, I'm very enjoy fried chicken in US especially "Popeyes".
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-
-## Individual Part
-
-### What you would love to be doing six months after graduation and then five years after that
-
-##### After six months from graduating, I am going to be a graduate student major in statistics or data science. After five years, I'm very excited to be a data scientist by collecting data, analyzing data and using my data science skills connected to the real problem.
-
-### What my greatest career accomplishment will be?
-
-##### I hope I could be the chief data scientist in the futruew.
-
-##### In this class, I hope to learn more about R programming language and use the R to do the project with statistical problem. For this class, my goal is improving my both statistical and programming skills. 
-
-### The Question
-
-##### I'm curious about the rates for university students could graduate in 4 years in the US.
-
-### More about me
-##### I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work.

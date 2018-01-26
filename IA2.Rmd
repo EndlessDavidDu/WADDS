@@ -1,4 +1,4 @@
-author: "Sarah"
+
 ---
 title: "IA2 - WADDS"
 output: word_document
@@ -64,7 +64,7 @@ What you hope your greatest career accomplishment will be?
 Contributing in a non-negligible way to the development of AGI
 
 What am I hoping to learn in this course?
-Usefull data science and collaboration skills 
+Useful data science and collaboration skills 
 
 What is something else about me?
 I am an excellent cook.

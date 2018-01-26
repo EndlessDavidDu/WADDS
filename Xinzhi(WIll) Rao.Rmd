@@ -29,6 +29,5 @@ author: "Xinzhi Rao"
 ## More about me
  I'm also very interested in finance, and I'm also trying to use the statistical and data science skills in doing financial work. By the way, I'm very enjoy fried chicken in US especially "Popeyes".
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
 ```

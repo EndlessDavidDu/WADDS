@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 
 ---
 title: "IA2 - WADDS"
@@ -9,7 +8,7 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Assigment Two
+## Assignment Two
 The Team:
 
 ![](team_photo.jpg)

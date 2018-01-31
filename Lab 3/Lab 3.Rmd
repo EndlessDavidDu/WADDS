@@ -1,0 +1,45 @@
+---
+title: "CDC Health"
+author: "WADDS"
+date: "January 31, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+source("http://www.openintro.org/stat/data/cdc.R")
+cdc <- as_tibble(cdc)
+```
+
+## Purpose
+
+In this report, we aim to use information from the CDC Health dtataset in order to answer the following question: what are the primary factors that affect a person's general health?
+
+This is an important question because, with our results, we will be able to determine which actions people can take or refrain from will have the most affect on improving overall health. Additionally, this may help those who work in the health industry better predict which individuals will be in better health and which individuals may need more help in the future based on certain characteristics.
+
+##Analysis
+
+(In this section we can put our individual plots and findings from each plot (the individual part)
+
+### General Health and Weight
+
+In order to analyze the relationship between general health and weight, we made boxplots of the weight distributions for each category of general health, along with separating the data between men and women, since men tend to weight more than females. The results are shown below. 
+
+```{r sarah}
+ggplot(data=cdc)+geom_boxplot(aes(x=genhlth,y=weight))+facet_wrap(~gender)
+```
+
+Based on these plots, there doesn't seem to be a significant relationship between weight and general health, surprisingly. With the exception of a couple of outliers, the median weight for men remains similar for each health category. For women, the median weight is slightly higher for each decreasing rating of health, but the minimum and maximum weight for each category and gender is around the same value, with the exception of a few outliers. This would indicate that weight doesn't have much of an impact for general health for men, and for women, a higher weight has slight negative consequences for general health.\par
+
+However, based on these findings, it seems like more research must be done to investigate general health, as weight does not seem like the most important factor. 
+
+## Results
+(Here we can put the one plot that answers our overall question along with our analysis of that plot and conclusion)
+
+
+##Recommendation 
+(Here we can put our recommendation based on our data)
+
+##Contributions
+(Here we can write what individuals did what)

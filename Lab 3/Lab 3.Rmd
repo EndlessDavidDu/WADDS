@@ -37,7 +37,7 @@ However, based on these findings, it seems like more research must be done to in
 With diseases becoming increasingly hard to fight off both with and without medication, it is interesting to see if the presence of healthcare has an effect on a person's overall health. We would expect to find that people with healthcare are generally healthier than those without healthcare.
 
 ```{r abby}
-ggplot(data=cdc,aes(genhlth))+stat_count()+facet_wrap(~ifelse(hlthplan,"Healthcare", "No Healthcare"))+labs(x="General Health",y="Total number of people")
+ggplot(data=cdc,aes(genhlth,color=genhlth))+stat_count()+facet_wrap(~ifelse(hlthplan,"Healthcare", "No Healthcare"))+labs(x="General Health",y="Total number of people")
 
 ```
 
@@ -53,4 +53,6 @@ Since there is not a huge difference between the health of those with healthcare
 (Here we can put our recommendation based on our data)
 
 ##Contributions
-(Here we can write what individuals did what)
+Sarah: 
+
+Abby: I greated a bar graph counting the number of people in each category of health. I seperated these graphs by the categorical variable hlthplan, to determine the condition of people's health among those with and without healthcare. When I created facet wraps on the healthcare variable I labeled those with healthcare (1) and those without healthcare (0). I added an aesthetic on color to make it easier to differentiate between the different health categories among the graphs with a simple glance. 

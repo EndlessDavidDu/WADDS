@@ -1,0 +1,68 @@
+---
+title: "CDC Health"
+author: "WADDS"
+date: "January 31, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+source("http://www.openintro.org/stat/data/cdc.R")
+cdc <- as_tibble(cdc)
+```
+
+## Purpose
+
+In this report, we aim to use information from the CDC Health dtataset in order to answer the following question: what are the primary factors that affect a person's general health?
+
+This is an important question because, with our results, we will be able to determine which actions people can take or refrain from will have the most affect on improving overall health. Additionally, this may help those who work in the health industry better predict which individuals will be in better health and which individuals may need more help in the future based on certain characteristics.
+
+##Analysis
+
+(In this section we can put our individual plots and findings from each plot (the individual part)
+
+### General Health and Weight
+
+In order to analyze the relationship between general health and weight, we made boxplots of the weight distributions for each category of general health, along with separating the data between men and women, since men tend to weight more than females. The results are shown below. 
+
+```{r sarah}
+ggplot(data=cdc)+geom_boxplot(aes(x=genhlth,y=weight))+facet_wrap(~gender)
+```
+
+Based on these plots, there doesn't seem to be a significant relationship between weight and general health, surprisingly. With the exception of a couple of outliers, the median weight for men remains similar for each health category. For women, the median weight is slightly higher for each decreasing rating of health, but the minimum and maximum weight for each category and gender is around the same value, with the exception of a few outliers. This would indicate that weight doesn't have much of an impact for general health for men, and for women, a higher weight has slight negative consequences for general health.\par
+
+However, based on these findings, it seems like more research must be done to investigate general health, as weight does not seem like the most important factor. 
+
+With diseases becoming increasingly hard to fight off both with and without medication, it is interesting to see if the presence of healthcare has an effect on a person's overall health. We would expect to find that people with healthcare are generally healthier than those without healthcare.
+
+```{r abby}
+ggplot(data=cdc,aes(genhlth,color=genhlth))+stat_count()+facet_wrap(~ifelse(hlthplan,"Healthcare", "No Healthcare"))+labs(x="General Health",y="Total number of people")
+
+```
+
+From the graphs we can see people with healthcare are generally healthier than people without healthcare. Among people with healthcare most people are in excellent or very good health. While among those without healthcare most people are only in very good or good health. This illustrates a slightly lower quality of health among people who do not have healthcare compared to the people who do. 
+
+Since there is not a huge difference between the health of those with healthcare and those without, it does not seem as though healthcare is the biggest indicator of a person's overall health. Not accounted for in this analysis is the quality of healthcare provided, and how often it is utilized. With the given data it seems as though healthcare has a minimal effect on a person's overall health.
+
+In order to analyze our research question, we have make graph for the age and weight distribution along with separating the data between men and women, and also seperate group as people who have smoke more than 100 cigarettes and who have smoke fewer than 100 cigarettes. The results are shown below.
+
+```{r pressure, echo=FALSE}
+ggplot(data=cdc,mapping=aes(x=age,y=weight,color=gender))+geom_smooth(method="loess",se=FALSE)+facet_grid(smoke100~genhlth)+ggtitle("Relationship between weight and age by smoke plan")
+```
+
+Based on what we have got for this graph, we have set up age as x-axis and weight as y-axis, and we have divided into groups as heavy smoking and light smoking group. Also we have denoted the blue color as female and red color as male group. If we see the people who smoke more than 100 cigarettes, people with higher weight and older age would have bad health condition, and for middle-age group(around 50 years old). If they have too much weight, and it's easily to see that they have more health problem than young's. As we have seen in another group, people with excellent condition might have fewer weight than others. However, based on these findings, it seems like more research must be done to investigate general health, not just smoking.
+
+## Results
+(Here we can put the one plot that answers our overall question along with our analysis of that plot and conclusion)
+
+
+##Recommendation 
+(Here we can put our recommendation based on our data)
+
+##Contributions
+Sarah: 
+
+Abby: I greated a bar graph counting the number of people in each category of health. I seperated these graphs by the categorical variable hlthplan, to determine the condition of people's health among those with and without healthcare. When I created facet wraps on the healthcare variable I labeled those with healthcare (1) and those without healthcare (0). I added an aesthetic on color to make it easier to differentiate between the different health categories among the graphs with a simple glance. 
+
+David: Based on the similar team research question, I try to investigate different factors affect people's health. I have found some interesting relations in this plot and therefore conclude that exericse and reduce smoking could be very good action to improve people's health.

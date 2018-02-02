@@ -1,0 +1,37 @@
+---
+title: "Assignment 3"
+author: "David Du"
+date: "2018/2/1"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+source("http://www.openintro.org/stat/data/cdc.R")
+cdc <- as_tibble(cdc)
+```
+
+## Reseearch Question
+The question I have for this data set could be following:
+
+What factors might possibly have that affect people's health? 
+
+This is an very important question since we know that we from this table, it has a lot of factors relate to people's health, based on the graph we will draw, it could clearly provide information for people that what kinds of things they need to pay attention to. Here we have used "smoke" as factors and divide people into two groups to see what health situation look like. 
+
+#General Health factors
+
+In order to analyze our research question, we have make graph for the age and weight distribution along with separating the data between men and women, and also seperate group as people who have smoke more than 100 cigarettes and who have smoke fewer than 100 cigarettes. The results are shown below.
+
+```{r pressure, echo=FALSE}
+ ggplot(data=cdc,mapping=aes(x=age,y=weight,color=gender))+geom_smooth(method="loess",se=FALSE)+facet_grid(smoke100~genhlth)+ggtitle("Relationship between weight and age by smoke plan")
+```
+
+# Anlysis of Graph 
+Based on what we have got for this graph, we have set up age as x-axis and weight as y-axis, and we have divided into groups as heavy smoking and light smoking group. Also we have denoted the blue color as female and red color as male group. If we see the people who smoke more than 100 cigarettes, people with higher weight and older age would have bad health condition, and for middle-age group(around 50 years old). If they have too much weight, and it's easily to see that they have more health problem than young's. As we have seen in another group, people with excellent condition might have fewer weight than others. However, based on these findings, it seems like more research must be done to investigate general health, not just smoking. 
+
+# Reconmendations: 
+As we have found from the graph, I think reduce smoking and increase the amount of exercise could be benefit for people keeping in excellent health conditions. 
+
+# Summary of work team member done:
+David: Based on the similar team research question, I try to investigate different factors affect people's health. I have found some interesting relations in this plot and therefore conclude that exericse and reduce smoking could be very good action to improve people's health.

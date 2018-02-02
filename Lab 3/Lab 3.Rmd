@@ -8,6 +8,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(ggplot2) 
+library(dplyr) 
+library(forcats) 
+install.packages("corrplot")
+library(corrplot) 
+install.packages("GGally")
+library(GGally) 
+install.packages("ggridges")
+library(ggridges)
 source("http://www.openintro.org/stat/data/cdc.R")
 cdc <- as_tibble(cdc)
 ```
@@ -64,15 +73,21 @@ ggplot(data=cdc,mapping=aes(x=weight,y=smoke100,color=gender))+labs(x="weight",y
 For non health plan males and females, the light weight people smoke more than heavy weight people, because they think they are healthy and smoking does not matter their health too much, but for heavy weight people, they have fat issue, in this case, they will smoke less to keep their health. For involved in health plan males and females, light weight people are very careful their health issues, so they smoke less and for heavy weight people, they think they have health plan, and if they have health issues, the insurance could cover a lot of for them. They do not pay attention to their health carefully. Females are always smoke less than males.
 
 ## Results
-(Here we can put the one plot that answers our overall question along with our analysis of that plot and conclusion)
+
+```{r}
+wtgoal <- (cdc$wtdesire-cdc$weight)
+
+ggplot(data=cdc)+geom_density(aes(age))+facet_grid(genhlth~ifelse(exerany, "Exercise", "Don't Exercise"))
+```
+Among those who exercise and don't, younger people are in generally better health than older people. And both among those who exercise and don't, older people are more likely to be in poorer health. From one of the plots above we have shown that older generations are more likely to have healthcare than the younger generations. And having healthcare, as show in another plot above leads to better overall health.
 
 
 ##Recommendation 
-(Here we can put our recommendation based on our data)
+We recommend that as people age, they should have access to health care. Generally having healthcare has shown to imporve general health, especially among the older generations who are more likely to suffer from poor health. A good policy recommendation could be to provide cheaper health care through employers and municipalities. Much like how internet is now being offered through city providers. This will keep younger generations healthier as they begin to age.
 
 ##Contributions
-Sarah: 
+Sarah: I created a set of boxplots that showed the relationships between general health and weight, separating the results between males and females, in order to try determine how weight might affect general health. 
 
-Abby: I greated a bar graph counting the number of people in each category of health. I seperated these graphs by the categorical variable hlthplan, to determine the condition of people's health among those with and without healthcare. When I created facet wraps on the healthcare variable I labeled those with healthcare (1) and those without healthcare (0). I added an aesthetic on color to make it easier to differentiate between the different health categories among the graphs with a simple glance. 
+Abby: I created a bar graph counting the number of people in each category of health. I seperated these graphs by the categorical variable hlthplan, to determine the condition of people's health among those with and without healthcare. When I created facet wraps on the healthcare variable I labeled those with healthcare (1) and those without healthcare (0). I added an aesthetic on color to make it easier to differentiate between the different health categories among the graphs with a simple glance. 
 
 David: Based on the similar team research question, I try to investigate different factors affect people's health. I have found some interesting relations in this plot and therefore conclude that exericse and reduce smoking could be very good action to improve people's health.

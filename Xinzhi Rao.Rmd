@@ -5,16 +5,14 @@ date: "2/2/2018"
 output: html_document
 ---
 
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+source("http://www.openintro.org/stat/data/cdc.R")
+cdc <- as_tibble(cdc)
 ```
-
-## Individual Part
-> source("http://www.openintro.org/stat/data/cdc.R")
-> cdc <- as_tibble(cdc)
-> library(tidyverse)
-> source("http://www.openintro.org/stat/data/cdc.R")
-> cdc <- as_tibble(cdc)
 
 ## The question 
 #### I'm interested in the specific question that how the weight affect how much they smoke in whether they have hlthplan. The question is very specific in doing the relationship between weight and smoke 100. From my perspective, weight and smoke are the two most important reasons to cause helth issue.
@@ -22,9 +20,8 @@ knitr::opts_chunk$set(echo = TRUE)
 #### In this case, I used graph to show the linear relationship between the weight and smoke in order to see how much they relate. 
 
 
-```{r pressure, echo=FALSE}
-ggplot(data=cdc,mapping=aes(x=weight,y=smoke100,color=gender))+labs(x="weight",y="smoke100",title="The relationship in weight,smoke and whether they have hlthplan analyzing by gender")+geom_smooth(method="gam")+facet_grid(~hlthplan)
-r)
+```{r echo=FALSE}
+ ggplot(data=cdc,mapping=aes(x=weight,y=smoke100,color=gender))+labs(x="weight",y="smoke100",title="The relationship in weight,smoke and whether they have hlthplan gender")+geom_smooth(method="gam")+facet_grid(~hlthplan)
 ```
 
 ## Analysis of Graph

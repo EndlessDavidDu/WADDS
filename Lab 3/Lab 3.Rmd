@@ -11,11 +11,11 @@ library(tidyverse)
 library(ggplot2) 
 library(dplyr) 
 library(forcats) 
-install.packages("corrplot")
+#install.packages("corrplot")
 library(corrplot) 
-install.packages("GGally")
+#install.packages("GGally")
 library(GGally) 
-install.packages("ggridges")
+#install.packages("ggridges")
 library(ggridges)
 source("http://www.openintro.org/stat/data/cdc.R")
 cdc <- as_tibble(cdc)
@@ -23,9 +23,9 @@ cdc <- as_tibble(cdc)
 
 ## Purpose
 
-In this report, we aim to use information from the CDC Health dtataset in order to answer the following question: what are the primary factors that affect a person's general health?
+In this report, we aim to use information from the CDC Health dataset in order to answer the following question: what are the primary factors that affect a person's general health?
 
-This is an important question because, with our results, we will be able to determine which actions people can take or refrain from will have the most affect on improving overall health. Additionally, this may help those who work in the health industry better predict which individuals will be in better health and which individuals may need more help in the future based on certain characteristics.
+This is an important question because, with our results, we will be able to determine which actions people can take or refrain from that will have the most effect on improving overall health. Additionally, this may help those who work in the health industry better predict which individuals will be in better health and which individuals may need more help in the future based on certain characteristics.
 
 ##Analysis
 
@@ -72,13 +72,24 @@ ggplot(data=cdc,mapping=aes(x=weight,y=smoke100,color=gender))+labs(x="weight",y
 
 For non health plan males and females, the light weight people smoke more than heavy weight people, because they think they are healthy and smoking does not matter their health too much, but for heavy weight people, they have fat issue, in this case, they will smoke less to keep their health. For involved in health plan males and females, light weight people are very careful their health issues, so they smoke less and for heavy weight people, they think they have health plan, and if they have health issues, the insurance could cover a lot of for them. They do not pay attention to their health carefully. Females are always smoke less than males.
 
+```{r Derek}
+cdc %>%
+  ggplot(aes(x=age, color = genhlth)) +
+  geom_density(size = 1.5) +
+  facet_wrap(~ifelse(hlthplan,"Healthcare", "No Healthcare"), ncol = 1) +
+  labs(title="The relationship in age, health plan and general health") +
+  scale_x_continuous(limits = c(18,100), breaks=seq(0,100,10)) +
+  coord_cartesian(xlim = c(18, 100))
+```
+
+This graph reveals many things about the distribution of general health. For one we can see that general health declines as people age (excellent, very good, good, and fair healths decline while poor increases). However, there is a turning point in age where the majority go from fair or better health to poor health. Without healthcare this happens at ~40 years old. With healthcare this is delayed until ~50 years old. Similarly the quality of health falls off much less sharpely with a healthplan with some people in excellent health into their 80s (albiet a miniority), whereas it appears almost no-one maintains excellent health past 70 without a health plan. Some of this may be attributed to people simply switching to health plans as they get older, opting out of one only while they are young. However, we can also see that younger people with a health plan are generally healthier than those without one.
+
 ## Results
 
 ```{r}
-wtgoal <- (cdc$wtdesire-cdc$weight)
-
 ggplot(data=cdc)+geom_density(aes(age))+facet_grid(genhlth~ifelse(exerany, "Exercise", "Don't Exercise"))
 ```
+
 Among those who exercise and don't, younger people are in generally better health than older people. And both among those who exercise and don't, older people are more likely to be in poorer health. From one of the plots above we have shown that older generations are more likely to have healthcare than the younger generations. And having healthcare, as show in another plot above leads to better overall health.
 
 
@@ -91,3 +102,7 @@ Sarah: I created a set of boxplots that showed the relationships between general
 Abby: I created a bar graph counting the number of people in each category of health. I seperated these graphs by the categorical variable hlthplan, to determine the condition of people's health among those with and without healthcare. When I created facet wraps on the healthcare variable I labeled those with healthcare (1) and those without healthcare (0). I added an aesthetic on color to make it easier to differentiate between the different health categories among the graphs with a simple glance. 
 
 David: Based on the similar team research question, I try to investigate different factors affect people's health. I have found some interesting relations in this plot and therefore conclude that exericse and reduce smoking could be very good action to improve people's health.
+
+Will: I have investigated the relationship between weight and smoke. For people who have health plan, the heavy weight people smoke more than light weight people, but for people who don'v have the health plan, it is opposite.
+
+Derek: I worked on a density plot that shows the distribution of general health across age for those with and without a healthplan. I adjusted the scale of the x-axis to better fit the the data and changed the frequency of ticks to give better visual delination of ages. I also specifically wrapped the facets vertically so that it its easier to line up the age on the graphs.

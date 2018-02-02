@@ -17,14 +17,14 @@ knitr::opts_chunk$set(echo = TRUE)
 > cdc <- as_tibble(cdc)
 
 ## The question 
-####I'm interested in the specific question that how the weight affect how much they smoke in whether they have hlthplan. The question is very specific in doing the relationship between weight and smoke 100. From my perspective, weight and smoke are the two most important reasons to cause helth issue.
+#### I'm interested in the specific question that how the weight affect how much they smoke in whether they have hlthplan. The question is very specific in doing the relationship between weight and smoke 100. From my perspective, weight and smoke are the two most important reasons to cause helth issue.
 
-####In this case, I used graph to show the linear relationship between the weight and smoke in order to see how much they relate. 
+#### In this case, I used graph to show the linear relationship between the weight and smoke in order to see how much they relate. 
 
 ggplot(data=cdc,mapping=aes(x=weight,y=smoke100,color=gender))+labs(x="weight",y="smoke100",title="The relationship in weight,smoke and whether they have hlthplan analyzing by gender")+geom_smooth(method="gam")+facet_grid(~hlthplan)
 
 ## Analysis of Graph
-####For non health plan males and females, the light weight people smoke more than heavy weight people, because they think they are healthy and smoking does not matter their health too much, but for heavy weight people, they have fat issue, in this case, they will smoke less to keep their health. For involved in health plan males and females, light weight people are very careful their health issues, so they smoke less and for heavy weight people, they think they have health plan, and if they have health issues, the insurance could cover a lot of for them. They do not pay attention to their health carefully. Females are always smoke less than males.
+#### For non health plan males and females, the light weight people smoke more than heavy weight people, because they think they are healthy and smoking does not matter their health too much, but for heavy weight people, they have fat issue, in this case, they will smoke less to keep their health. For involved in health plan males and females, light weight people are very careful their health issues, so they smoke less and for heavy weight people, they think they have health plan, and if they have health issues, the insurance could cover a lot of for them. They do not pay attention to their health carefully. Females are always smoke less than males.
 
 
 

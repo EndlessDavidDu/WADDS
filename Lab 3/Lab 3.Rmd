@@ -34,6 +34,17 @@ Based on these plots, there doesn't seem to be a significant relationship betwee
 
 However, based on these findings, it seems like more research must be done to investigate general health, as weight does not seem like the most important factor. 
 
+With diseases becoming increasingly hard to fight off both with and without medication, it is interesting to see if the presence of healthcare has an effect on a person's overall health. We would expect to find that people with healthcare are generally healthier than those without healthcare.
+
+```{r abby}
+ggplot(data=cdc,aes(genhlth))+stat_count()+facet_wrap(~ifelse(hlthplan,"Healthcare", "No Healthcare"))+labs(x="General Health",y="Total number of people")
+
+```
+
+From the graphs we can see people with healthcare are generally healthier than people without healthcare. Among people with healthcare most people are in excellent or very good health. While among those without healthcare most people are only in very good or good health. This illustrates a slightly lower quality of health among people who do not have healthcare compared to the people who do. 
+
+Since there is not a huge difference between the health of those with healthcare and those without, it does not seem as though healthcare is the biggest indicator of a person's overall health. Not accounted for in this analysis is the quality of healthcare provided, and how often it is utilized. With the given data it seems as though healthcare has a minimal effect on a person's overall health.
+
 ## Results
 (Here we can put the one plot that answers our overall question along with our analysis of that plot and conclusion)
 

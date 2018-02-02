@@ -26,6 +26,9 @@ ggplot(data=cdc,mapping=aes(x=weight,y=smoke100,color=gender))+labs(x="weight",y
 ## Analysis of Graph
 #### For non health plan males and females, the light weight people smoke more than heavy weight people, because they think they are healthy and smoking does not matter their health too much, but for heavy weight people, they have fat issue, in this case, they will smoke less to keep their health. For involved in health plan males and females, light weight people are very careful their health issues, so they smoke less and for heavy weight people, they think they have health plan, and if they have health issues, the insurance could cover a lot of for them. They do not pay attention to their health carefully. Females are always smoke less than males.
 
+## Summary
+#### I have investigated the relationship between weight and smoke. For people who have health plan, the heavy weight people smoke more than light weight people, but for people who don'v have the health plan, it is opposite.
+
 
 
 

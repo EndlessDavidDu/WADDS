@@ -1,0 +1,337 @@
+---
+title: "CDC Data"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(corrplot)
+library(GGally)
+library(ggridges)
+
+cdc <- cdc %>% mutate(
+  genhlth = factor(genhlth),
+  gender = factor(gender),
+  exerany = factor(exerany),
+  hlthplan = factor(hlthplan),
+  smoke100 = factor(smoke100)
+)
+
+summary(cdc)
+
+glimpse(cdc)
+
+```
+
+```{r}
+ggplot(cdc) +
+  geom_freqpoly(mapping = aes(x = age, color = genhlth), binwidth = 1) +
+  guides(fill=FALSE)
+
+ggplot(cdc, mapping = aes(x = gender, fill = genhlth)) +
+  geom_bar(stat='count', position='fill') +
+  labs(x = 'gender') +
+  scale_fill_discrete(name="genhlth")
+
+ggplot(cdc) +
+  geom_freqpoly(mapping = aes(height, color = genhlth), binwidth = 1)
+
+ggplot(cdc) +
+  geom_freqpoly(mapping = aes(weight, color = genhlth), binwidth = 5) + coord_cartesian(xlim = c(0, 380)) 
+
+ggplot(cdc) +
+  geom_freqpoly(mapping = aes(wtdesire, color = genhlth), binwidth = 5) + coord_cartesian(xlim = c(0, 350))
+
+ggplot(cdc) +
+  geom_freqpoly(mapping = aes(wtgoal, color = genhlth), binwidth = 5) + coord_cartesian(xlim = c(-50, 50))
+
+ggplot(cdc) +
+  geom_freqpoly(mapping = aes(bmi, color = genhlth))
+
+ggplot(cdc, mapping = aes(x = exerany, fill = genhlth)) +
+  geom_bar(stat='count', position='fill') +
+  labs(x = 'exerany') +
+  scale_fill_discrete(name="genhlth")
+
+ggplot(cdc, mapping = aes(x = hlthplan, fill = genhlth)) +
+  geom_bar(stat='count', position='fill') +
+  labs(x = 'hthplan') +
+  scale_fill_discrete(name="genhlth")
+
+ggplot(cdc, mapping = aes(x = smoke100, fill = genhlth)) +
+  geom_bar(stat='count', position='fill') +
+  labs(x = 'smoke100') +
+  scale_fill_discrete(name="genhlth")
+
+```
+
+```{r}
+cdc %>%
+  group_by(genhlth) %>%
+  summarise(median_age = median(age))
+```
+```{r}
+cdc %>%
+  group_by(genhlth, gender) %>%
+  count(gender)
+```
+```{r}
+cdc %>%
+  mutate(gender = fct_recode(gender,
+           "0" = "m",
+           "1" = "f"),
+         genhlth = fct_recode(genhlth,
+           "0" = "excellent",
+           "1" = "very good",
+           "2" = "good",
+           "3" = "fair",
+           "4" = "poor")
+        ) %>%
+  mutate(
+         gender = as.integer(gender),
+         genhlth = as.integer(genhlth),
+         height = as.integer(height),
+         exerany = as.integer(exerany),
+         hlthplan = as.integer(hlthplan),
+         smoke100 = as.integer(smoke100)) %>%
+  cor(use="complete.obs") %>%
+  corrplot(type="lower", diag=FALSE)
+
+cdc %>%
+  mutate_all(as.numeric) %>%
+  ggcorr(method = c("pairwise","spearman"), label = FALSE, angle = -0, hjust = 0.2) +
+  coord_flip()
+
+cdc %>%
+  mutate_all(as.numeric) %>%
+  ggpairs()
+```
+```{r}
+ggplot(cdc, aes(smoke100, age, colour = genhlth)) +
+  geom_boxplot()
+
+ggplot(cdc, aes(hlthplan, age, colour = genhlth)) +
+  geom_boxplot()
+
+ggplot(cdc, aes(exerany, age, colour = genhlth)) +
+  geom_boxplot()
+```
+```{r}
+cdc %>%
+  ggplot(aes(age, fill=smoke100)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ genhlth, ncol = 1)
+
+cdc %>%
+  ggplot(aes(age, fill=exerany)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ genhlth, ncol = 1)
+
+cdc %>%
+  ggplot(aes(age, fill=hlthplan)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ genhlth, ncol = 1)
+```
+```{r}
+cdc %>%
+  ggplot(mapping = aes(age, wtgoal)) +
+  geom_bin2d()
+
+cdc %>%
+  ggplot(mapping = aes(age, weight)) +
+  geom_bin2d() +
+  facet_grid(smoke100 ~ hlthplan)
+
+cdc %>%
+  ggplot(mapping = aes(age, weight)) +
+  geom_bin2d() +
+  facet_grid(smoke100 ~ exerany)
+
+cdc %>%
+  ggplot(mapping = aes(age, weight)) +
+  geom_bin2d() +
+  facet_grid(exerany ~ hlthplan)
+
+cdc %>%
+  ggplot(mapping = aes(weight, wtdesire)) +
+  geom_bin2d()
+
+cdc %>%
+  ggplot(mapping = aes(weight, wtgoal)) +
+  geom_bin2d() +
+  coord_cartesian(xlim = c(0, 450), ylim=c(-200, 300))
+
+cdc %>%
+  ggplot(mapping = aes(age, bmi)) +
+  geom_bin2d() +
+  facet_grid(smoke100 ~ exerany)
+
+cdc %>%
+  ggplot(mapping = aes(wtdesire, wtgoal)) +
+  geom_bin2d() +
+  coord_cartesian(xlim = c(0, 350), ylim=c(-150, 300)) +
+  facet_grid(~ gender)
+
+cdc %>%
+  ggplot(mapping = aes(weight, height)) +
+  geom_bin2d() +
+  coord_cartesian(xlim = c(50, 425), ylim=c(45, 85))
+  #facet_grid(~ gender)
+```
+```{r}
+ggplot(cdc, aes(x=age)) +
+  geom_density(aes(fill = genhlth), alpha = 0.5) +
+  facet_wrap(~gender)
+
+ggplot(cdc, aes(x=bmi)) +
+  geom_density(aes(fill = genhlth), alpha = 0.5) +
+  facet_wrap(~gender)
+
+ggplot(cdc, aes(x=bmi)) +
+  geom_density(aes(fill = genhlth), alpha = 0.5) +
+  facet_wrap(~smoke100)
+
+ggplot(cdc, aes(x=wtdesire)) +
+  geom_density(aes(fill = gender), alpha = 0.5)
+
+ggplot(cdc, aes(x=wtgoal)) +
+  geom_density(aes(fill = gender), alpha = 0.5)
+
+ggplot(cdc, aes(x=weight)) +
+  geom_density(aes(fill = gender), alpha = 0.5)
+
+```
+```{r}
+cdc %>%
+  ggplot() +
+  geom_bar(aes(genhlth, fill = gender), position = "dodge")
+
+cdc %>%
+  ggplot() +
+  geom_bar(aes(smoke100, fill = gender), position = "dodge")
+
+cdc %>%
+  ggplot() +
+  geom_bar(aes(exerany, fill = gender), position = "dodge")
+
+cdc %>%
+  ggplot() +
+  geom_bar(aes(hlthplan, fill = gender), position = "dodge")
+```
+```{r}
+cdc %>%
+  ggplot(aes(x=age, color = smoke100)) +
+  geom_density(size = 1.5)
+
+cdc %>%
+  ggplot(aes(x=age, color = exerany)) +
+  geom_density(size = 1.5)
+
+cdc %>%
+  ggplot(aes(x=age, color = hlthplan)) +
+  geom_density(size = 1.5)
+
+cdc %>%
+  ggplot(aes(x=age, color = genhlth)) +
+  geom_density(size = 1.5)
+
+cdc %>%
+  ggplot(aes(x=age, color = gender)) +
+  geom_density(size = 1.5)
+
+cdc %>%
+  ggplot(aes(x=wtgoal, color = genhlth)) +
+  geom_density(size = 1.5) +
+  coord_cartesian(xlim = c(-50, 50))
+```
+```{r}
+cdc %>%
+  ggplot(aes(genhlth, fill = smoke100)) +
+  geom_bar(position = "dodge") +
+  coord_polar() +
+  #theme(legend.position = "none") +
+  scale_y_log10()
+
+cdc %>%
+  ggplot(aes(genhlth, fill = gender)) +
+  geom_bar(position = "dodge") +
+  coord_polar() +
+  #theme(legend.position = "none") +
+  scale_y_log10()
+
+cdc %>%
+  ggplot(aes(genhlth, fill = exerany)) +
+  geom_bar(position = "dodge") +
+  coord_polar() +
+  #theme(legend.position = "none") +
+  scale_y_log10()
+
+cdc %>%
+  ggplot(aes(genhlth, fill = hlthplan)) +
+  geom_bar(position = "dodge") +
+  coord_polar() +
+  #theme(legend.position = "none") +
+  scale_y_log10()
+```
+```{r}
+cdc %>%
+  ggplot(aes(exerany, fill = genhlth)) +
+  geom_bar(position = "fill") +
+  facet_wrap(~ smoke100)
+
+cdc %>%
+  ggplot(aes(smoke100, fill = genhlth)) +
+  geom_bar(position = "fill") +
+  facet_wrap(~ hlthplan)
+```
+```{r}
+cdc %>%
+  ggplot(aes(genhlth, age, fill = genhlth)) +
+  geom_violin() +
+  theme(legend.position = "none")
+
+cdc %>%
+  ggplot(aes(genhlth, weight, fill = genhlth)) +
+  geom_violin() +
+  theme(legend.position = "none")
+
+cdc %>%
+  ggplot(aes(smoke100, age, fill = smoke100)) +
+  geom_violin() +
+  theme(legend.position = "none")
+
+cdc %>%
+  ggplot(aes(exerany, age, fill = exerany)) +
+  geom_violin() +
+  theme(legend.position = "none")
+
+cdc %>%
+  ggplot(aes(hlthplan, age, fill = hlthplan)) +
+  geom_violin() +
+  theme(legend.position = "none")
+
+cdc %>%
+  ggplot(aes(gender, wtgoal, fill = gender)) +
+  geom_violin() +
+  theme(legend.position = "none")
+
+```
+```{r}
+ggplot(cdc, aes(x = bmi, y = genhlth, fill = genhlth)) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none")
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

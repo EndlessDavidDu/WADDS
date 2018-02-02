@@ -45,6 +45,14 @@ From the graphs we can see people with healthcare are generally healthier than p
 
 Since there is not a huge difference between the health of those with healthcare and those without, it does not seem as though healthcare is the biggest indicator of a person's overall health. Not accounted for in this analysis is the quality of healthcare provided, and how often it is utilized. With the given data it seems as though healthcare has a minimal effect on a person's overall health.
 
+In order to analyze our research question, we have make graph for the age and weight distribution along with separating the data between men and women, and also seperate group as people who have smoke more than 100 cigarettes and who have smoke fewer than 100 cigarettes. The results are shown below.
+
+```{r pressure, echo=FALSE}
+ggplot(data=cdc,mapping=aes(x=age,y=weight,color=gender))+geom_smooth(method="loess",se=FALSE)+facet_grid(smoke100~genhlth)+ggtitle("Relationship between weight and age by smoke plan")
+```
+
+Based on what we have got for this graph, we have set up age as x-axis and weight as y-axis, and we have divided into groups as heavy smoking and light smoking group. Also we have denoted the blue color as female and red color as male group. If we see the people who smoke more than 100 cigarettes, people with higher weight and older age would have bad health condition, and for middle-age group(around 50 years old). If they have too much weight, and it's easily to see that they have more health problem than young's. As we have seen in another group, people with excellent condition might have fewer weight than others. However, based on these findings, it seems like more research must be done to investigate general health, not just smoking.
+
 ## Results
 (Here we can put the one plot that answers our overall question along with our analysis of that plot and conclusion)
 
@@ -56,3 +64,5 @@ Since there is not a huge difference between the health of those with healthcare
 Sarah: 
 
 Abby: I greated a bar graph counting the number of people in each category of health. I seperated these graphs by the categorical variable hlthplan, to determine the condition of people's health among those with and without healthcare. When I created facet wraps on the healthcare variable I labeled those with healthcare (1) and those without healthcare (0). I added an aesthetic on color to make it easier to differentiate between the different health categories among the graphs with a simple glance. 
+
+David: Based on the similar team research question, I try to investigate different factors affect people's health. I have found some interesting relations in this plot and therefore conclude that exericse and reduce smoking could be very good action to improve people's health.

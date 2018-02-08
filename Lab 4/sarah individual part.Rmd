@@ -1,0 +1,28 @@
+---
+title: "Lab 4_Sarah Liddle"
+author: "Sarah Liddle"
+date: "February 8, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+babies <- read_csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/babies2a.dat")
+babies <- rename(babies, bwtoz = `bwt/oz`)
+```
+
+## Mother's Height to Weight Ratio
+
+In order to analyze possible factors that might contribute to the likelihood of a baby being premature, I analyzed the mother's height to weight ratio, separating the results into mothers who had premature babies (right) and mothers who did not (left). The plot of these results are shown below. 
+
+
+```{r plot, echo=FALSE}
+babies$Premature<-factor(babies$Premature)
+babies<-subset(babies, Premature==0 | Premature==1)
+ggplot(data=babies,aes(x=mht,y=mpregwt))+ggtitle("Mother's Height to Weight Ratio")+geom_jitter()+geom_smooth(se=FALSE,method="lm")+facet_wrap(~Premature)+geom_abline(slope=5, intercept=-200,color="red")
+```
+
+
+The red line indicates a generally accepted standard of what a healthy woman would weigh close to for her given height. This baseline was created from the estimate on livestrong.com. It is improtant to note that this baseline is general, and what is considered healthy varies from person to person. The blue line is the linear approximation the mothers' height to weight ratio within the data. 
+
+Though both mothers with premature babies and mothers with non-premature babies have a variety of height to weight ratios, including some that seem to vary significantly from the "healthy" line, there is no significant different in the trends of the mothers with premature babies and the mother of this. Because of this, I would conclude that the mother's height to weight ratio does not have much of an affect on whether or not the child is premature. 

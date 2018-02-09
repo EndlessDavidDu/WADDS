@@ -11,10 +11,13 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(plyr)
+library(grid)
 babies <- read_csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/babies2a.dat")
 babies <- dplyr::rename(babies, bwtoz = "bwt/oz")
 babies$Premature <- as.factor(babies$Premature)
 levels(babies$Premature) <- list(Premature=c(1), not_Premature=c(0))
+babies$smoke <- as.factor(babies$smoke)
+levels(babies$smoke) <- list(never=c(0), smokes_now=c(1))
 ```
 
 ## Guiding Question
@@ -26,15 +29,37 @@ Similarly, it is also important to analyze trends in birth weights at every gest
 
 ## Analysis
 
+## Do Mothers who smoke have increased rates of premature delivery?
+
+To determine if smoking causes more premature births, we compare the ratio of smokers to non-smokers who have pre-mature births and mature births. 
+```{r}
+na.omit(babies) %>%
+  ggplot(aes(smoke, fill = Premature)) +
+  geom_bar(position = "fill")
+```
+
+In the  above plot we can see a higher percent of premature births among smokers vs non-smokers. However, the difference is not large and may be due to other factors. 
+
+
 ## Do the newborns of mothers who smoke have smaller birth weights at every gestational age?
 
 We want to look at the relationship between gestation time and birth weight. We will compare this relationship among mothers who do and do not smoke. This will allow us to see if smoking affects the birth weight of babies at every gestational age.
 ```{r secondquestion}
-ggplot(data=na.omit(babies), mapping=aes(x=gestation, y=bwtoz,color=smoke))+geom_jitter()+geom_smooth(se=FALSE,method="lm")+coord_cartesian(xlim=c(225,325))
+ggplot(data=na.omit(babies), mapping=aes(x=gestation, y=bwtoz,color=smoke)) +
+  geom_jitter() +
+  geom_smooth(se=FALSE,method="lm") +
+  coord_cartesian(xlim=c(210,330)) +
+  scale_x_continuous(breaks = c(210,240,270,300,330), labels = c("210","240","premature","300","330")) +
+  theme(axis.text.x = element_text(color = c("black", "black", "red", "black", "black")),
+        axis.ticks.x = element_line(color = c("black", "black", "red", "black", "black"),
+                          size = c(.5,.5,1,.5,.5,.5)))
 ```
+
 As we can see from the plots above, the newborns of mothers who currently smoke have a lower birth weight at every gestational age until around the 300th day. At this point, however, if a child is far enough into the pregnancy with a smoking mother, then it would make sense for the birth weight to be larger. This would imply a likelier chance for survival, as more weight would make them more resilient to unhealthy environments. Up until this point we can see that babies of mothers who do smoke have much smaller weights than the babies of mothers who do not smoke. 
 
 ## Recommendations
+
+It is highly recommended that mothers do not smoke while pregnant, as smokeing distinctly causes lower birthweights at every gestational age. Lower birthweights have a variety of associated healthrisks for newborns beyond those already associated with smoking. Additionally smoking may increase risk for premature births, introducing new health risks for the child as well as exacerbating the issue of lower birth weight. 
 
 ## Preliminary Question
 Which variables are similar among smokers and non-smokers? This is what we will be analyzing in our individual parts below.
@@ -61,32 +86,34 @@ Since most children take after their parents in height once they are fully grown
 ```{r}
 ggplot(data=na.omit(babies), mapping=aes(x=dwt, y=bwtoz))+geom_jitter()+geom_smooth(se=FALSE, method="lm")
 ```
+
 This plot illustrates how dad's weight influences a baby's birthweight. From the plot there does not seem to be much of a relationship between a dad's weight and the birthweight of the baby. The relationship would most likely be moderate positive, as there does seem to generally be a trend that as a dad's weight increases, so does the babie's. This could be because birthweight is more influenced by a mother's weight before pregnancy, but unfortunately we do not have data to test this observation. One interesting factor we could test, is if there appears to be a stronger relationship between Dad's weight and birthweight when we account for if the mother smoked during pregnancy.
 ```{r abby}
 ggplot(data=na.omit(babies), mapping=aes(x=dwt, y=bwtoz))+geom_jitter()+facet_wrap(~smoke)+geom_smooth(se=FALSE, method="lm")
 ```
+
 From what we see in the plots, among those who smoke, there appears to be a strong, positive relationship between the Dad's weight and the birthweight, while there seems to be a weak correlation between a Dad's weight and a babie's weight among those who don't smoke. This could indicate that a mother's smoking habits may be a confounding variable impacting the influence of the Dad's weight on the birthweight.
 
 ## Premature, Smoking, and Birth Weight
 
 ```{r}
-babies$smoke <- as.factor(babies$smoke)
-levels(babies$smoke) <- list(never=c(0), smokes_now=c(1))
+
 
 babies$smoke_premature <- interaction(babies$Premature, babies$smoke)
 
 mu <- ddply(na.omit(babies), "smoke_premature", summarise, s_p.mean=mean(bwtoz))
 ggplot(na.omit(babies), aes(x=bwtoz, colour = smoke_premature)) +
   geom_density(size = 1.5) +
-  geom_vline(xintercept = 88.2) +
-  geom_vline(xintercept = 141.1) +
+  scale_x_continuous(breaks=c(88.2, 141.1)) +
   geom_vline(data=mu, aes(xintercept=s_p.mean, color=smoke_premature),
              linetype="dashed")
 ```
 
-One of the cofounding factors in determining whether smoking effects pre-mature births and baby weight is the relationship between premature births and baby weight. Premature babies on average weight less than mature babies. There are many other factors that could lead to premature babies other than smoking. When trying to compare smoking and baby weight it's difficult to tell if the difference in weight is do to smoking alone or if its also a side effect of smoking causing pre-mature births. With this graph I have paired up the factors of pre-mature births with smoking, and we can see that that the reduced baby weight from smoking is consistent amoung both mature and premature births.
+One of the confounding factors in determining whether smoking effects pre-mature births and baby weight is the relationship between premature births and baby weight. Premature babies on average weight less than mature babies. There are many other factors that could lead to premature babies other than smoking. When trying to compare smoking and baby weight it's difficult to tell if the difference in weight is do to smoking alone or if its also a side effect of smoking causing pre-mature births. With this graph I have paired up the factors of pre-mature births with smoking, and we can see that that the reduced baby weight from smoking is consistent amoung both mature and premature births. The dotted lines indicate the mean weight for each group, and the x-tick marks the lower and upper bound for healthy baby weight.
 
 ## Individual Contributions
 Sarah: For my contribution, I used geom_jitter, geom_abline, facet_wrap, geom_smooth, and ggtitle. I plotted mother's height vs. weight, and separated the plots between mother's that had premature children and mother's who did not have premature children. I did this so we could see if having an unhealthy or healthy weight as the mother would tend to have an affect on the babies being premature. The results showed that there didn't seem to be a significant difference in the trend; therefore, we could rule that out as a factor for our final conclusions.
 
 Abby: I created a plot to determine if a baby's birthweight was impacted by the Father's weight. From those results I then created another set of plots to see if smoking made the relationship between Dad's weight and birthweight stronger or weaker. 
+
+Derek: I created a plot to determine if smoking was causing a lower birthweight independant of whether the birth was premature, as well as an overall plot of the ratio of pre-mature births to mature births for smokers and non-smokers.

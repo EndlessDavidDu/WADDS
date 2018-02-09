@@ -38,7 +38,7 @@ na.omit(babies) %>%
   geom_bar(position = "fill")
 ```
 
-In the  above plot we can see a higher percent of premature births among smokers vs non-smokers. However, the difference is not large and may be due to other factors. 
+In the  above plot we can see a higher percent of premature births among smokers vs non-smokers. The difference is not large and may be due to other factors, but warrants further investigation. Keys things to look into is whether the the premature births increase as the number of cigarretes smoked per day increases, the proportion of premature births to mothers who never smoked, smoked up until pregrant, and smoked through their pregnancy. Unfortunately this data was either not present or not present is a statistically signicant quantity.   
 
 
 ## Do the newborns of mothers who smoke have smaller birth weights at every gestational age?
@@ -111,9 +111,24 @@ ggplot(na.omit(babies), aes(x=bwtoz, colour = smoke_premature)) +
 
 One of the confounding factors in determining whether smoking effects pre-mature births and baby weight is the relationship between premature births and baby weight. Premature babies on average weight less than mature babies. There are many other factors that could lead to premature babies other than smoking. When trying to compare smoking and baby weight it's difficult to tell if the difference in weight is do to smoking alone or if its also a side effect of smoking causing pre-mature births. With this graph I have paired up the factors of pre-mature births with smoking, and we can see that that the reduced baby weight from smoking is consistent amoung both mature and premature births. The dotted lines indicate the mean weight for each group, and the x-tick marks the lower and upper bound for healthy baby weight.
 
+
+
+## Mother's weight and birthweight for children
+
+Here I'm finding out the relationship between mother's weight and birthweight with respect to mothers who had premature babies (left) and mothers who had mature babies (right). The plot of these results is shown below
+
+```{r pressure, echo=FALSE}
+ggplot(data=na.omit(babies), mapping=aes(x=mpregwt, y=bwtoz))+geom_jitter()+facet_wrap(~Premature)+geom_smooth(se=FALSE, method="lm")+ggtitle("Mother's weight and brithweight for children")
+                                                                                  
+```
+
+As we can see in this graph, there is a relationship between the mother's pregnant weight and birthweight. However, there does not seem to be any difference in this relationship between pre-mature and mature births. Also side by side we can see that premature births have a generally lower birthweight than their mature counterparts, regardless of the mother's pregnant weight.
+
 ## Individual Contributions
 Sarah: For my contribution, I used geom_jitter, geom_abline, facet_wrap, geom_smooth, and ggtitle. I plotted mother's height vs. weight, and separated the plots between mother's that had premature children and mother's who did not have premature children. I did this so we could see if having an unhealthy or healthy weight as the mother would tend to have an affect on the babies being premature. The results showed that there didn't seem to be a significant difference in the trend; therefore, we could rule that out as a factor for our final conclusions.
 
 Abby: I created a plot to determine if a baby's birthweight was impacted by the Father's weight. From those results I then created another set of plots to see if smoking made the relationship between Dad's weight and birthweight stronger or weaker. 
 
 Derek: I created a plot to determine if smoking was causing a lower birthweight independant of whether the birth was premature, as well as an overall plot of the ratio of pre-mature births to mature births for smokers and non-smokers.
+
+David: What I have done here is find the relationship between mother's pregnant weight and baby's birth weight. I have found that whether they have a premature baby or not, there is a correlation with the mother's pregnant weigth and birthweight. Additionally, I found there are far fewer premature babies comparied to mature ones, and the birth weight for mature babies is higher than pre-mature ones. 

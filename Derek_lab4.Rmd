@@ -1,0 +1,27 @@
+---
+title: "Derek_lab4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(plyr)
+
+babies$smoke <- as.factor(babies$smoke)
+levels(babies$smoke) <- list(never=c(0), smokes_now=c(1))
+
+babies$Premature <- as.factor(babies$Premature)
+levels(babies$Premature) <- list(Premature=c(1), not_Premature=c(0))
+
+babies$smoke_premature <- interaction(babies$Premature, babies$smoke)
+
+mu <- ddply(na.omit(babies), "smoke_premature", summarise, s_p.mean=mean(bwtoz))
+ggplot(na.omit(babies), aes(x=bwtoz, colour = smoke_premature)) +
+  geom_density(size = 1.5) +
+  geom_vline(xintercept = 88.2) +
+  geom_vline(xintercept = 141.1) +
+  geom_vline(data=mu, aes(xintercept=s_p.mean, color=smoke_premature),
+             linetype="dashed")
+```
+
+One of the cofounding factors in determining whether smoking effects pre-mature births and baby weight is the relationship between premature births and baby weight. Premature babies on average weight less than mature babies. There are many other factors that could lead to premature babies other than smoking. When trying to compare smoking and baby weight it's difficult to tell if the difference in weight is do to smoking alone or if its also a side effect of smoking causing pre-mature births. With this graph I have paired up the factors of pre-mature births with smoking, and we can see that that the reduced baby weight from smoking is consistent amoung both mature and premature births.
+

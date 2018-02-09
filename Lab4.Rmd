@@ -13,17 +13,12 @@ babies <- rename(babies, bwtoz='bwt/oz')
 ```
 
 ## Guiding Question
-
-
-
-```{r cars}
-summary(cars)
-```
+We want to know if smoking during pregancy affects the gestation period and the birth weights of the baby. We want to know what confounding variables may be influencing the relationship between gestation period and smoking and birth weight and smoking, to determine if there is a relationship between these variables.
 
 ## Recommendations
 
 ## Preliminary Question
-
+Which variables are similar among smokers and non-smokers? This is what we will be analyzing in our individual parts below.
 
 ## Mother's Height to Weight Ratio
 

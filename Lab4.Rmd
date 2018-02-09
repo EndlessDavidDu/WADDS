@@ -125,13 +125,13 @@ ggplot(data=na.omit(babies), mapping=aes(x=mpregwt, y=bwtoz))+geom_jitter()+face
 As we can see in this graph, there is a relationship between the mother's pregnant weight and birthweight. However, there does not seem to be any difference in this relationship between pre-mature and mature births. Also side by side we can see that premature births have a generally lower birthweight than their mature counterparts, regardless of the mother's pregnant weight.
 
 ## Does smooke affect the relationship between gestation and bwtoz?
-```{r echo=FALSE}
-ggplot(data=na.omit(babies),aes(x=gestation,y=bwtoz)) +
+```{r }
+ggplot(data=na.omit(babies),mapping=aes(x=gestation,y=bwtoz)) +
+  geom_jitter() +
   geom_smooth(se=FALSE,method=lm) +
-  geom_point() +
   facet_wrap(~smoke) +
-  scale_y_continuous(limits=c(50,190)) +
-  scale_x_continuous(limits=c(225,325))
+  coord_cartesian(ylim=c(50,190)) +
+  coord_cartesian(xlim=c(225,325))
 ```
 
 By looking the plot, we will find that when people do not smoke, they will have a normal slope relationship between gestation and bwtoz. Most of bwt are between 112.5 to 137.5, which is a normal range. But for smoking people, the relationship between gestation and bwtoz will have a sharp slope, it means, when the getation longer, bwtoz will increase a lot. Sometimes bwt will exceed the normal range. This definitely shows that smoking affects the relationship between gestation and bwtoz. It also leads to negative relationship.

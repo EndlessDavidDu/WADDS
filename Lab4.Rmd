@@ -139,7 +139,7 @@ By looking the plot, we will find that when people do not smoke, they will have 
 ## Individual Contributions
 Sarah: For my contribution, I used geom_jitter, geom_abline, facet_wrap, geom_smooth, and ggtitle. I plotted mother's height vs. weight, and separated the plots between mother's that had premature children and mother's who did not have premature children. I did this so we could see if having an unhealthy or healthy weight as the mother would tend to have an affect on the babies being premature. The results showed that there didn't seem to be a significant difference in the trend; therefore, we could rule that out as a factor for our final conclusions.
 
-Abby: I created a plot to determine if a baby's birthweight was impacted by the Father's weight. From those results I then created another set of plots to see if smoking made the relationship between Dad's weight and birthweight stronger or weaker. 
+Abby: I created a plot to determine if a baby's birthweight was impacted by the Father's weight. From those results I then created another set of plots to see if smoking made the relationship between Dad's weight and birthweight stronger or weaker. I also worked on the plot answering the second question, to see if babies of non-smokers have higher birth weights at every gestation period with the help of Derek.
 
 Derek: I created a plot to determine if smoking was causing a lower birthweight independant of whether the birth was premature, as well as an overall plot of the ratio of pre-mature births to mature births for smokers and non-smokers.
 

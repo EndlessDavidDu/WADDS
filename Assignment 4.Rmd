@@ -1,0 +1,28 @@
+---
+title: "Assignment 4"
+author: "David Du"
+date: "2018/2/8"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+babies <- read_csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/babies2a.dat")
+babies <- rename(babies, bwtoz = `bwt/oz`) 
+```
+
+
+## Mother's weight and birthweight for children
+
+Here I'm finding out the relationship between father's weight and height ratio regarding with different groups which is following: mothers who has premature babies (right) and mothers who does not (left). The plot of these results are shown below
+
+```{r pressure, echo=FALSE}
+ggplot(data=na.omit(babies), mapping=aes(x=mpregwt, y=bwtoz))+geom_jitter()+facet_wrap(~Premature)+geom_smooth(se=FALSE, method="lm")+ggtitle("Mother's weight and brithweight for children")
+                                                                                  
+```
+
+As we can see for this graph, we can know that whatever for mothers who does have premature babies or not, they both have strong relationship between mother's weight and birthweight. However, if we see plots from two graph. We can see that for mother who does not have premature babies, their baby's birth weight could be generally higher than groups have premature babies.
+
+#Contribution:
+
+David: What I have done here is finding out relationship between mother's weight and baby's birth weight. I have found that whatever they have premature baby or not. Both of them show a very strong relationship within it. However, for most of mother they do not have premature babies. The birth weight for babies is higher than others. We could write it as one of conclusions in our report.

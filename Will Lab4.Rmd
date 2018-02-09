@@ -1,0 +1,28 @@
+---
+title: "Lab 4"
+author: "Xinzhi Rao"
+date: "2/9/2018"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+babies <- read_csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/babies2a.dat")
+babies <- rename(babies, bwtoz = `bwt/oz`) #renaming `bwt/oz` because the "/" sign requires special care
+```
+
+
+```{r echo=FALSE}
+ggplot(data=babies,aes(x=gestation,y=bwtoz))+geom_smooth(se=FALSE,method=lm)+geom_point()+facet_wrap(~smoke)+scale_y_continuous(limits=c(0,190))
+```
+
+## Does smooke affect the relationship between gestation and bwtoz?
+####  By looking the plot, we will find that when people do not smoke, they will have a normal slope relationship between gestation and bwtoz. Most of bwt are between 112.5 to 137.5, which is a normal range. But for smoking people, the relationship between gestation and bwtoz will have a sharp slope, it means, when the getation longer, bwtoz will increase a lot. Sometimes bwt will exceed the normal range. This definitely shows that smoking affects the relationship between gestation and bwtoz. It also leads to negative relationship.
+
+## Contribution
+#### I created a plot to see the whether smoking could affect the relatioinship between gestation and bwtoz and also to see whether the smoking leads to positive or negative impact.
+
+
+

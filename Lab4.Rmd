@@ -17,7 +17,7 @@ We want to know if smoking during pregancy affects the gestation period and the 
 
 We aim to find the relationship between a mother's smoking habits and premature birth in order to keep the general public--specifically future mothers--informed about the possible risks smoking may cause for their unborn child. If we can find what factors have the most significant affect on premature births, we can help people avoid having a premature child by warning them what habits or actions they take cause the highest risk of that, particularly smoking. It would be important for people who want to be mothers to know what affect smoking could have on their child. 
 
-Similarly, it is also important to analyze trends in birth weights at every gestational ages between babies whose mothers smoke and whose mothers do not. Future mothers could benefit from these results, as it can be dangerous for a baby to have too low of a birth weight. By answering these two questions, we will be able to give future parents a better understanding of how smoking habits could impact the birth of their child. 
+Similarly, it is also important to analyze trends in birth weights at every gestational ages between babies whose mothers smoke and whose mothers do not. Future mothers could benefit from these results, as it can be dangerous for a baby to have too low of a birth weight. By answering these two questions, we will be able to give future parents a better understanding of how smoking habits could impact the birth of their child. ``````
 
 ## Analysis
 

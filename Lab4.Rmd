@@ -15,6 +15,9 @@ babies <- rename(babies, bwtoz='bwt/oz')
 ## Guiding Question
 We want to know if smoking during pregancy affects the gestation period and the birth weights of the baby. We want to know what confounding variables may be influencing the relationship between gestation period and smoking and birth weight and smoking, to determine if there is a relationship between these variables.
 
+## Analysis
+
+
 ## Recommendations
 
 ## Preliminary Question
@@ -32,7 +35,7 @@ ggplot(data=babies,aes(x=mht,y=mpregwt))+ggtitle("Mother's Height to Weight Rati
 ```
 
 
-The red line indicates a generally accepted standard of what a healthy woman would weigh close to for her given height. This baseline was created from the estimate on livestrong.com. It is improtant to note that this baseline is general, and what is considered healthy varies from person to person. The blue line is the linear approximation the mothers' height to weight ratio within the data. 
+The red line indicates a generally accepted standard of what a healthy woman would weigh close to for her given height. This baseline was created from the estimate on livestrong.com. It is important to note that this baseline is general, and what is considered healthy varies from person to person. The blue line is the linear approximation the mothers' height to weight ratio within the data. 
 
 Though both mothers with premature babies and mothers with non-premature babies have a variety of height to weight ratios, including some that seem to vary significantly from the "healthy" line, there is no significant different in the trends of the mothers with premature babies and the mother of this. Because of this, I would conclude that the mother's height to weight ratio does not have much of an affect on whether or not the child is premature. 
 
@@ -51,4 +54,6 @@ From what we see in the plots, among those who don't smoke, there appears to be 
 
 
 ## Individual Contributions
+Sarah: For my contribution, I used geom_jitter, geom_abline, facet_wrap, geom_smooth, and ggtitle. I plotted mother's height vs. weight, and separated the plots between mother's that had premature children and mother's who did not have premature children. I did this so we could see if having an unhealthy or healthy weight as the mother would tend to have an affect on the babies being premature. The results showed that there didn't seem to be a significant difference in the trend; therefore, we could rule that out as a factor for our final conclusions.
+
 Abby: I created a plot to determine if a babie's birthweight was impacted by the Father's weight. From those results I then created another set of plots to see if smoking made the relationship between Dad's weight and birthweight stronger or weaker. 

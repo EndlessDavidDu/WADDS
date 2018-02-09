@@ -234,8 +234,9 @@ cdc %>%
   geom_density(size = 1.5)
 
 cdc %>%
-  ggplot(aes(x=age, color = hlthplan)) +
-  geom_density(size = 1.5)
+  ggplot(aes(x=age, color = genhlth)) +
+  geom_density(size = 1.5) +
+  facet_wrap(~ hlthplan, ncol = 1)
 
 cdc %>%
   ggplot(aes(x=age, color = genhlth)) +
@@ -245,11 +246,14 @@ cdc %>%
   ggplot(aes(x=age, color = gender)) +
   geom_density(size = 1.5)
 
+
 cdc %>%
   ggplot(aes(x=wtgoal, color = genhlth)) +
   geom_density(size = 1.5) +
   coord_cartesian(xlim = c(-50, 50))
 ```
+
+
 ```{r}
 cdc %>%
   ggplot(aes(genhlth, fill = smoke100)) +

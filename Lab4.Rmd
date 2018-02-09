@@ -61,6 +61,8 @@ ggplot(data=na.omit(babies), mapping=aes(x=dwt, y=bwtoz))+geom_jitter()+facet_wr
 ```
 From what we see in the plots, among those who don't smoke, there appears to be a strong, positive relationship between the Dad's weight and the birthweight, while there seems to be a weak correlation between a Dad's weight and a babie's weight among those who do smoke. This could indicate that a mother's smoking habits may be a confounding variable impacting the influence of the Dad's weight on the birthweight. This could indicate that smoking decreases the birthweight, regardless of the Father's weight beforehand.
 
+## Premature, Smoking, and Birth Weight
+
 ```{r}
 babies$smoke <- as.factor(babies$smoke)
 levels(babies$smoke) <- list(never=c(0), smokes_now=c(1))

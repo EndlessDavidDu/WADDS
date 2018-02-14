@@ -1,0 +1,111 @@
+---
+title: "Lab 5"
+author: "WADDS"
+date: "February 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+ms <- read.csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/ms.csv") 
+library(tidyverse)
+library(GGally)
+```
+
+## Univariate Distribution
+
+In order to visualize spec5 by itself, we plotted a histogram of it, removing small values so that the histogram would be more revealing. We made two histograms, one showing values under 100 and one showing values over 1000 so we could see the spread of both the highest and lowest values. As one can see, there is a very strong positive skew in the data, and similar can be said for spec10. 
+```{r univariate}
+#ggplot(data=ms)+geom_histogram(aes(x=spec5))
+spec5_new<-filter(ms, spec5<100 & spec5>0)
+ggplot(data=spec5_new)+geom_histogram(aes(x=spec5),binwidth=2)+ggtitle("Histogram of spec5, Below 100")
+spec5_new2<-filter(ms, spec5>1000)
+ggplot(data=spec5_new2)+geom_histogram(aes(x=spec5),binwidth=5000)+ggtitle("Histogram of spec5, Over 1000")
+```
+
+We also can get a binned estimate of the data for both spec5 and spec10
+
+```{r spread using bins, echo=FALSE}
+ms %>% summarize(total = length(spec5),
+                 numNAs = sum(is.na(spec5)),
+                 neg = length(spec5[spec5<0]), 
+                 zero = length(spec5[spec5==0]),
+                 small = length(spec5[spec5>0 & spec5<=100]),
+                 med = length(spec5[spec5>100 & spec5<=1000]),
+                 large = length(spec5[spec5>1000 & spec5<=10000]),
+                 realbig = length(spec5[spec5>10000 & spec5<=100000]))
+
+ms %>% summarize(total = length(spec10),
+                 numNAs = sum(is.na(spec10)),
+                 neg = length(spec5[spec10<0]), 
+                 zero = length(spec5[spec10==0]),
+                 small = length(spec5[spec10>0 & spec10<=100]),
+                 med = length(spec10[spec10>100 & spec10<=1000]),
+                 large = length(spec10[spec10>1000 & spec10<=10000]),
+                 realbig = length(spec10[spec10>10000 & spec10<=100000]))
+```
+
+## Bivariate Plots
+
+Now we will visualize the relationships between mass with spec5 and spec10, separately. In order to generate a more helpful visualization, I will again separate the spec10 and spec5 data into high and low values. Note that fordata points with a mass of less than 50, I only plotted the spec5 and spec10 values below 500 so that the spread of the data can be seen more accurately. However, the spec5 and spec10 data points above 500 match the general trend of the points below 500. 
+
+``` {r bivariate1, echo=FALSE}
+
+#ggplot(data=ms)+geom_point(aes(x=mass,y=spec5))
+ms_newmass1<-filter(ms, mass<50 & between(spec5,0,500))
+ggplot(data=ms_newmass1)+geom_jitter(aes(x=mass,y=spec5),alpha=0.1)+ggtitle("Spec5 vs. Mass, Mass<50 and Spec5<500")
+#ms_newmasshigh<-filter(ms, mass<50 & spec5>500)
+#ggplot(data=ms_newmasshigh)+geom_jitter(aes(x=mass,y=spec5),alpha=0.1)+ggtitle("Spec5 vs. Mass, Mass<50 and Spec5>500")
+ms_newmass2<-filter(ms, mass>=50)
+ggplot(data=ms_newmass2)+geom_jitter(aes(x=mass,y=spec5),alpha=0.1)+ggtitle("Spec5 vs. Mass, Mass>50")
+
+#ggplot(data=ms)+geom_point(aes(x=mass,y=spec10))
+ms_newmass3<-filter(ms, mass<50 & between(spec10,0,500))
+ggplot(data=ms_newmass3)+geom_jitter(aes(x=mass,y=spec10),alpha=0.1)+ggtitle("Spec10 vs. Mass, Mass<50 and Spec5<500")
+#ms_newmasshigh2<-filter(ms, mass<50 & spec10>500)
+#ggplot(data=ms_newmasshigh2)+geom_jitter(aes(x=mass,y=spec10),alpha=0.1)+ggtitle("Spec10 vs. Mass, Mass<50 and Spec5>500")
+ms_newmass2<-filter(ms, mass>=50)
+ggplot(data=ms_newmass2)+geom_jitter(aes(x=mass,y=spec10),alpha=0.1)+ggtitle("Spec10 vs. Mass, Mass>50")
+```
+
+## Covariance and Correlation
+
+The spec5 and spec10 variables have a correlation of 0.9953. This is a very strong positive correlation. A visualization of this correlation is included below.
+
+``` {r correlation,echo=FALSE}
+ms %>% select(mass, spec5, spec10) %>% ggpairs()
+ggplot(data=ms)+geom_jitter(aes(x=spec5,y=spec10))
+ms_new<-filter(ms,spec5>0 & spec10>0)
+ms_new2<-filter(ms,between(spec5,0,10000) & between(spec10,0,10000))
+ggplot(data=ms_new)+geom_bin2d(aes(x=spec5,y=spec10))
+ggplot(data=ms_new2)+geom_bin2d(aes(x=spec5,y=spec10))
+
+```
+
+
+
+## Final Exploration
+
+In order to analyze the data further, we will do the following:
+\begin{itemize}
+\item Round the mass variable to the nearest integer and investigate relationships when it's treated as a categorical variable
+\item Investigate the differencei n spec10 and spec5
+\item Investigate the log of both the spec5 and spec10 variables.
+\end{itemize}
+
+``` {r finalidk,include=FALSE}
+ms <- ms %>% mutate(mass.ord = as.ordered(round(mass,0)) )
+
+ms<- ms %>% mutate(difference=spec10-spec5)
+
+ms<- ms %>% mutate(logspec5=log(spec5))
+
+ms<- ms %>% mutate(logspec10=log(spec10))
+
+#NaNs are produced in the log rows because the log can not be taken of the negative spec5 and spec10 values
+```
+
+``` {r final,echo=FALSE}
+
+
+```

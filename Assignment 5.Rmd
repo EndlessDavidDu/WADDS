@@ -1,0 +1,39 @@
+---
+title: "Assignment 5"
+author: "David Du"
+date: "2018/2/14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+ms <- read.csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/ms.csv") 
+library(tidyverse)
+library(GGally)
+```
+
+## Plot best shows the relationship between spec 5 and spec 10
+
+Here I have used linear regression to predict the relationship between spec10 vs spec5, and we can see that for the red line and plots in the graph. These plots are closely related to the red line I have drawn. I have calculated the covariance value betwwen spec 10 and spec 5, which is 0.9953
+
+```{r=pressure echo=FALSE}
+linearM <- lm(spec10 ~ spec5 , data=ms)
+print(linearM)
+summary(linearM)
+coef<-summary(linearM)$coefficients
+b0<-coef[1]
+b1<-coef[2]
+
+plot(ms$spec5,ms$spec10, main="spec10 vs spec5")
+abline(b0,b1,col='red' )
+```
+
+## Variation between mass and spec5
+
+I have used scatter plot and linear regression to show the variance between mass and spec5, and I have found that the variance between mass and spec 5 is pretty small. It has only 0.1757178. 
+
+```{r pressure, echo=FALSE}
+plot(ms$mass,ms$spec5, main="mass vs spec5")
+abline(lm(ms$mass ~ ms$spec5),col="red")
+```
+

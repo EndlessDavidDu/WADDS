@@ -104,7 +104,7 @@ ms<- ms %>% mutate(logspec10=log(spec10))
 
 #NaNs are produced in the log rows because the log can not be taken of the negative spec5 and spec10 values
 ```
-## Plot best shows the relationship between spec5 and spec10
+## Plot best shows the relationship between spec5 and spec10 （David Du's Plot)
 
 Here I have used linear regression to predict the relationship between spec10 vs spec5, and we can see that for the red line and plots in the graph. These plots are closely related to the red line I have drawn. I have calculated the covariance value betwwen spec 10 and spec 5, which is 0.9953
 
@@ -120,7 +120,7 @@ plot(ms$spec5,ms$spec10, main="spec10 vs spec5")
 abline(b0,b1,col='red' )
 ```
 
-## Variation between mass and spec5
+## Variation between mass and spec5  (David Du's Plot)
 
 I have used scatter plot and linear regression to show the variance between mass and spec5, and I have found that the variance between mass and spec 5 is pretty small. It has only 0.1757178. 
 

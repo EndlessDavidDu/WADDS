@@ -205,6 +205,28 @@ ggplot(na.omit(ms), mapping = aes(spec5, spec10)) +
 This is a log plot that shows the values of spec5 vs spec10. Here we can see at values greater than 10^5 there are two parallel linear correlations of values between spec5 and spec10. At small values (~10^0 and smaller) the correlation between spec5 and spec10 appears to break down.
 
 ## Will
+## Bi Variance
+
+##### At first I used geom_boxplot to show the variance between the mass.ord and spec5. Then use mutate to round the mass to integer. Next I pick up ms2 to limit x-axis, because x between 10-35 shows the greatest variance between mass.ord and spec5. Finally, I created the boxplot with x in 10 to 25 and 28 to 43.
+
+```{r echo=FALSE}
+ms <- ms %>% mutate(mass.ord = as.ordered(round(mass,0)) )
+ms2 <- subset(ms, mass.ord %in% c("10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"))
+ggplot(na.omit(ms2),mapping=aes(mass.ord,spec5))+geom_boxplot();
+ms3 <- subset(ms, mass.ord %in% c("28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43"))
+ggplot(na.omit(ms2),mapping=aes(mass.ord,spec5))+geom_boxplot();
+```
+
+## Covariance
+##### For covariance, I used the geom_violin to show the relationship between the spec5 and spec10. It shows that the storing relationship between the spec5 and spec10, when the spec5 between 5 to 10.
+
+
+```{r pressure, echo=FALSE}
+ggplot(na.omit(ms),mapping=aes(spec5,spec10))+geom_violin(scale="area")
+```
+
+
+
 
 
 ## Individual Contributions
@@ -218,5 +240,7 @@ Derek:
 Abby: I created density plots to show the variation within the spec5 data. At first I created a density plot with the majority of the data, to get an idea of the spread without skewing. I think created a density plot to look at what the distribution within the tail looks like. This gave me a good idea of what the data tends toward, regardless of skewing. I then looked at the covariation between spec5 and spec10 by looking at their differences. Through a general picture I saw that the majority of data points were again concentrated at the lower end of the masses. Zooming in on these points gave me a good idea of how the values differed at given masses, and how these variables may change when interacted with each other. 
 
 
-Sarah: I made jitter plots to analyze the relations between mass and the spec5 and spec10 data. I sectioned the data points between higher and lower values of mass, along with lower values of spec5 and spec10 in order to give a fuller view of the spread. I also made the data points translucent so that it could be more easily seen where there are high build ups of data points. In order to plot the covariation between the spec5 and spec10 data, I made scatter plots similar to in the outline of the assignment, along with a plot that utilized bin2d to show the density of points in their correlation. 
+Sarah: I made jitter plots to analyze the relations between mass and the spec5 and spec10 data. I sectioned the data points between higher and lower values of mass, along with lower values of spec5 and spec10 in order to give a fuller view of the spread. I also made the data points translucent so that it could be more easily seen where there are high build ups of data points. In order to plot the covariation between the spec5 and spec10 data, I made scatter plots similar to in the outline of the assignment, along with a plot that utilized bin2d to show the density of points in their correlation.
+
+Will: Making these two plots, I used mutate mass, geom_boxplot and geom_violin. At first, I used geom_boxplot to show the variance between the mass and spec5. The graph shows the greatest variance between x in 10 to 45, but after 45, the graph does not show any strong relation between spec5 and mass.ord. For covariance betweeen spec5 and spec10, it shows the covariance when x between 5-10, most of the point is in this section.
 

@@ -165,7 +165,6 @@ As we can see from the graph above, There appear to only be certain masses that 
 
 ## Individual Contributions
 
-
 Abby: I created density plots to show the variation within the spec5 data. At first I created a density plot with the majority of the data, to get an idea of the spread without skewing. I think created a density plot to look at what the distribution within the tail looks like. This gave me a good idea of what the data tends toward, regardless of skewing. I then looked at the covariation between spec5 and spec10 by looking at their differences. Through a general picture I saw that the majority of data points were again concentrated at the lower end of the masses. Zooming in on these points gave me a good idea of how the values differed at given masses, and how these variables may change when interacted with each other. 
 
 David: I have created the convariance graph between spec5 and spec10, it could clearly see that for majority of points is very close to the line I have drawn, and the value of covariance between spec5 and spec10 is pretty large. Also I have found the interesting point that the variance value between mass and spec5 is pretty small. 

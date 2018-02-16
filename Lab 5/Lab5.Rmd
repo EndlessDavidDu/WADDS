@@ -160,6 +160,34 @@ ggplot(data=specdiff2, aes(x=mass, y=diff))+geom_jitter()
 As we can see from the graph above, There appear to only be certain masses that yeild spectra results in either spec10 or spec5. Since the difference is calculated by spec5 minus spec10, we can tell that at some mass levels, spec5 is greater than spec10, such as around the masses of 30 and 46. Whereas, at the masses of around 18 and 28, spec10 is greater than spec5. Since there are such big differences between the spectra readings, we can conclude that interacting the variables of spec10 and spec5 will produce different results, and change the values of the variables significantly.
 
 
+##Bivariate Analysis
+```{r Derek,echo=FALSE}
+ms$spec_diff <- abs(ms$spec10 - ms$spec5)
+ms$spec5[ms$spec5 <= 0] <- NA
+ms$spec10[ms$spec10 <= 0] <- NA
+ms$spec_diff[ms$spec_diff <= 0] <- NA
+ms$spec_quot <- ms$spec10 / ms$spec5
+ms$spec5 <- log(ms$spec5)
+ms$spec10 <- log(ms$spec10)
+ms$spec_diff <- log(ms$spec_diff)
+ms$spec_quot <- log(ms$spec_quot)
+ggplot(na.omit(ms), mapping = aes(mass, spec_diff)) +
+  geom_point() +
+  coord_cartesian(xlim = c(10, 50), ylim=c(-7.5, 7.5))
+  
+ggplot(na.omit(ms), mapping = aes(mass, spec_quot)) +
+  geom_point() +
+  coord_cartesian(xlim = c(10, 50), ylim=c(0, 7.5))
+```
+
+
+## Covariation
+```{r Derek2, echo=FALSE}
+ggplot(na.omit(ms), mapping = aes(spec5, spec10)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE)
+```
+
 ## Individual Contributions
 
 Abby: I created density plots to show the variation within the spec5 data. At first I created a density plot with the majority of the data, to get an idea of the spread without skewing. I think created a density plot to look at what the distribution within the tail looks like. This gave me a good idea of what the data tends toward, regardless of skewing. I then looked at the covariation between spec5 and spec10 by looking at their differences. Through a general picture I saw that the majority of data points were again concentrated at the lower end of the masses. Zooming in on these points gave me a good idea of how the values differed at given masses, and how these variables may change when interacted with each other. 

@@ -16,7 +16,7 @@ library(GGally)
 
 Here I have used linear regression to predict the relationship between spec10 vs spec5, and we can see that for the red line and plots in the graph. These plots are closely related to the red line I have drawn. I have calculated the covariance value betwwen spec 10 and spec 5, which is 0.9953
 
-```{r=pressure echo=FALSE}
+```{r pressure, echo=FALSE}
 linearM <- lm(spec10 ~ spec5 , data=ms)
 print(linearM)
 summary(linearM)

@@ -47,7 +47,7 @@ ms %>% summarize(total = length(spec10),
 
 ## Bivariate Plots
 
-Now we will visualize the relationships between mass with spec5 and spec10, separately. In order to generate a more helpful visualization, I will again separate the spec10 and spec5 data into high and low values. Note that fordata points with a mass of less than 50, I only plotted the spec5 and spec10 values below 500 so that the spread of the data can be seen more accurately. However, the spec5 and spec10 data points above 500 match the general trend of the points below 500. 
+Now we will visualize the relationships between mass with spec5 and spec10, separately. In order to generate a more helpful visualization, I will again separate the spec10 and spec5 data into high and low values. Note that for data points with a mass of less than 50, I only plotted the spec5 and spec10 values below 500 so that the spread of the data can be seen more accurately. However, the spec5 and spec10 data points above 500 match the general trend of the points below 500. 
 
 ``` {r bivariate1, echo=FALSE}
 
@@ -89,7 +89,7 @@ ggplot(data=ms_new2)+geom_bin2d(aes(x=spec5,y=spec10))
 In order to analyze the data further, we will do the following:
 \begin{itemize}
 \item Round the mass variable to the nearest integer and investigate relationships when it's treated as a categorical variable
-\item Investigate the differencei n spec10 and spec5
+\item Investigate the difference in spec10 and spec5
 \item Investigate the log of both the spec5 and spec10 variables.
 \end{itemize}
 
@@ -104,8 +104,70 @@ ms<- ms %>% mutate(logspec10=log(spec10))
 
 #NaNs are produced in the log rows because the log can not be taken of the negative spec5 and spec10 values
 ```
+## Plot best shows the relationship between spec 5 and spec 10
 
+Here I have used linear regression to predict the relationship between spec10 vs spec5, and we can see that for the red line and plots in the graph. These plots are closely related to the red line I have drawn. I have calculated the covariance value betwwen spec 10 and spec 5, which is 0.9953
+
+```{r=pressure echo=FALSE}
+linearM <- lm(spec10 ~ spec5 , data=ms)
+print(linearM)
+summary(linearM)
+coef<-summary(linearM)$coefficients
+b0<-coef[1]
+b1<-coef[2]
+
+plot(ms$spec5,ms$spec10, main="spec10 vs spec5")
+abline(b0,b1,col='red' )
+```
+
+## Variation between mass and spec5
+
+I have used scatter plot and linear regression to show the variance between mass and spec5, and I have found that the variance between mass and spec 5 is pretty small. It has only 0.1757178. 
+
+```{r pressure, echo=FALSE}
+plot(ms$mass,ms$spec5, main="mass vs spec5")
+abline(lm(ms$mass ~ ms$spec5),col="red")
+```
+
+## Variation in Spec 5
+To see the variation within Spec 5 it will be helpful to see the density plot of the spectra. This will allow us to see the shape of the distribution of the data points within Spec 5. However, we will filter by values no greater than 75. Because there are so few values after the spectra reaches 75, it makes the data very hard to read where the majority of the values lie. As we can see from Sarah's plots above, there are not only very few values greater than 75, the data is positively skewed. Taking this into account we can filter out many of the values to get an idea of what the majority of the data looks like.
+
+```{r Abby, echo=FALSE}
+spec5density<-filter(ms, spec5>0&spec5<75)
+ggplot(data=spec5density)+geom_density(aes(x=spec5))
+```
+As we can see from the plot above, most of the data lies between the spectra of 0 and 10. The data is heavily skewed to the right, yet most of the data does not have spectra values greater than 20. 
+
+```{r Abby, echo=FALSE}
+spec5density2<-filter(ms, spec5>75&spec5<5000)
+ggplot(data=spec5density2)+geom_density(aes(x=spec5))
+```
+This density plot of the values of spec5 greater than 75 and less than 5000 show us what the values skewing the distribution look like in greater detail. From the plot we can see that most values in the tail are those of larger masses.And we also see how little observations there are of spectra greater than 75.The density plot peaks at around 0.0015, meaning less than 0.15 percent of the data is represented at that point. This indicates that the data is extremely clustered between the spectra of 0 and 20, while the rest of the data above 75 is very minimal and skews the data to the right.
+
+## Covariance
+We can see how the variables spec5 and spec10 interact by looking at the difference between them. This will allow us to see how these variables may be related, as a huge difference between the two could indicate no correlation, while a small difference could indicate a strong correlation between the two variables.
+
+```{r Abby, echo=FALSE}
+specdiff<-select(ms, spec10, spec5, mass)%>%mutate(diff=spec5-spec10)
+ggplot(data=specdiff,aes(x=mass,y=abs(diff)))+geom_jitter()+geom_smooth(method="lm", re=FALSE)
+```
+Plotting the absolute value of the differences in spectra between spec5 and spec10 shows us there are many more values clustered at the lower end of the masses. Generally, we can see that most data falls between the masses of 0 to 50, and there is still a right skew in the data, with a few data points from higher masses. We can also see that most of the differences in spectra fall under 10000, with a few differences reaching as high as 30000. We can zoom in to see what the data looks like between the masses of 0 and 50, where most of the data lies. 
+
+```{r Abby, echo=FALSE}
+specdiff2<-filter(specdiff,mass>0&mass<50)
+ggplot(data=specdiff2, aes(x=mass, y=diff))+geom_jitter()
+```
+As we can see from the graph above, There appear to only be certain masses that yeild spectra results in either spec10 or spec5. Since the difference is calculated by spec5 minus spec10, we can tell that at some mass levels, spec5 is greater than spec10, such as around the masses of 30 and 46. Whereas, at the masses of around 18 and 28, spec10 is greater than spec5. Since there are such big differences between the spectra readings, we can conclude that interacting the variables of spec10 and spec5 will produce different results, and change the values of the variables significantly.
 ``` {r final,echo=FALSE}
 
 
 ```
+
+
+## Individual Contributions
+
+
+
+
+
+Abby: I created density plots to show the variation within the spec5 data. At first I created a density plot with the majority of the data, to get an idea of the spread without skewing. I think created a density plot to look at what the distribution within the tail looks like. This gave me a good idea of what the data tends toward, regardless of skewing. I then looked at the covariation between spec5 and spec10 by looking at their differences. Through a general picture I saw that the majority of data points were again concentrated at the lower end of the masses. Zooming in on these points gave me a good idea of how the values differed at given masses, and how these variables may change when interacted with each other. 

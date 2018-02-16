@@ -1,0 +1,36 @@
+---
+title: "Lab5"
+author: "Xinzhi Rao"
+date: "2/16/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+ms <- read.csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/ms.csv") 
+library(tidyverse)
+library(GGally)
+```
+
+## Bi Variance
+
+##### At first I used geom_boxplot to show the variance between the mass.ord and spec5. Then use mutate to round the mass to integer. Next I pick up ms2 to limit x-axis, because x between 10-35 shows the greatest variance between mass.ord and spec5. Finally, I created the boxplot with x in 10 to 25 and 28 to 43.
+
+```{r echo=FALSE}
+ms <- ms %>% mutate(mass.ord = as.ordered(round(mass,0)) )
+ms2 <- subset(ms, mass.ord %in% c("10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"))
+ggplot(na.omit(ms2),mapping=aes(mass.ord,spec5))+geom_boxplot();
+ms3 <- subset(ms, mass.ord %in% c("28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43"))
+ggplot(na.omit(ms2),mapping=aes(mass.ord,spec5))+geom_boxplot();
+```
+
+## Covariance
+##### For covariance, I used the geom_violin to show the relationship between the spec5 and spec10. It shows that the storing relationship between the spec5 and spec10, when the spec5 between 5 to 10.
+
+
+```{r pressure, echo=FALSE}
+ggplot(na.omit(ms),mapping=aes(spec5,spec10))+geom_violin(scale="area")
+```
+
+## Recommendation
+##### Making these two plots, I used mutate mass, geom_boxplot and geom_violin. At first, I used geom_boxplot to show the variance between the mass and spec5. The graph shows the greatest variance between x in 10 to 45, but after 45, the graph does not show any strong relation between spec5 and mass.ord. For covariance betweeen spec5 and spec10, it shows the covariance when x between 5-10, most of the point is in this section.

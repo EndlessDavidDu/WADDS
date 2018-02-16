@@ -160,7 +160,7 @@ ggplot(data=specdiff2, aes(x=mass, y=diff))+geom_jitter()
 As we can see from the graph above, There appear to only be certain masses that yeild spectra results in either spec10 or spec5. Since the difference is calculated by spec5 minus spec10, we can tell that at some mass levels, spec5 is greater than spec10, such as around the masses of 30 and 46. Whereas, at the masses of around 18 and 28, spec10 is greater than spec5. Since there are such big differences between the spectra readings, we can conclude that interacting the variables of spec10 and spec5 will produce different results, and change the values of the variables significantly.
 
 
-##Derek
+## Derek
 ```{r Derek,echo=FALSE}
 ms$spec_diff <- abs(ms$spec10 - ms$spec5)
 ms$spec5[ms$spec5 <= 0] <- NA

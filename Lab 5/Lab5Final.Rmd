@@ -163,29 +163,29 @@ As we can see from the graph above, There appear to only be certain masses that 
 ## Derek
 ```{r Derek,echo=FALSE}
 ms$spec_diff <- abs(ms$spec10 - ms$spec5)
+ms$spec_quot <- abs(ms$spec10 / ms$spec5)
 ms$spec5[ms$spec5 <= 0] <- NA
 ms$spec10[ms$spec10 <= 0] <- NA
 ms$spec_diff[ms$spec_diff <= 0] <- NA
-ms$spec_quot <- ms$spec10 / ms$spec5
-ms$spec5 <- log(ms$spec5)
-ms$spec10 <- log(ms$spec10)
-ms$spec_diff <- log(ms$spec_diff)
-ms$spec_quot <- log(ms$spec_quot)
-ggplot(na.omit(ms), mapping = aes(mass, spec_diff)) +
-  geom_point() +
-  coord_cartesian(xlim = c(10, 50), ylim=c(-7.5, 7.5))
-  
-ggplot(na.omit(ms), mapping = aes(mass, spec_quot)) +
-  geom_point() +
-  coord_cartesian(xlim = c(10, 50), ylim=c(0, 7.5))
+ms$spec_diff[ms$spec_diff <= 0] <- NA
+ms$spec5_log <- log(ms$spec5)
+ms$spec10_log <- log(ms$spec10)
+ms$spec_diff_log <- log(ms$spec_diff)
+ms$spec_quot_log <- log(ms$spec_quot)
+ggplot(na.omit(ms), mapping = aes(mass, spec_diff_log)) +
+  geom_point(alpha=0.1) +
+  coord_cartesian(xlim = c(10, 50), ylim=c(-6, 10)) +
+  geom_smooth(method="auto", se=TRUE)
 ```
-
+The above graph is a log plot of the difference of the spec5 and spec10 columns at a mass <50. Additionally an alpha value is set to make it easier to see where the majority of values cluster. Like the difference plot above from Abby we can see there are specifc masses where the difference spikes by up to ten orders of magnitude. It can also be seen from the plot that there are ranges of mass where the average difference between the values of spec5 and spec10 increase substantially, by one to two orders of magnitude. 
 
 ```{r Derek2, echo=FALSE}
-ggplot(na.omit(ms), mapping = aes(spec5, spec10)) +
-  geom_point() +
-  geom_smooth(method=lm, se=FALSE)
+ggplot(na.omit(ms), mapping = aes(spec5_log, spec10_log)) +
+  geom_point(alpha=0.1) +
+  geom_smooth(method="auto", se=TRUE)
 ```
+This is a log plot that shows the values of spec5 vs spec10. Here we can see at values greater than 10^5 there are two parallel linear correlations of values between spec5 and spec10. At small values (~10^0 and smaller) the correlation between spec5 and spec10 appears to break down.
+
 
 ## Will
 

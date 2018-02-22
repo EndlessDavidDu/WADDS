@@ -1,0 +1,63 @@
+---
+title: "Lab 6"
+author: "WADDS"
+date: "February 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+COflights <- read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+```
+
+## Overall Question
+
+In our report we aim to answer the question: what are the primary factors that contribute to flight delays.
+
+This is an important question for our team to answer for the airport because it will allow them to focus their efforts on preventing or minimizing the factors that cause delays in order to decrease the amount of delays or allow them to better estimate arrival times. This will make those who use the airport more satisfied overall and keep operations running according to schedule within the airport.
+
+## Findings
+
+## Recommendations
+
+## Individual Findings
+
+### Sarah
+
+``` {r sarah1, echo=FALSE}
+#Proportion of flights delayed coming into denver
+
+#proportion of flights delayed leaving denver
+
+#Weather delays in relation to time of month
+
+#ggplot(data=COflights)+geom_violin(aes(x=MONTH,y=WEATHER_DELAY))
+arrange(COflights,MONTH, DAY_OF_MONTH)
+
+
+leavedenver<-filter(COflights, ORIGIN=="DEN")
+arrivedenver<-filter(COflights, DEST=="DEN")
+dim(delayed)[1]
+
+prop<-data.frame(month=numeric(), total=numeric(),delayed=numeric(),proportion=numeric())
+#colnames(prop)<-c("Month","Flights_per_month","Delayed_Flights_per_Month","Proportion_Delayed_per_Month")
+i=1
+while (i<13){
+  prop[i,1]<-i
+  prop[i,2]<-dim(filter(COflights,MONTH==i))[1]
+  prop[i,3]<-dim(filter(COflights,MONTH==i & ARR_DELAY>15))[1]
+  prop[i,4]<-prop[i,3]/prop[i,2]
+  i=i+1
+}
+factor(prop$month)
+ggplot(data=prop)+geom_point(aes(x=month,y=proportion))
+
+ggplot(data=COflights)+geom_jitter(aes(x=AIR_TIME,y=ARR_DELAY))
+
+```
+
+## Summary of Individual Contributions
+
+Sarah: 
+

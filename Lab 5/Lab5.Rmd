@@ -1,0 +1,221 @@
+---
+title: "Lab 5"
+author: "WADDS"
+date: "February 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+ms <- read.csv("https://raw.githubusercontent.com/ervance1/Sp2018-Data-Science-repo/master/ms.csv") 
+library(tidyverse)
+library(GGally)
+```
+
+## Univariate Distribution
+
+In order to visualize spec5 by itself, we plotted a histogram of it, removing small values so that the histogram would be more revealing. We made two histograms, one showing values under 100 and one showing values over 1000 so we could see the spread of both the highest and lowest values. As one can see, there is a very strong positive skew in the data, and similar can be said for spec10. 
+```{r univariate,echo=FALSE}
+
+
+#ggplot(data=ms)+geom_histogram(aes(x=spec5))
+spec5_new<-filter(ms, spec5<100 & spec5>0)
+ggplot(data=spec5_new)+geom_histogram(aes(x=spec5),binwidth=2)+ggtitle("Histogram of spec5, Below 100")
+spec5_new2<-filter(ms, spec5>1000)
+ggplot(data=spec5_new2)+geom_histogram(aes(x=spec5),binwidth=5000)+ggtitle("Histogram of spec5, Over 1000")
+```
+
+We also can get a binned estimate of the data for both spec5 and spec10
+
+```{r spread using bins, echo=FALSE}
+ms %>% summarize(total = length(spec5),
+                 numNAs = sum(is.na(spec5)),
+                 neg = length(spec5[spec5<0]), 
+                 zero = length(spec5[spec5==0]),
+                 small = length(spec5[spec5>0 & spec5<=100]),
+                 med = length(spec5[spec5>100 & spec5<=1000]),
+                 large = length(spec5[spec5>1000 & spec5<=10000]),
+                 realbig = length(spec5[spec5>10000 & spec5<=100000]))
+
+ms %>% summarize(total = length(spec10),
+                 numNAs = sum(is.na(spec10)),
+                 neg = length(spec5[spec10<0]), 
+                 zero = length(spec5[spec10==0]),
+                 small = length(spec5[spec10>0 & spec10<=100]),
+                 med = length(spec10[spec10>100 & spec10<=1000]),
+                 large = length(spec10[spec10>1000 & spec10<=10000]),
+                 realbig = length(spec10[spec10>10000 & spec10<=100000]))
+```
+
+## Bivariate Plots
+
+Now we will visualize the relationships between mass with spec5 and spec10, separately. In order to generate a more helpful visualization, I will again separate the spec10 and spec5 data into high and low values. Note that for data points with a mass of less than 50, I only plotted the spec5 and spec10 values below 500 so that the spread of the data can be seen more accurately. However, the spec5 and spec10 data points above 500 match the general trend of the points below 500. 
+
+``` {r bivariate1, echo=FALSE}
+
+###Sarah's individual plots to display variation in spec5 and spec10
+
+
+
+#ggplot(data=ms)+geom_point(aes(x=mass,y=spec5))
+ms_newmass1<-filter(ms, mass<50 & between(spec5,0,500))
+ggplot(data=ms_newmass1)+geom_jitter(aes(x=mass,y=spec5),alpha=0.1)+ggtitle("Spec5 vs. Mass, Mass<50 and Spec5<500")
+#ms_newmasshigh<-filter(ms, mass<50 & spec5>500)
+#ggplot(data=ms_newmasshigh)+geom_jitter(aes(x=mass,y=spec5),alpha=0.1)+ggtitle("Spec5 vs. Mass, Mass<50 and Spec5>500")
+ms_newmass2<-filter(ms, mass>=50)
+ggplot(data=ms_newmass2)+geom_jitter(aes(x=mass,y=spec5),alpha=0.1)+ggtitle("Spec5 vs. Mass, Mass>50")
+
+#ggplot(data=ms)+geom_point(aes(x=mass,y=spec10))
+ms_newmass3<-filter(ms, mass<50 & between(spec10,0,500))
+ggplot(data=ms_newmass3)+geom_jitter(aes(x=mass,y=spec10),alpha=0.1)+ggtitle("Spec10 vs. Mass, Mass<50 and Spec5<500")
+#ms_newmasshigh2<-filter(ms, mass<50 & spec10>500)
+#ggplot(data=ms_newmasshigh2)+geom_jitter(aes(x=mass,y=spec10),alpha=0.1)+ggtitle("Spec10 vs. Mass, Mass<50 and Spec5>500")
+ms_newmass2<-filter(ms, mass>=50)
+ggplot(data=ms_newmass2)+geom_jitter(aes(x=mass,y=spec10),alpha=0.1)+ggtitle("Spec10 vs. Mass, Mass>50")
+```
+
+## Covariance and Correlation
+
+The spec5 and spec10 variables have a correlation of 0.9953. This is a very strong positive correlation. A visualization of this correlation is included below.
+
+``` {r correlation,echo=FALSE}
+
+###Sarah's individual plots to display covarition in spec5 and spec10
+
+
+ms %>% select(mass, spec5, spec10) %>% ggpairs()
+ggplot(data=ms)+geom_jitter(aes(x=spec5,y=spec10))
+ms_new<-filter(ms,spec5>0 & spec10>0)
+ms_new2<-filter(ms,between(spec5,0,10000) & between(spec10,0,10000))
+ggplot(data=ms_new)+geom_bin2d(aes(x=spec5,y=spec10))
+ggplot(data=ms_new2)+geom_bin2d(aes(x=spec5,y=spec10))
+
+```
+
+
+
+## Final Exploration
+
+In order to analyze the data further, we will do the following:
+
+--Round the mass variable to the nearest integer and investigate relationships when it's treated as a categorical variable
+--Investigate the difference in spec10 and spec5
+--Investigate the log of both the spec5 and spec10 variables.
+
+
+``` {r finalidk,include=FALSE}
+ms <- ms %>% mutate(mass.ord = as.ordered(round(mass,0)) )
+
+ms<- ms %>% mutate(difference=spec10-spec5)
+
+ms<- ms %>% mutate(logspec5=log(spec5))
+
+ms<- ms %>% mutate(logspec10=log(spec10))
+
+#NaNs are produced in the log rows because the log can not be taken of the negative spec5 and spec10 values
+```
+## Plot best shows the relationship between spec5 and spec10 （David Du's Plot)
+
+Here I have used linear regression to predict the relationship between spec10 vs spec5, and we can see that for the red line and plots in the graph. These plots are closely related to the red line I have drawn. I have calculated the covariance value betwwen spec 10 and spec 5, which is 0.9953
+
+<<<<<<< Updated upstream
+```{r pressure1, echo=FALSE}
+
+linearM <- lm(spec10 ~ spec5 , data=ms)
+print(linearM)
+summary(linearM)
+coef<-summary(linearM)$coefficients
+b0<-coef[1]
+b1<-coef[2]
+
+plot(ms$spec5,ms$spec10, main="spec10 vs spec5")
+abline(b0,b1,col='red' )
+```
+
+## Variation between mass and spec5  (David Du's Plot)
+
+I have used scatter plot and linear regression to show the variance between mass and spec5, and I have found that the variance between mass and spec 5 is pretty small. It has only 0.1757178. 
+
+```{r pressure2, echo=FALSE}
+plot(ms$mass,ms$spec5, main="mass vs spec5")
+abline(lm(ms$mass ~ ms$spec5),col="red")
+```
+
+## Variation in Spec 5
+To see the variation within Spec 5 it will be helpful to see the density plot of the spectra. This will allow us to see the shape of the distribution of the data points within Spec 5. However, we will filter by values no greater than 75. Because there are so few values after the spectra reaches 75, it makes the data very hard to read where the majority of the values lie. As we can see from Sarah's plots above, there are not only very few values greater than 75, the data is positively skewed. Taking this into account we can filter out many of the values to get an idea of what the majority of the data looks like.
+
+<<<<<<< Updated upstream
+```{r Abby1, echo=FALSE}
+
+
+spec5density<-filter(ms, spec5>0&spec5<75)
+ggplot(data=spec5density)+geom_density(aes(x=spec5))
+```
+As we can see from the plot above, most of the data lies between the spectra of 0 and 10. The data is heavily skewed to the right, yet most of the data does not have spectra values greater than 20. 
+
+<<<<<<< Updated upstream
+```{r Abby2, echo=FALSE}
+
+spec5density2<-filter(ms, spec5>75&spec5<5000)
+ggplot(data=spec5density2)+geom_density(aes(x=spec5))
+```
+This density plot of the values of spec5 greater than 75 and less than 5000 show us what the values skewing the distribution look like in greater detail. From the plot we can see that most values in the tail are those of larger masses.And we also see how little observations there are of spectra greater than 75.The density plot peaks at around 0.0015, meaning less than 0.15 percent of the data is represented at that point. This indicates that the data is extremely clustered between the spectra of 0 and 20, while the rest of the data above 75 is very minimal and skews the data to the right.
+
+## Covariance
+We can see how the variables spec5 and spec10 interact by looking at the difference between them. This will allow us to see how these variables may be related, as a huge difference between the two could indicate no correlation, while a small difference could indicate a strong correlation between the two variables.
+
+```{r Abby3, echo=FALSE}
+specdiff<-select(ms, spec10, spec5, mass)%>%mutate(diff=spec5-spec10)
+ggplot(data=specdiff,aes(x=mass,y=abs(diff)))+geom_jitter()+geom_smooth(method="lm", re=FALSE)
+```
+Plotting the absolute value of the differences in spectra between spec5 and spec10 shows us there are many more values clustered at the lower end of the masses. Generally, we can see that most data falls between the masses of 0 to 50, and there is still a right skew in the data, with a few data points from higher masses. We can also see that most of the differences in spectra fall under 10000, with a few differences reaching as high as 30000. We can zoom in to see what the data looks like between the masses of 0 and 50, where most of the data lies. 
+
+<<<<<<< Updated upstream
+```{r Abby4, echo=FALSE}
+
+specdiff2<-filter(specdiff,mass>0&mass<50)
+ggplot(data=specdiff2, aes(x=mass, y=diff))+geom_jitter()
+```
+As we can see from the graph above, There appear to only be certain masses that yeild spectra results in either spec10 or spec5. Since the difference is calculated by spec5 minus spec10, we can tell that at some mass levels, spec5 is greater than spec10, such as around the masses of 30 and 46. Whereas, at the masses of around 18 and 28, spec10 is greater than spec5. Since there are such big differences between the spectra readings, we can conclude that interacting the variables of spec10 and spec5 will produce different results, and change the values of the variables significantly.
+
+
+##Bivariate Analysis
+```{r Derek,echo=FALSE}
+ms$spec_diff <- abs(ms$spec10 - ms$spec5)
+ms$spec5[ms$spec5 <= 0] <- NA
+ms$spec10[ms$spec10 <= 0] <- NA
+ms$spec_diff[ms$spec_diff <= 0] <- NA
+ms$spec_quot <- ms$spec10 / ms$spec5
+ms$spec5 <- log(ms$spec5)
+ms$spec10 <- log(ms$spec10)
+ms$spec_diff <- log(ms$spec_diff)
+ms$spec_quot <- log(ms$spec_quot)
+ggplot(na.omit(ms), mapping = aes(mass, spec_diff)) +
+  geom_point() +
+  coord_cartesian(xlim = c(10, 50), ylim=c(-7.5, 7.5))
+  
+ggplot(na.omit(ms), mapping = aes(mass, spec_quot)) +
+  geom_point() +
+  coord_cartesian(xlim = c(10, 50), ylim=c(0, 7.5))
+```
+
+
+## Covariation
+```{r Derek2, echo=FALSE}
+ggplot(na.omit(ms), mapping = aes(spec5, spec10)) +
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE)
+```
+
+## Individual Contributions
+
+
+David: I have created the convariance graph between spec5 and spec10, it could clearly see that for majority of points is very close to the line I have drawn, and the value of covariance between spec5 and spec10 is pretty large. Also I have found the interesting point that the variance value between mass and spec5 is pretty small, which means that these value are very close to each other and close to mean value. 
+
+
+
+Abby: I created density plots to show the variation within the spec5 data. At first I created a density plot with the majority of the data, to get an idea of the spread without skewing. I think created a density plot to look at what the distribution within the tail looks like. This gave me a good idea of what the data tends toward, regardless of skewing. I then looked at the covariation between spec5 and spec10 by looking at their differences. Through a general picture I saw that the majority of data points were again concentrated at the lower end of the masses. Zooming in on these points gave me a good idea of how the values differed at given masses, and how these variables may change when interacted with each other. 
+
+
+Sarah: I made jitter plots to analyze the relations between mass and the spec5 and spec10 data. I sectioned the data points between higher and lower values of mass, along with lower values of spec5 and spec10 in order to give a fuller view of the spread. I also made the data points translucent so that it could be more easily seen where there are high build ups of data points. In order to plot the covariation between the spec5 and spec10 data, I made scatter plots similar to in the outline of the assignment, along with a plot that utilized bin2d to show the density of points in their correlation. 
+

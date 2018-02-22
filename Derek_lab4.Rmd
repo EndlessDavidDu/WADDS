@@ -3,7 +3,7 @@ title: "Derek_lab4"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE}
 library(plyr)
 
 babies$smoke <- as.factor(babies$smoke)

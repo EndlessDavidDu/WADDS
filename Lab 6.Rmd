@@ -1,0 +1,89 @@
+---
+title: "Lab 6"
+author: "WADDS"
+date: "February 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+COflights<-read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+```
+
+## Abby
+We wish to see what factors can influence delayed arrivals and departures to and from Denver. We wish to first analyze if the length of the flight impacts the arrivals and departures. This can allow us to make recommendations to the airport about scheduling arrival and departure times. I hope to see if flights greater than two hours have a higher probability of having a delayed arrival (greater than or equal to 15 minutes) than shorter flights.
+
+```{r Abby1, echo=FALSE}
+arriving_long<-as.tibble(filter(COflights,DEST=="DEN", !is.na(ARR_TIME), AIR_TIME>=120))
+late_arriving_long<-as.tibble(filter(COflights, DEST=="DEN", !is.na(ARR_TIME), AIR_TIME>=120, ARR_DELAY>=15))
+
+departing_long<-as.tibble(filter(COflights,ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME>=120))
+late_departing_long<-as.tibble(filter(COflights, ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME>=120, DEP_DELAY>=15))
+
+arriving_short<-as.tibble(filter(COflights,DEST=="DEN", !is.na(ARR_TIME), AIR_TIME<120))
+late_arriving_short<-as.tibble(filter(COflights, DEST=="DEN", !is.na(ARR_TIME), AIR_TIME<120, ARR_DELAY>=15))
+
+departing_short<-as.tibble(filter(COflights,ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME<120))
+late_departing_short<-as.tibble(filter(COflights, ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME<120, DEP_DELAY>=15))
+
+prob_late_arriving_long<-nrow(late_arriving_long)/nrow(arriving_long)
+prob_late_departing_long<-nrow(late_departing_long)/nrow(departing_long)
+prob_late_arriving_short<-nrow(late_arriving_short)/nrow(arriving_short)
+prob_late_departing_short<-nrow(late_departing_short)/nrow(departing_short)
+
+df<-data.frame(x=c("Long Arriving","Long Departing","Short Arriving","Short Departing"),y=c(0.1754298,0.2136266,0.1447172,0.1662359))
+ggplot(data=df,aes(x,y))+geom_col()
+```
+
+As we can see from the plot above, there is a greater probability a flight will be late when the flight is over two hours long. This is true for boh late departures and late arrivals. A short flight arriving in Denver is the least likely to arrive late, while a long flight departing from Denver is the most likely to arrive late to its destination. 
+
+I also want to analyze whether the probability of a late arrival or departure changes based on the airline. To do this I will analyze the most common airlines used domestically in the United States. The 4 biggest domestic airlines are: American Airlines, United Airlines, Southwest, and Delta. This list was taken from a Business Insider Article.
+
+```{r Abby2}
+totalflightsarriving<-as.tibble(filter(COflights, !is.na(ARR_TIME),DEST=="DEN"))
+
+American_Late_Arrive<-as.tibble(filter(COflights, !is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15,CARRIER=="AA"))
+
+United_Late_Arrive<-as.tibble(filter(COflights,!is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15,CARRIER=="UA"))
+
+Southwest_Late_Arrive<-as.tibble(filter(COflights,!is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15, CARRIER=="WN"))
+
+Delta_Late_Arrive<-as.tibble(filter(COflights,!is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15,CARRIER=="DL"))
+
+Prob_American<-nrow(American_Late_Arrive)/nrow(totalflightsarriving)
+Prob_United<-nrow(United_Late_Arrive)/nrow(totalflightsarriving)
+Prob_Southwest<-nrow(Southwest_Late_Arrive)/nrow(totalflightsarriving)
+Prob_Delta<-nrow(Delta_Late_Arrive)/nrow(totalflightsarriving)
+
+df2<-data.frame(x=c("American","United","Southwest","Delta"),y=c(Prob_American,Prob_United,Prob_Southwest,Prob_Delta))
+ggplot(data=df2,aes(x,y))+geom_col()
+```
+
+As we can see from the plot above, of the flights arriving to Denver, there is a slight difference between the probability a flight will arrive late based on the airline. A flight is more likely to arrive to Denver late if the airline is Southwest or United, and is less likely to arrive to Denver late of the airline is American or Delta. Southwest has a higher probability of arriving late to Denver than United, and Delta is less likely to arrive to Denver late than American.
+
+```{r Abby 3}
+totalflightsdeparting<-as.tibble(filter(COflights, !is.na(ARR_TIME),ORIGIN=="DEN"))
+
+American_Late_Depart<-as.tibble(filter(COflights, !is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15,CARRIER=="AA"))
+
+United_Late_Depart<-as.tibble(filter(COflights,!is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15,CARRIER=="UA"))
+
+Southwest_Late_Depart<-as.tibble(filter(COflights,!is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15, CARRIER=="WN"))
+
+Delta_Late_Depart<-as.tibble(filter(COflights,!is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15,CARRIER=="DL"))
+
+Prob_American_d<-nrow(American_Late_Depart)/nrow(totalflightsdeparting)
+Prob_United_d<-nrow(United_Late_Depart)/nrow(totalflightsdeparting)
+Prob_Southwest_d<-nrow(Southwest_Late_Depart)/nrow(totalflightsdeparting)
+Prob_Delta_d<-nrow(Delta_Late_Depart)/nrow(totalflightsdeparting)
+
+df3<-data.frame(x=c("American","United","Southwest","Delta"),y=c(Prob_American_d,Prob_United_d,Prob_Southwest_d,Prob_Delta_d))
+ggplot(data=df3,aes(x,y))+geom_col()
+```
+As we can see from the plot above, the probability of a flight departing Denver late is higher for Southwest and United airlines. While it is less likely for American and Delta airline flights to depart late from Denver. This plot corresponds to the plot above, which indicates that a late arrival time corresponds to a late departure time once the plane has reached their first destination. Because Southwest and United are such large airlines, it makes sense that they would have a higher probability of running late, since there are so many flights to attempt to keep on time. 
+
+
+## Individual Contributions
+
+Abby: I plotted the probability of flights arriving and leaving Denver late based on flight lengths. I found that longer flights are more likely to arrive and depart Denver late than flights under two hours. I then plotted the probabilities of late departures and arrivals based on airline carriers. I found that Southwest and United were more likely to be late than American and Delta airlines. These are the four largest domestic airlines, and knowing which flights run late can help the airports determine scheduling issues based on flight length and airline. 

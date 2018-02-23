@@ -1,0 +1,85 @@
+---
+title: "Lab 6"
+author: "Xinzhi Rao"
+date: "2/23/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+COflights <- read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+library(timeDate)
+```
+
+People are always more distracted in the afternoon than in the morning. Some research futhermore show that, we are found to be most distracted in 14:55. So we are curious whether the pattern of on-time arrivals in Denver is significantly different before and after 14:55.
+
+```
+# the flights arriving in Denver before 14:55
+before <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) < 1455))
+before_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) < 1455,ARR_DELAY >= 15))
+
+# the flights arriving in Denver after 14:55
+after <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) >= 1455))
+after_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) >= 1455,ARR_DELAY >= 15))
+
+# the flights departing from Denver before 14:55
+dept_before <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) < 1455))
+dept_before_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) < 1455,DEP_DELAY >= 15))
+
+# the flights departing from Denver after 14:55
+dept_after <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) >= 1455))
+dept_after_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) >= 1455,DEP_DELAY >= 15))
+```
+
+And here are the probabilities of delay:
+
+```
+prob_before_late = nrow(before_late)/nrow(before)
+prob_after_late = nrow(after_late)/nrow(after)
+prob_dept_before_late =  nrow(dept_before_late)/nrow(dept_before)
+prob_dept_after_late = nrow(dept_after_late)/nrow(dept_after)
+
+df1 <- data.frame(x=c("Early Arriving","Early Departing","Lately Arriving", "Lately Departing"),y = c(prob_before_late,prob_dept_before_late,prob_after_late,prob_dept_after_late))
+ggplot(data = df1, aes(x,y)) + geom_col()
+
+From the plot above, we find that the timing of 14:55 is so subtle. The probability of delay is siginicantly greater after 14:55. It holds true for both late departures and late arrivals.
+
+We are also curious about whether the pattern of on-time arrivals changes in the weekend, in comparison with workdays.
+
+```
+```
+the flights arriving in Denver in the workdays
+workday <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+workday_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),ARR_DELAY >= 15))
+
+the flights arriving in Denver in the weekends
+weekend <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+weekend_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),ARR_DELAY >= 15))
+
+the flights departing from Denver in the workdays
+dept_workday <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+dept_workday_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),DEP_DELAY >= 15))
+
+the flights departing from Denver in the weekends
+dept_weekend <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+dept_weekend_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),DEP_DELAY >= 15))
+```
+```
+After the calculations of the probabilities of delay, we can see the differences:
+
+
+prob_workday_late <- nrow(workday_late)/nrow(workday)
+prob_weekend_late <- nrow(weekend_late)/nrow(weekend)
+
+prob_dept_workday_late <- nrow(dept_workday_late)/nrow(dept_workday)
+prob_dept_weekend_late <- nrow(dept_weekend_late)/nrow(dept_weekend)
+
+df2 <- data.frame(x=c("Workday Arriving","Workday Departing","Weekend Arriving", "Weekend Departing"),y = c(prob_workday_late,prob_dept_workday_late,prob_weekend_late,prob_dept_weekend_late))
+ggplot(data = df2, aes(x,y)) + geom_col()
+
+Again from the plot, we can see that, for the on-time arrival/departure, it matters whether in the workdays and in the weekends. It aligns with our intuition that airlines in the workdays are more busy. In the workdays, the probability of arriving late to Denver is higher. It also applies to the probability of delay departure from Denver.
+```
+## Contribution
+
+What I compared is the probability with the workday late departing and workday. First of all, I choose the data from COflights dividing them into dept_weekend and dept_workday, and then calculate the probability. Next, I used the geom_col to graph the probability with the weekend probability and workday probability. Finally comparing two of these, I found that workdays' delay is higher than the weekend.

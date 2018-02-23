@@ -1,0 +1,104 @@
+---
+title: "Assignment 6"
+author: "David Du"
+date: "2018/2/22"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+COflights<-read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+```
+
+## David Du
+Here, we want to see the factors that affect delayed arrivals and departures to and from Denver. I am going to analyze the factors related to the time of the month. Here I have selected each month, and make twelve tables for that. I am going to investgate the probabilities that the flight originating from Denver
+
+```{r}
+January<-filter(COflights, MONTH=="1",!is.na(ARR_TIME))
+February<-filter(COflights, MONTH=="2",!is.na(ARR_TIME))
+March<-filter(COflights, MONTH=="3",!is.na(ARR_TIME))
+April<-filter(COflights, MONTH=="4",!is.na(ARR_TIME))
+May<-filter(COflights, MONTH=="5",!is.na(ARR_TIME))
+June<-filter(COflights, MONTH=="6",!is.na(ARR_TIME))
+July<-filter(COflights, MONTH=="7",!is.na(ARR_TIME))
+August<-filter(COflights, MONTH=="8",!is.na(ARR_TIME))
+September<-filter(COflights, MONTH=="9",!is.na(ARR_TIME))
+October<-filter(COflights, MONTH=="10",!is.na(ARR_TIME))
+November<-filter(COflights, MONTH=="11",!is.na(ARR_TIME))
+December<-filter(COflights, MONTH=="12",!is.na(ARR_TIME))
+```
+
+After that, I have need to find about the probability that the flight depart late in each month and help them make decision that how they could schedule their flight.Therefore, I have calculated probability based on the flight delay more than 15 minutes and originating from Denver. 
+
+```{r}
+# Here I first count the number that the flight was late in January 
+lateJan.count <- filter(January,DEP_DELAY>=15 & MONTH==1) %>% count()
+# After that I have count the number that flight was late in January, then I am going to calculate the probability that the flight was late orginating from DEN
+lateJanProb.count <- filter(January,DEP_DELAY>=15 & MONTH==1 & ORIGIN=="DEN") %>% count() / lateJan.count   
+#For other month, we can get the info for other months such that
+lateFeb.count <- filter(February,DEP_DELAY>=15 & MONTH==2) %>% count()
+lateFebProb.count <- filter(February,DEP_DELAY>=15 & MONTH==2 & ORIGIN=="DEN") %>% count() / lateFeb.count  
+
+lateMarch.count <- filter(March,DEP_DELAY>=15 & MONTH==3) %>% count()
+lateMarchProb.count <- filter(March,DEP_DELAY>=15 & MONTH==3 & ORIGIN=="DEN") %>% count() / lateMarch.count  
+
+lateApril.count <- filter(April,DEP_DELAY>=15 & MONTH==4) %>% count()
+lateAprilProb.count <- filter(April,DEP_DELAY>=15 & MONTH==4 & ORIGIN=="DEN") %>% count() / lateApril.count  
+
+lateMay.count <- filter(May,DEP_DELAY>=15 & MONTH==5) %>% count()
+lateMayProb.count <- filter(May,DEP_DELAY>=15 & MONTH==5 & ORIGIN=="DEN") %>% count() / lateMay.count  
+
+lateJune.count <- filter(June,DEP_DELAY>=15 & MONTH==6) %>% count()
+lateJuneProb.count <- filter(June,DEP_DELAY>=15 & MONTH==6 & ORIGIN=="DEN") %>% count() / lateJune.count  
+
+lateJuly.count <- filter(July,DEP_DELAY>=15 & MONTH==7) %>% count()
+lateJulyProb.count <- filter(July,DEP_DELAY>=15 & MONTH==7 & ORIGIN=="DEN") %>% count() / lateJuly.count  
+
+lateAugust.count <- filter(August,DEP_DELAY>=15 & MONTH==8) %>% count()
+lateAugustProb.count <- filter(August,DEP_DELAY>=15 & MONTH==8 & ORIGIN=="DEN") %>% count() / lateAugust.count  
+
+lateSeptember.count <- filter(September,DEP_DELAY>=15 & MONTH==9) %>% count()
+lateSeptemberProb.count <- filter(September,DEP_DELAY>=15 & MONTH==9 & ORIGIN=="DEN") %>% count() / lateSeptember.count  
+
+lateOctober.count <- filter(October,DEP_DELAY>=15 & MONTH==10) %>% count()
+lateOctoberProb.count <- filter(October,DEP_DELAY>=15 & MONTH==10 & ORIGIN=="DEN") %>% count() / lateOctober.count  
+
+lateNovember.count <- filter(November,DEP_DELAY>=15 & MONTH==11) %>% count()
+lateNovemberProb.count <- filter(November,DEP_DELAY>=15 & MONTH==11 & ORIGIN=="DEN") %>% count() / lateNovember.count  
+
+lateDecember.count <- filter(December,DEP_DELAY>=15 & MONTH==12) %>% count()
+lateDecemberProb.count <- filter(December,DEP_DELAY>=15 & MONTH==12 & ORIGIN=="DEN") %>% count() / lateDecember.count  
+```
+
+Therefore, I have calculated the probabilty the flight depart was late is following: For January it is `r lateJanProb.count`. For February it is `r lateFebProb.count`. For March it is `r lateMarchProb.count`. April:`r lateAprilProb.count`. May:`r lateMayProb.count`. June: `r lateJuneProb.count`. July:`r lateJulyProb.count`. August: `r lateAugustProb.count`. September: `r lateSeptemberProb.count` October: `r lateOctoberProb.count` November: `r lateNovemberProb.count` December: `r lateDecemberProb.count`.
+
+As I have founded that, February and March could be the month that flight has lowest probabilities depart late. Also May and August could be the month that flight has highest probabilities depart late. In next section, I will choose these particular months to find out the reasons
+
+Hence, we need to find out some reasons for that. Since in this table we have founded several other factors that might affect the flight depart, which could be carrier, weather, nas, security and late aircraft
+
+Hence, I have created new data which combined the four particular month to see what factors might heavily influence the flight departure delay 
+```{r}
+newdata<-filter(COflights, MONTH=="2"| MONTH=="3"| MONTH=="5" |MONTH=="8")
+```
+
+```{r, echo=FALSE}
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=CARRIER_DELAY,shape='Late due to carrier delay for particular Month'),color="blue")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=WEATHER_DELAY,shape='late due to weather for particular month'),color="yellow")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=NAS_DELAY,shape='late due to national air system for particular month'),color="green")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=SECURITY_DELAY,shape='late due to security '),color="red")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=LATE_AIRCRAFT_DELAY,shape='late due to late aircraft'),color="black")
+```
+
+As we have founded five graph, I have founded that carriers could be the most important reasons that cause flight delay since there are so many flights late due to carrier. We could think that this kind of delay including aircraft cleaning, airclarf damage awaiting the arrival of connecting passengers or crew and others. Therefore, I think that the airline staff should pay attention to the airline management in order to reduce the delay time.
+
+David's Contribution:
+Since I have first founded the flight delay originating from Denver, and that gives me some information about what particular months could delay most and what factors might cause it. After that, I have found four particular months which has lowest and highest possibilities that flight delay. Since in this table I have found five main factors that cause flight delay, and I have use graph to find out the carrier could be one of the most important factors that cause flight delay.
+
+
+
+
+

@@ -14,7 +14,7 @@ COflights<-read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfs
 
 ## Overall Question
 
-In our report we aim to answer the question: what are the primary factors that contribute to flight delays.
+In our report we aim to answer the question: what are the primary factors that contribute to flight delays and delayed arrivals to and from Denver.
 
 This is an important question for our team to answer for the airport because it will allow them to focus their efforts on preventing or minimizing the factors that cause delays in order to decrease the amount of delays or allow them to better estimate arrival times. This will make those who use the airport more satisfied overall and keep operations running according to schedule within the airport.
 

@@ -19,8 +19,62 @@ In our report we aim to answer the question: what are the primary factors that c
 This is an important question for our team to answer for the airport because it will allow them to focus their efforts on preventing or minimizing the factors that cause delays in order to decrease the amount of delays or allow them to better estimate arrival times. This will make those who use the airport more satisfied overall and keep operations running according to schedule within the airport.
 
 ## Findings
+We want to see which types of delays lead to a higher probablity of an arrival delay. We would like to analyze which types of delays, late aircraft, carrier, security, NAS, or weather delays increase the probability of a flight arriving late. To do this we will see what the probabilities of these delays are, given a set of delayed flights.
+```{r team1 echo=FALSE}
+probdelayed<-as.tibble(filter(COflights, !is.na(ARR_TIME),DEST=="DEN", ARR_DELAY>=15))
+
+carrd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, CARRIER_DELAY>=15))
+
+weatherd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, WEATHER_DELAY>=15))
+
+Nasd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, NAS_DELAY>=15))
+
+securityd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, SECURITY_DELAY>=15))
+
+lateaird<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, LATE_AIRCRAFT_DELAY>=15))
+
+Prob_weather<-nrow(weatherd)/nrow(probdelayed)
+Prob_carr<-nrow(carrd)/nrow(probdelayed)
+Prob_NAS<-nrow(Nasd)/nrow(probdelayed)
+Prob_security<-nrow(securityd)/nrow(probdelayed)
+Prob_late_aircraft<-nrow(lateaird)/nrow(probdelayed)
+
+df3<-data.frame(x=c("Weather|Delayed","Carrier|Delayed","NAS|Delayed","Security|Delayed","Late Aircraft|Delayed"),y=c(Prob_weather,Prob_carr,Prob_NAS,Prob_security,Prob_late_aircraft))
+ggplot(data=df3,aes(x,y))+geom_col()
+```
+
+Of flights arriving late, we can see that the probability of a Late Aircraft delay happening given a flight is late is over 42%. And the probability of a National Air System Delay happening given a flight is late, is over 30%, while it is over 25% for a Carrier delay. Both weather and Security have a less than 10% chance of occuring given a delayed flight. From this we can conclude that Late Aircraft, Carrier, and NAS delays increase the likelihood of an arrival delay, while weather and security have relatively little impact. 
+
+```{r team2 echo=FALSE}
+probdelayeddep<-as.tibble(filter(COflights, !is.na(DEP_TIME),ORIGIN=="DEN", DEP_DELAY>=15))
+
+carrdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, CARRIER_DELAY>=15))
+
+weatherdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, WEATHER_DELAY>=15))
+
+Nasdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, NAS_DELAY>=15))
+
+securitydd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, SECURITY_DELAY>=15))
+
+lateairdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, LATE_AIRCRAFT_DELAY>=15))
+
+Prob_weather_dep<-nrow(weatherdd)/nrow(probdelayeddep)
+Prob_carr_dep<-nrow(carrdd)/nrow(probdelayeddep)
+Prob_NAS_dep<-nrow(Nasdd)/nrow(probdelayeddep)
+Prob_security_dep<-nrow(securitydd)/nrow(probdelayeddep)
+Prob_late_aircraft_dep<-nrow(lateairdd)/nrow(probdelayeddep)
+
+df4<-data.frame(x=c("Weather|Delayed","Carrier|Delayed","NAS|Delayed","Security|Delayed","Late Aircraft|Delayed"),y=c(Prob_weather_dep,Prob_carr_dep,Prob_NAS_dep,Prob_security_dep,Prob_late_aircraft_dep))
+ggplot(data=df4,aes(x,y))+geom_col()
+```
+
+Of flights departing late, we can see that the probability of a Late Aircraft delay happening given a flight is late is just under 40%. And the probability of a Carrier Delay happening given a flight is late, is just under 30%, while it is over 15% for a National Air System delay. Both weather and Security have a less than 5% chance of occuring given a delayed flight. From this we can conclude that Late Aircraft, Carrier, and NAS delays increase the likelihood of an arrival delay, while weather and security have relatively little impact. 
 
 ## Recommendations
+
+From our plots above, we recommend reducing Late Aircraft, Carrier, and NAS delays. There could be more research put into investigating the specific causes of each of these delays, and determining if every call was indeed necessary. Eliminating unnecessary delays would reduce the overall probability of a flight arriving or departing late to and from Denver. 
+
+We also recommend keeping all planes on time in their scheduled routes to reduce Late Aircraft delays, and identifying which carriers are running late on days, and attempt to get them back on track. It could also be helpful to build in time for flights from certain carriers to be late, in order to reduce delays overall. 
 
 ## Individual Findings
 
@@ -143,6 +197,6 @@ Although initially the results may seem strange, it is possible that the summer 
 
 ## Summary of Individual Contributions
 
-Abby: I plotted the probability of flights arriving and leaving Denver late based on flight lengths. I found that longer flights are more likely to arrive and depart Denver late than flights under two hours. I then plotted the probabilities of late departures and arrivals based on airline carriers. I found that Southwest and United were more likely to be late than American and Delta airlines. These are the four largest domestic airlines, and knowing which flights run late can help the airports determine scheduling issues based on flight length and airline. 
+Abby: I plotted the probability of flights arriving and leaving Denver late based on flight lengths. I found that longer flights are more likely to arrive and depart Denver late than flights under two hours. I then plotted the probabilities of late departures and arrivals based on airline carriers. I found that Southwest and United were more likely to be late than American and Delta airlines. These are the four largest domestic airlines, and knowing which flights run late can help the airports determine scheduling issues based on flight length and airline. Sarah and I created the plots for the team portion, and analyzed them as well.
 
-Sarah: I used the filter function in a while loop in order find conditional probabilities of delays per month and weather delays per month. I plotted these with geom_point and showed different probabilities using different shaped and colored points. I did this in order to analyze weather there were patterns in delays between months and if these differences were solely weather related, or if there might be other reasons certain months might yield more delays than others. 
+Sarah: I used the filter function in a while loop in order find conditional probabilities of delays per month and weather delays per month. I plotted these with geom_point and showed different probabilities using different shaped and colored points. I did this in order to analyze weather there were patterns in delays between months and if these differences were solely weather related, or if there might be other reasons certain months might yield more delays than others. Abby and I created the plots for the team portion, and analyzed them as well.

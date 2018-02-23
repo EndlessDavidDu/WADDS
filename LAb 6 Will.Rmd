@@ -76,9 +76,9 @@ prob_dept_weekend_late <- nrow(dept_weekend_late)/nrow(dept_weekend)
 
 df2 <- data.frame(x=c("Workday Arriving","Workday Departing","Weekend Arriving", "Weekend Departing"),y = c(prob_workday_late,prob_dept_workday_late,prob_weekend_late,prob_dept_weekend_late))
 ggplot(data = df2, aes(x,y)) + geom_col()
-```
 
 Again from the plot, we can see that, for the on-time arrival/departure, it matters whether in the workdays and in the weekends. It aligns with our intuition that airlines in the workdays are more busy. In the workdays, the probability of arriving late to Denver is higher. It also applies to the probability of delay departure from Denver.
 
-##Contribution
+## Contribution
+
 What I compared is the probability with the workday late departing and workday. First of all, I choose the data from COflights dividing them into dept_weekend and dept_workday, and then calculate the probability. Next, I used the geom_col to graph the probability with the weekend probability and workday probability. Finally comparing two of these, I found that workdays' delay is higher than the weekend.

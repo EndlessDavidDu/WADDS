@@ -1,0 +1,289 @@
+---
+title: "Lab 6"
+author: "WADDS"
+date: "February 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
+library(tidyverse)
+library(knitr)
+COflights<-read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+```
+
+## Overall Question
+
+In our report we aim to answer the question: what are the primary factors that contribute to flight delays and delayed arrivals to and from Denver.
+
+This is an important question for our team to answer for the airport because it will allow them to focus their efforts on preventing or minimizing the factors that cause delays in order to decrease the amount of delays or allow them to better estimate arrival times. This will make those who use the airport more satisfied overall and keep operations running according to schedule within the airport.
+
+## Findings
+We want to see which types of delays lead to a higher probablity of an arrival delay. We would like to analyze which types of delays, late aircraft, carrier, security, NAS, or weather delays increase the probability of a flight arriving late. To do this we will see what the probabilities of these delays are, given a set of delayed flights.
+```{r team1, echo=FALSE}
+probdelayed<-as.tibble(filter(COflights, !is.na(ARR_TIME),DEST=="DEN", ARR_DELAY>=15))
+
+carrd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, CARRIER_DELAY>=15))
+
+weatherd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, WEATHER_DELAY>=15))
+
+Nasd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, NAS_DELAY>=15))
+
+securityd<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, SECURITY_DELAY>=15))
+
+lateaird<-as.tibble(filter(COflights, !is.na(ARR_TIME), DEST=="DEN", ARR_DELAY>=15, LATE_AIRCRAFT_DELAY>=15))
+
+Prob_weather<-nrow(weatherd)/nrow(probdelayed)
+Prob_carr<-nrow(carrd)/nrow(probdelayed)
+Prob_NAS<-nrow(Nasd)/nrow(probdelayed)
+Prob_security<-nrow(securityd)/nrow(probdelayed)
+Prob_late_aircraft<-nrow(lateaird)/nrow(probdelayed)
+
+df3<-data.frame(x=c("Weather|Delayed","Carrier|Delayed","NAS|Delayed","Security|Delayed","Late Aircraft|Delayed"),y=c(Prob_weather,Prob_carr,Prob_NAS,Prob_security,Prob_late_aircraft))
+ggplot(data=df3,aes(x,y))+geom_col()
+```
+
+Of flights arriving late, we can see that the probability of a Late Aircraft delay happening given a flight is late is over 42%. And the probability of a National Air System Delay happening given a flight is late, is over 30%, while it is over 25% for a Carrier delay. Both weather and Security have a less than 10% chance of occuring given a delayed flight. From this we can conclude that Late Aircraft, Carrier, and NAS delays increase the likelihood of an arrival delay, while weather and security have relatively little impact. 
+
+```{r team2, echo=FALSE}
+probdelayeddep<-as.tibble(filter(COflights, !is.na(DEP_TIME),ORIGIN=="DEN", DEP_DELAY>=15))
+
+carrdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, CARRIER_DELAY>=15))
+
+weatherdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, WEATHER_DELAY>=15))
+
+Nasdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, NAS_DELAY>=15))
+
+securitydd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, SECURITY_DELAY>=15))
+
+lateairdd<-as.tibble(filter(COflights, !is.na(DEP_TIME), ORIGIN=="DEN", DEP_DELAY>=15, LATE_AIRCRAFT_DELAY>=15))
+
+Prob_weather_dep<-nrow(weatherdd)/nrow(probdelayeddep)
+Prob_carr_dep<-nrow(carrdd)/nrow(probdelayeddep)
+Prob_NAS_dep<-nrow(Nasdd)/nrow(probdelayeddep)
+Prob_security_dep<-nrow(securitydd)/nrow(probdelayeddep)
+Prob_late_aircraft_dep<-nrow(lateairdd)/nrow(probdelayeddep)
+
+df4<-data.frame(x=c("Weather|Delayed","Carrier|Delayed","NAS|Delayed","Security|Delayed","Late Aircraft|Delayed"),y=c(Prob_weather_dep,Prob_carr_dep,Prob_NAS_dep,Prob_security_dep,Prob_late_aircraft_dep))
+ggplot(data=df4,aes(x,y))+geom_col()
+```
+
+Of flights departing late, we can see that the probability of a Late Aircraft delay happening given a flight is late is just under 40%. And the probability of a Carrier Delay happening given a flight is late, is just under 30%, while it is over 15% for a National Air System delay. Both weather and Security have a less than 5% chance of occuring given a delayed flight. From this we can conclude that Late Aircraft, Carrier, and NAS delays increase the likelihood of an arrival delay, while weather and security have relatively little impact. 
+
+## Recommendations
+
+%%%As a side note, this lab stated, "For this lab report, we will assume that your team has been hired by the federal government to review data on smoking and babies' gestational age and birthweight and make a recommendation about smoking during pregnancy to the new Surgeon General." Unfortunately, we cannot make any conclusions about the effects smoking has on babies using this flight data. However, we were able to draw conclusions about the causes of arrival and departure delays in Denver.%%%
+
+From our plots above, we recommend reducing Late Aircraft, Carrier, and NAS delays. There could be more research put into investigating the specific causes of each of these delays, and determining if every call was indeed necessary. Eliminating unnecessary delays would reduce the overall probability of a flight arriving or departing late to and from Denver. 
+
+We also recommend keeping all planes on time in their scheduled routes to reduce Late Aircraft delays, and identifying which carriers are running late on days, and attempt to get them back on track. It could also be helpful to build in time for flights from certain carriers to be late, in order to reduce delays overall. 
+
+## Individual Findings
+
+### Abby
+We wish to see what factors can influence delayed arrivals and departures to and from Denver. We wish to first analyze if the length of the flight impacts the arrivals and departures. This can allow us to make recommendations to the airport about scheduling arrival and departure times. I hope to see if flights greater than two hours have a higher probability of having a delayed arrival (greater than or equal to 15 minutes) than shorter flights.
+
+```{r Abby1, echo=FALSE}
+arriving_long<-as.tibble(filter(COflights,DEST=="DEN", !is.na(ARR_TIME), AIR_TIME>=120))
+late_arriving_long<-as.tibble(filter(COflights, DEST=="DEN", !is.na(ARR_TIME), AIR_TIME>=120, ARR_DELAY>=15))
+
+departing_long<-as.tibble(filter(COflights,ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME>=120))
+late_departing_long<-as.tibble(filter(COflights, ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME>=120, DEP_DELAY>=15))
+
+arriving_short<-as.tibble(filter(COflights,DEST=="DEN", !is.na(ARR_TIME), AIR_TIME<120))
+late_arriving_short<-as.tibble(filter(COflights, DEST=="DEN", !is.na(ARR_TIME), AIR_TIME<120, ARR_DELAY>=15))
+
+departing_short<-as.tibble(filter(COflights,ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME<120))
+late_departing_short<-as.tibble(filter(COflights, ORIGIN=="DEN", !is.na(ARR_TIME), AIR_TIME<120, DEP_DELAY>=15))
+
+prob_late_arriving_long<-nrow(late_arriving_long)/nrow(arriving_long)
+prob_late_departing_long<-nrow(late_departing_long)/nrow(departing_long)
+prob_late_arriving_short<-nrow(late_arriving_short)/nrow(arriving_short)
+prob_late_departing_short<-nrow(late_departing_short)/nrow(departing_short)
+
+df<-data.frame(x=c("Long Arriving","Long Departing","Short Arriving","Short Departing"),y=c(0.1754298,0.2136266,0.1447172,0.1662359))
+ggplot(data=df,aes(x,y))+geom_col()
+```
+
+As we can see from the plot above, there is a greater probability a flight will be late when the flight is over two hours long. This is true for boh late departures and late arrivals. A short flight arriving in Denver is the least likely to arrive late, while a long flight departing from Denver is the most likely to arrive late to its destination. 
+
+I also want to analyze whether the probability of a late arrival or departure changes based on the airline. To do this I will analyze the most common airlines used domestically in the United States. The 4 biggest domestic airlines are: American Airlines, United Airlines, Southwest, and Delta. This list was taken from a Business Insider Article.
+
+```{r Abby2, echo=FALSE}
+totalflightsarriving<-as.tibble(filter(COflights, !is.na(ARR_TIME),DEST=="DEN"))
+
+American_Late_Arrive<-as.tibble(filter(COflights, !is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15,CARRIER=="AA"))
+
+United_Late_Arrive<-as.tibble(filter(COflights,!is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15,CARRIER=="UA"))
+
+Southwest_Late_Arrive<-as.tibble(filter(COflights,!is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15, CARRIER=="WN"))
+
+Delta_Late_Arrive<-as.tibble(filter(COflights,!is.na(ARR_TIME),DEST=="DEN",ARR_DELAY>=15,CARRIER=="DL"))
+
+Prob_American<-nrow(American_Late_Arrive)/nrow(totalflightsarriving)
+Prob_United<-nrow(United_Late_Arrive)/nrow(totalflightsarriving)
+Prob_Southwest<-nrow(Southwest_Late_Arrive)/nrow(totalflightsarriving)
+Prob_Delta<-nrow(Delta_Late_Arrive)/nrow(totalflightsarriving)
+
+df2<-data.frame(x=c("American","United","Southwest","Delta"),y=c(Prob_American,Prob_United,Prob_Southwest,Prob_Delta))
+ggplot(data=df2,aes(x,y))+geom_col()
+```
+
+As we can see from the plot above, of the flights arriving to Denver, there is a slight difference between the probability a flight will arrive late based on the airline. A flight is more likely to arrive to Denver late if the airline is Southwest or United, and is less likely to arrive to Denver late of the airline is American or Delta. Southwest has a higher probability of arriving late to Denver than United, and Delta is less likely to arrive to Denver late than American.
+
+```{r Abby3, echo=FALSE}
+totalflightsdeparting<-as.tibble(filter(COflights, !is.na(ARR_TIME),ORIGIN=="DEN"))
+
+American_Late_Depart<-as.tibble(filter(COflights, !is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15,CARRIER=="AA"))
+
+United_Late_Depart<-as.tibble(filter(COflights,!is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15,CARRIER=="UA"))
+
+Southwest_Late_Depart<-as.tibble(filter(COflights,!is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15, CARRIER=="WN"))
+
+Delta_Late_Depart<-as.tibble(filter(COflights,!is.na(ARR_TIME),ORIGIN=="DEN",DEP_DELAY>=15,CARRIER=="DL"))
+
+Prob_American_d<-nrow(American_Late_Depart)/nrow(totalflightsdeparting)
+Prob_United_d<-nrow(United_Late_Depart)/nrow(totalflightsdeparting)
+Prob_Southwest_d<-nrow(Southwest_Late_Depart)/nrow(totalflightsdeparting)
+Prob_Delta_d<-nrow(Delta_Late_Depart)/nrow(totalflightsdeparting)
+
+df3<-data.frame(x=c("American","United","Southwest","Delta"),y=c(Prob_American_d,Prob_United_d,Prob_Southwest_d,Prob_Delta_d))
+ggplot(data=df3,aes(x,y))+geom_col()
+```
+
+As we can see from the plot above, the probability of a flight departing Denver late is higher for Southwest and United airlines. While it is less likely for American and Delta airline flights to depart late from Denver. This plot corresponds to the plot above, which indicates that a late arrival time corresponds to a late departure time once the plane has reached their first destination. Because Southwest and United are such large airlines, it makes sense that they would have a higher probability of running late, since there are so many flights to attempt to keep on time. 
+
+### Sarah
+
+In order to analyze what factors might contribute to flight delays, I will analyze patterns in arrival delays between months, and also take into account what proportion of these delays are due to weather related issues. This will help us understand if different months have significantly different proportions of delays, and if these delays are solely due to weather, or if they might be due to other factors. 
+
+``` {r sarah1, echo=FALSE}
+
+prop<-data.frame(month=numeric(), total=numeric(),delayed=numeric(),proportion=numeric(),weatherdelayed=numeric(),propweather=numeric(),propweathergivendelay=numeric())
+
+i=1
+while (i<13){
+  prop[i,1]<-i
+  prop[i,2]<-dim(filter(COflights,MONTH==i))[1]
+  prop[i,3]<-dim(filter(COflights,MONTH==i & ARR_DELAY>15))[1]
+  prop[i,4]<-prop[i,3]/prop[i,2]
+  prop[i,5]<-dim(filter(COflights,MONTH==i & WEATHER_DELAY>15))[1]
+  prop[i,6]<-prop[i,5]/prop[i,2]
+  prop[i,7]<-prop[i,5]/prop[i,3]
+  i=i+1
+}
+#factor(prop$month)
+ggplot(data=prop)+geom_point(aes(x=month,y=proportion,shape='Probability of Delays per Month'),color="blue")+geom_point(aes(x=month,y=propweather,shape='Probability of Weather Delays per Month'),color="green")+geom_point(aes(x=month,y=propweathergivendelay,shape='Probability of Weather Delays Given Delays per Month'),color="red")
+
+
+
+# 
+
+#COflights1<-filter(COflights,ARR_DELAY != is.na(ARR_DELAY))
+#COflights1$MONTH<-factor(COflights1$MONTH)
+#COflightsdelay<-filter(COflights1,ARR_DELAY>15)
+#ggplot(data=COflights1)+geom_violin(aes(x=MONTH,y=ARR_DELAY))
+#ggplot(data=COflightsdelay)+geom_boxplot(aes(x=MONTH,y=ARR_DELAY))
+#ggplot(data=COflights1)+geom_jitter(aes(x=AIR_TIME,y=ARR_DELAY),alpha=0.1)
+Newproportions<-data.frame(prop[,1],prop[,4],prop[,6],prop[,7])
+colnames(Newproportions)<-c("Month","Arrivals Delayed", "Weather Delays", "Weather Delays Given Delayed")
+kable(Newproportions)
+
+```
+
+The blue circles represent the probability a flight will be delayed in a given month. The green squares represent the probabiltiy that a flight will have a weather related delay in a given month. And the Red triangles represent the probability of a flight having a weather related delay given that it is delayed for a given month. 
+
+The plot indicates a definite trend in delays across the different months of the year. Contrary to what one might expect, the months with the lowest proportion of weather related delays are September, October, and November, while July, August, and January seem to have the highest number of weather related delays, followed closely by December. Trends in overall delays follow a similar pattern, although January has a significantly higher proportion of delays than the rest, and November has a signifcantly lower proportion. 
+
+Although initially the results may seem strange, it is possible that the summer months have significant weather delays is due to rain and thunderstorms, and the worst month for snow in Colorado is January. The proportions of delays overall seem to match the tendencies of weather related delays per month; however, still only a small fraction (less than 5 percent) of overall delays are weather related, so there must be other significant factors involved, which my teammates have investigated.
+
+## David 
+Here, we want to see the factors that affect delayed arrivals and departures to and from Denver. I am going to analyze the factors related to the time of the month. Here I have selected each month, and make twelve tables for that. I am going to investgate the probabilities that the flight originating from Denver
+
+```{r David1, echo=FALSE}
+January<-filter(COflights, MONTH=="1",!is.na(ARR_TIME))
+February<-filter(COflights, MONTH=="2",!is.na(ARR_TIME))
+March<-filter(COflights, MONTH=="3",!is.na(ARR_TIME))
+April<-filter(COflights, MONTH=="4",!is.na(ARR_TIME))
+May<-filter(COflights, MONTH=="5",!is.na(ARR_TIME))
+June<-filter(COflights, MONTH=="6",!is.na(ARR_TIME))
+July<-filter(COflights, MONTH=="7",!is.na(ARR_TIME))
+August<-filter(COflights, MONTH=="8",!is.na(ARR_TIME))
+September<-filter(COflights, MONTH=="9",!is.na(ARR_TIME))
+October<-filter(COflights, MONTH=="10",!is.na(ARR_TIME))
+November<-filter(COflights, MONTH=="11",!is.na(ARR_TIME))
+December<-filter(COflights, MONTH=="12",!is.na(ARR_TIME))
+```
+
+After that, I have need to find about the probability that the flight depart late in each month and help them make decision that how they could schedule their flight.Therefore, I have calculated probability based on the flight delay more than 15 minutes and originating from Denver. 
+
+```{r David2, echo=FALSE}
+# Here I first count the number that the flight was late in January 
+lateJan.count <- filter(January,DEP_DELAY>=15 & MONTH==1) %>% count()
+# After that I have count the number that flight was late in January, then I am going to calculate the probability that the flight was late orginating from DEN
+lateJanProb.count <- filter(January,DEP_DELAY>=15 & MONTH==1 & ORIGIN=="DEN") %>% count() / lateJan.count   
+#For other month, we can get the info for other months such that
+lateFeb.count <- filter(February,DEP_DELAY>=15 & MONTH==2) %>% count()
+lateFebProb.count <- filter(February,DEP_DELAY>=15 & MONTH==2 & ORIGIN=="DEN") %>% count() / lateFeb.count  
+
+lateMarch.count <- filter(March,DEP_DELAY>=15 & MONTH==3) %>% count()
+lateMarchProb.count <- filter(March,DEP_DELAY>=15 & MONTH==3 & ORIGIN=="DEN") %>% count() / lateMarch.count  
+
+lateApril.count <- filter(April,DEP_DELAY>=15 & MONTH==4) %>% count()
+lateAprilProb.count <- filter(April,DEP_DELAY>=15 & MONTH==4 & ORIGIN=="DEN") %>% count() / lateApril.count  
+
+lateMay.count <- filter(May,DEP_DELAY>=15 & MONTH==5) %>% count()
+lateMayProb.count <- filter(May,DEP_DELAY>=15 & MONTH==5 & ORIGIN=="DEN") %>% count() / lateMay.count  
+
+lateJune.count <- filter(June,DEP_DELAY>=15 & MONTH==6) %>% count()
+lateJuneProb.count <- filter(June,DEP_DELAY>=15 & MONTH==6 & ORIGIN=="DEN") %>% count() / lateJune.count  
+
+lateJuly.count <- filter(July,DEP_DELAY>=15 & MONTH==7) %>% count()
+lateJulyProb.count <- filter(July,DEP_DELAY>=15 & MONTH==7 & ORIGIN=="DEN") %>% count() / lateJuly.count  
+
+lateAugust.count <- filter(August,DEP_DELAY>=15 & MONTH==8) %>% count()
+lateAugustProb.count <- filter(August,DEP_DELAY>=15 & MONTH==8 & ORIGIN=="DEN") %>% count() / lateAugust.count  
+
+lateSeptember.count <- filter(September,DEP_DELAY>=15 & MONTH==9) %>% count()
+lateSeptemberProb.count <- filter(September,DEP_DELAY>=15 & MONTH==9 & ORIGIN=="DEN") %>% count() / lateSeptember.count  
+
+lateOctober.count <- filter(October,DEP_DELAY>=15 & MONTH==10) %>% count()
+lateOctoberProb.count <- filter(October,DEP_DELAY>=15 & MONTH==10 & ORIGIN=="DEN") %>% count() / lateOctober.count  
+
+lateNovember.count <- filter(November,DEP_DELAY>=15 & MONTH==11) %>% count()
+lateNovemberProb.count <- filter(November,DEP_DELAY>=15 & MONTH==11 & ORIGIN=="DEN") %>% count() / lateNovember.count  
+
+lateDecember.count <- filter(December,DEP_DELAY>=15 & MONTH==12) %>% count()
+lateDecemberProb.count <- filter(December,DEP_DELAY>=15 & MONTH==12 & ORIGIN=="DEN") %>% count() / lateDecember.count  
+```
+
+Therefore, I have calculated the probabilty the flight depart was late is following: For January it is `r lateJanProb.count`. For February it is `r lateFebProb.count`. For March it is `r lateMarchProb.count`. April:`r lateAprilProb.count`. May:`r lateMayProb.count`. June: `r lateJuneProb.count`. July:`r lateJulyProb.count`. August: `r lateAugustProb.count`. September: `r lateSeptemberProb.count` October: `r lateOctoberProb.count` November: `r lateNovemberProb.count` December: `r lateDecemberProb.count`.
+
+As I have founded that, February and March could be the month that flight has lowest probabilities depart late. Also May and August could be the month that flight has highest probabilities depart late. In next section, I will choose these particular months to find out the reasons
+
+Hence, we need to find out some reasons for that. Since in this table we have founded several other factors that might affect the flight depart, which could be carrier, weather, nas, security and late aircraft
+
+Hence, I have created new data which combined the four particular month to see what factors might heavily influence the flight departure delay 
+```{r David3, echo=FALSE}
+newdata<-filter(COflights, MONTH=="2"| MONTH=="3"| MONTH=="5" |MONTH=="8")
+```
+
+```{r David4, echo=FALSE}
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=CARRIER_DELAY,shape='Late due to carrier delay for particular Month'),color="blue")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=WEATHER_DELAY,shape='late due to weather for particular month'),color="yellow")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=NAS_DELAY,shape='late due to national air system for particular month'),color="green")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=SECURITY_DELAY,shape='late due to security '),color="red")
+ggplot(data=newdata)+geom_point(aes(x=MONTH,y=LATE_AIRCRAFT_DELAY,shape='late due to late aircraft'),color="black")
+```
+
+As we have founded five graph, I have founded that carriers could be the most important reasons that cause flight delay since there are so many flights late due to carrier. We could think that this kind of delay including aircraft cleaning, airclarf damage awaiting the arrival of connecting passengers or crew and others. Therefore, I think that the airline staff should pay attention to the airline management in order to reduce the delay time.
+
+
+## Summary of Individual Contributions
+
+Abby: I plotted the probability of flights arriving and leaving Denver late based on flight lengths. I found that longer flights are more likely to arrive and depart Denver late than flights under two hours. I then plotted the probabilities of late departures and arrivals based on airline carriers. I found that Southwest and United were more likely to be late than American and Delta airlines. These are the four largest domestic airlines, and knowing which flights run late can help the airports determine scheduling issues based on flight length and airline. Sarah and I created the plots for the team portion, and analyzed them as well.
+
+Sarah: I used the filter function in a while loop in order find conditional probabilities of delays per month and weather delays per month. I plotted these with geom_point and showed different probabilities using different shaped and colored points. I did this in order to analyze weather there were patterns in delays between months and if these differences were solely weather related, or if there might be other reasons certain months might yield more delays than others. Abby and I created the plots for the team portion, and analyzed them as well.
+
+David:
+Since I have first founded the flight delay originating from Denver, and that gives me some information about what particular months could delay most and what factors might cause it. After that, I have found four particular months which has lowest and highest possibilities that flight delay. Since in this table I have found five main factors that cause flight delay, and I have use graph to find out the carrier could be one of the most important factors that cause flight delay.

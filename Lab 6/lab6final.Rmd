@@ -9,7 +9,20 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE,warning=FALSE)
 library(tidyverse)
 library(knitr)
+library(forcats)
+library(timeDate)
 COflights<-read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+COflights$DAY_OF_MONTH = as.factor(COflights$DAY_OF_MONTH)
+COflights$DEP_TIME = as.numeric(COflights$DEP_TIME)
+COflights$HOUR = as.factor(COflights$DEP_TIME %/% 100)
+COflights$HOUR = fct_collapse(COflights$HOUR, "0" = c("0","24"))
+COflights$MONTH = as.factor(COflights$MONTH)
+COflights$ORIGIN = as.factor(COflights$ORIGIN)
+COflights$DEST = as.factor(COflights$DEST)
+COflights$TAIL_NUM = as.factor(COflights$TAIL_NUM)
+COflights$CARRIER = as.factor(COflights$CARRIER)
+COflights$CANCELLED = as.factor(COflights$CANCELLED)
+COflights$CANCELLATION_CODE = as.factor(COflights$CANCELLATION_CODE)
 ```
 
 ## Overall Question
@@ -197,7 +210,7 @@ The plot indicates a definite trend in delays across the different months of the
 
 Although initially the results may seem strange, it is possible that the summer months have significant weather delays is due to rain and thunderstorms, and the worst month for snow in Colorado is January. The proportions of delays overall seem to match the tendencies of weather related delays per month; however, still only a small fraction (less than 5 percent) of overall delays are weather related, so there must be other significant factors involved, which my teammates have investigated.
 
-## David 
+### David 
 Here, we want to see the factors that affect delayed arrivals and departures to and from Denver. I am going to analyze the factors related to the time of the month. Here I have selected each month, and make twelve tables for that. I am going to investgate the probabilities that the flight originating from Denver
 
 ```{r David1, echo=FALSE}
@@ -278,12 +291,137 @@ ggplot(data=newdata)+geom_point(aes(x=MONTH,y=LATE_AIRCRAFT_DELAY,shape='late du
 
 As we have founded five graph, I have founded that carriers could be the most important reasons that cause flight delay since there are so many flights late due to carrier. We could think that this kind of delay including aircraft cleaning, airclarf damage awaiting the arrival of connecting passengers or crew and others. Therefore, I think that the airline staff should pay attention to the airline management in order to reduce the delay time.
 
+### Derek
+
+```{r}
+clean_flights = filter(COflights, !is.na(COflights$HOUR) & !is.na(COflights$ARR_DELAY) )
+ggplot(clean_flights, aes(x=HOUR, y= ARR_DELAY, color=HOUR)) +
+  geom_boxplot() +
+   coord_cartesian(ylim=c(-50,300))+
+   geom_hline(yintercept = 15)
+
+prop<-data.frame()
+i=1
+while (i<=24) {
+  prop[i,1]<-(i-1)
+  prop[i,2]<-nrow(filter(clean_flights, ARR_DELAY >= 15 & HOUR==(i-1))) / nrow(filter(clean_flights, HOUR==(i-1)))
+  i=i+1
+}
+
+Newproportions<-data.frame(prop[,1],prop[,2])
+colnames(Newproportions)<-c("Departure Hour","% Chance delayed")
+kable(Newproportions)
+
+COflights$MONTH <- factor(COflights$MONTH, levels=rev(levels(COflights$MONTH)))
+clean_flights2 = filter(COflights, !is.na(COflights$DAY_OF_MONTH) & !is.na(COflights$MONTH) & COflights$ARR_DELAY>=15)
+ggplot(clean_flights2, aes(x=DAY_OF_MONTH, y= MONTH)) +
+  geom_bin2d()
+clean_flights3 = filter(COflights, !is.na(COflights$DAY_OF_MONTH) & !is.na(COflights$MONTH) & !is.na(COflights$ARR_DELAY))
+prop<-data.frame()
+i=1
+while (i<=12) {
+  j=1
+  while (j<=31) { 
+    prop[(i-1)*31+j,1]<-(i)
+    prop[(i-1)*31+j,2]<-(j)
+    prop[(i-1)*31+j,3]<-nrow(filter(clean_flights3, ARR_DELAY >= 15 & DAY_OF_MONTH==j & MONTH==i)) / nrow(filter(clean_flights3, DAY_OF_MONTH==j & MONTH==i))
+    j=j+1
+  }
+  i=i+1
+}
+
+Newproportions<-data.frame(prop[,1],prop[,2],prop[,3])
+colnames(Newproportions)<-c("Month","Day", "% Chance delayed")
+kable(Newproportions)
+
+
+```
+
+In the two plots I look at the distribution of late arrivals first over the hours in a day and then later over all 365 days in a year. In the first one we can clearly see flights that depart from 10:00pm to 4:00am have much higher arrival delays. The black horizontal line is the 15 min cutoff we use to determine. We calculate the actual probabilites for each hour as well (all flights departing at 4am are at least 15 min late). The second plot show how many delayed arrivals in every day of the year and we can see some interesting resuts. The number of late flights spikes on Dec 21st, when we would expect many people to do some last minute traveling for the christmas holidays and similar high rates the first few days of January as everyone flighs back home. For both plot I caclulated a table with the probablity of being >= 15 late for each hour or day of year.
+
+### Will
+
+People are always more distracted in the afternoon than in the morning. Some research futhermore show that, we are found to be most distracted in 14:55. So we are curious whether the pattern of on-time arrivals in Denver is significantly different before and after 14:55.
+```{r}
+# the flights arriving in Denver before 14:55
+before <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) < 1455))
+before_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) < 1455,ARR_DELAY >= 15))
+
+# the flights arriving in Denver after 14:55
+after <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) >= 1455))
+after_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), as.double(ARR_TIME) >= 1455,ARR_DELAY >= 15))
+
+# the flights departing from Denver before 14:55
+dept_before <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) < 1455))
+dept_before_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) < 1455,DEP_DELAY >= 15))
+
+# the flights departing from Denver after 14:55
+dept_after <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) >= 1455))
+dept_after_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), as.double(DEP_TIME) >= 1455,DEP_DELAY >= 15))
+```
+
+And here are the probabilities of delay:
+```{r}
+prob_before_late = nrow(before_late)/nrow(before)
+prob_after_late = nrow(after_late)/nrow(after)
+prob_dept_before_late =  nrow(dept_before_late)/nrow(dept_before)
+prob_dept_after_late = nrow(dept_after_late)/nrow(dept_after)
+
+df1 <- data.frame(x=c("Early Arriving","Early Departing","Lately Arriving", "Lately Departing"),y = c(prob_before_late,prob_dept_before_late,prob_after_late,prob_dept_after_late))
+ggplot(data = df1, aes(x,y)) + geom_col()
+```
+
+From the plot above, we find that the timing of 14:55 is so subtle. The probability of delay is siginicantly greater after 14:55. It holds true for both late departures and late arrivals.
+
+We are also curious about whether the pattern of on-time arrivals changes in the weekend, in comparison with workdays.
+
+
+```{r}
+#the flights arriving in Denver in the workdays
+workday <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+workday_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),ARR_DELAY >= 15))
+
+#the flights arriving in Denver in the weekends
+weekend <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+weekend_late <- as.tibble(filter(COflights, DEST == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),ARR_DELAY >= 15))
+
+#the flights departing from Denver in the workdays
+dept_workday <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+dept_workday_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), !isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),DEP_DELAY >= 15))
+
+#the flights departing from Denver in the weekends
+dept_weekend <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH))))
+dept_weekend_late <- as.tibble(filter(COflights, ORIGIN == "DEN", !is.na(AIR_TIME), isWeekend(ISOdate(YEAR,MONTH,DAY_OF_MONTH)),DEP_DELAY >= 15))
+```
+
+
+After the calculations of the probabilities of delay, we can see the differences:
+
+```{r}
+prob_workday_late <- nrow(workday_late)/nrow(workday)
+prob_weekend_late <- nrow(weekend_late)/nrow(weekend)
+
+prob_dept_workday_late <- nrow(dept_workday_late)/nrow(dept_workday)
+prob_dept_weekend_late <- nrow(dept_weekend_late)/nrow(dept_weekend)
+
+df2 <- data.frame(x=c("Workday Arriving","Workday Departing","Weekend Arriving", "Weekend Departing"),y = c(prob_workday_late,prob_dept_workday_late,prob_weekend_late,prob_dept_weekend_late))
+ggplot(data = df2, aes(x,y)) + geom_col()
+```
+
+
+
+Again from the plot, we can see that, for the on-time arrival/departure, it matters whether in the workdays and in the weekends. It aligns with our intuition that airlines in the workdays are more busy. In the workdays, the probability of arriving late to Denver is higher. It also applies to the probability of delay departure from Denver.
+```
 
 ## Summary of Individual Contributions
 
 Abby: I plotted the probability of flights arriving and leaving Denver late based on flight lengths. I found that longer flights are more likely to arrive and depart Denver late than flights under two hours. I then plotted the probabilities of late departures and arrivals based on airline carriers. I found that Southwest and United were more likely to be late than American and Delta airlines. These are the four largest domestic airlines, and knowing which flights run late can help the airports determine scheduling issues based on flight length and airline. Sarah and I created the plots for the team portion, and analyzed them as well.
 
 Sarah: I used the filter function in a while loop in order find conditional probabilities of delays per month and weather delays per month. I plotted these with geom_point and showed different probabilities using different shaped and colored points. I did this in order to analyze weather there were patterns in delays between months and if these differences were solely weather related, or if there might be other reasons certain months might yield more delays than others. Abby and I created the plots for the team portion, and analyzed them as well.
+
+Will: What I compared is the probability with the workday late departing and workday. First of all, I choose the data from COflights dividing them into dept_weekend and dept_workday, and then calculate the probability. Next, I used the geom_col to graph the probability with the weekend probability and workday probability. Finally comparing two of these, I found that workdays' delay is higher than the weekend.
+
+Derek: I created a new data column "HOUR" from the departure time and looked at the distribution of arrival delays for each hour. I created a heatmap for all 365 days of the year showing which days had more late flights. I then calculated the probablities of a flights being late for each hour, and for each day of the year. Contributed final proof-reading, editing, and stitching together of document.
 
 David:
 Since I have first founded the flight delay originating from Denver, and that gives me some information about what particular months could delay most and what factors might cause it. After that, I have found four particular months which has lowest and highest possibilities that flight delay. Since in this table I have found five main factors that cause flight delay, and I have use graph to find out the carrier could be one of the most important factors that cause flight delay.

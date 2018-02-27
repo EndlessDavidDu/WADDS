@@ -9,7 +9,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
+library(forcats)
 COflights<-read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/osfstorage/5a8ca28f57103100104584db")
+flights$DAY_OF_MONTH = as.factor(flights$DAY_OF_MONTH)
+flights$DEP_TIME = as.numeric(flights$DEP_TIME)
+flights$HOUR = as.factor(flights$DEP_TIME %/% 100)
+flights$HOUR = fct_collapse(flights$HOUR, "0" = c("0","24"))
+flights$MONTH = as.factor(flights$MONTH)
+flights$ORIGIN = as.factor(flights$ORIGIN)
+flights$DEST = as.factor(flights$DEST)
+flights$TAIL_NUM = as.factor(flights$TAIL_NUM)
+flights$CARRIER = as.factor(flights$CARRIER)
+flights$CANCELLED = as.factor(flights$CANCELLED)
+flights$CANCELLATION_CODE = as.factor(flights$CANCELLATION_CODE)
 ```
 
 ## Overall Question
@@ -193,6 +205,18 @@ The blue circles represent the probability a flight will be delayed in a given m
 The plot indicates a definite trend in delays across the different months of the year. Contrary to what one might expect, the months with the lowest proportion of weather related delays are September, October, and November, while July, August, and January seem to have the highest number of weather related delays, followed closely by December. Trends in overall delays follow a similar pattern, although January has a significantly higher proportion of delays than the rest, and November has a signifcantly lower proportion. 
 
 Although initially the results may seem strange, it is possible that the summer months have significant weather delays is due to rain and thunderstorms, and the worst month for snow in Colorado is January. The proportions of delays overall seem to match the tendencies of weather related delays per month; however, still only a small fraction (less than 5 percent) of overall delays are weather related, so there must be other significant factors involved, which my teammates have investigated.
+
+```{r}
+clean_flights = filter(flights, !is.na(flights$HOUR) & !is.na(flights$ARR_DELAY) )
+ggplot(clean_flights, aes(x=HOUR, y= ARR_DELAY, color=HOUR)) +
+  geom_boxplot() +
+   coord_cartesian(ylim=c(-50,300))
+
+flights$MONTH <- factor(flights$MONTH, levels=rev(levels(flights$MONTH)))
+clean_flights2 = filter(flights, !is.na(flights$DAY_OF_MONTH) & !is.na(flights$MONTH) & flights$ARR_DELAY>=15)
+ggplot(clean_flights2, aes(x=DAY_OF_MONTH, y= MONTH)) +
+  geom_bin2d()
+```
 
 
 ## Summary of Individual Contributions

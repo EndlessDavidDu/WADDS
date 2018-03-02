@@ -8,8 +8,18 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
-shelter_data <- read_csv("WADDS/Lab 7/aac_shelter_outcomes.csv")
+shelter_data <- read_csv("aac_shelter_outcomes.csv")
 ```
+## General Question
+
+An overall question we would like to investigate in next weeks lab is: what trends are there in animals leaving and entering a humane society and what factors lead to more animals getting adopted?
+
+## Our Domain Expert
+
+## Our Data
+
+The data we will use to answer our questions is a dataset from Kaggle that gives information about thousands of animals admitted to the Austin Animal Center Shelter. The data set describes each animal with details including its age, gender, and condition, and outcome of the animal. This dataset can be found at the following URL: https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-outcomes-and 
+
 
 ## Sarah Individual
 A question I would want to answer in Lab 8 is what trends are there in animals entering and leaving a humane society? A backup question would be which factors result in animals getting adopted most frequently in a humane society?

@@ -14,7 +14,8 @@ shelter_data <- read_csv("aac_shelter_outcomes.csv")
 
 An overall question we would like to investigate in next weeks lab is: what trends are there in animals leaving and entering a humane society and what factors lead to more animals getting adopted?
 
-## Our Domain Expert
+## Our Domain Expert and Importance
+For our domain expert, we are going to be doing this research for the Austin Animal Shelter in Texas. By analyzing their data, we can help them to determine what factors lead to higher rates of adoption of their animals. We can also see which factors may be applicable to other animal shelters across the country. By discovering the trends present in this data set they will be able to change policy and practices to hopefully increase adoption rates and possibly decrease instances of euthanasia.
 
 ## Our Data
 
@@ -30,7 +31,7 @@ These are important questions because, with this information, a humane society c
 
 My primary question is are certain kinds of breeds more at risk to things like suffering, agressive behavior, or other factors that would lead to euthanasia at the shelter? My backup question is are certain breeds more likely to be returned to owner than others after accounting for the distribution of breeds?
 
-I understand the first is painful question to ask, but if there are correlations between breeds and these factors then breeder policies and owner education programs can be implemented to try and reduce them, and employees can be made aware of which breeds are more at risk for these factors. 
+I understand the first is a painful question to ask, but if there are correlations between breeds and these factors then breeder policies and owner education programs can be implemented to try and reduce them, and employees can be made aware of which breeds are more at risk for these factors. 
 
 ## Abby Individual
 
@@ -38,16 +39,16 @@ My primary question would be how age affects the outcome of the animal entering 
 
 My backup question would be how do outcomes differ across species? Are cats more likely to be adopted than birds? How do adoption rates differ among the species based on different age, color, or sex? This is an important question as it can also lead to more in-depth study of how to increase adoption rates among animals. If cats are less likely, controlling for other variables, to be adopted than dogs, a shelter could create new campaigns and events to increase cat adoption rates. These questions are important because finding answers could lead to overall higher adoption rates of animals, which could also lead to a decrease in euthanasia. 
 
-## David Du's Individual Part 
+## David Individual Part 
 
 My primary question is: 
-Are different types of animals would have different outcome of entering the shelter, and how different kinds of animals would have different ability to adapt? since we can investigate this problem from age and sex and different outcomes and give consumers information for what they want to breed.
+Do different types of animals have different outcomes of entering the shelter, and how do different kinds of animals have different abilities to adapt? Since we can investigate this problem from age and sex and different outcomes and give consumers information for what they want to breed.
 
 My backup question is:
-How does classifcation of cats could help them get better service? For example, we could classify different kinds of cat by ages. The cats with younger age could adopt much more quickly than adult cats, and younger cats could have more convenience service than others. For example like threapy.
+Does classifcation of cats help them get better service? For example, we could classify different kinds of cat by ages. The cats with younger age could adopt much more quickly than adult cats, and younger cats could have more convenience service than others. For example like therapy.
 
 ## Will Individual Part
-My primary question comes up with how breed of dog/cats will affect the sex_upon_outcome of animals that entering into the shelter in Austin Animal center. My backup question is are certain breeds of animals are more likerly entering into the Austin Animal center.
+My primary question comes up with how breed of dog/cats will affect the sex_upon_outcome of animals that enter into the Austin Animal center? My backup question is are certain breeds of animals are more likely to enter into the Austin Animal center?
 
-There are important questions because teh result could show that the probability of different kinds of breeds of cats/dogs with processed sexuality entering into the Austin Animal center. It will give us the statement to know what kinds of breeds we need to protect, because when we work with their sex_upon_outcome, they probably could not live in a human society anymore, so that they need to com into the animal shelter. Obviously, it is a good study for telling everyone that has pets with dogs/cats to treat their pets wisely. 
+These are important questions because the result could show the probability of different kinds of breeds of cats/dogs entering with a certain processed sex entering into the Austin Animal center. It will give us the statement to know what kinds of breeds we need to protect, because when we work with their sex_upon_outcome, they probably could not live in a human society anymore, so that they need to come into the animal shelter. Obviously, it is a good study for telling everyone that has pets with dogs/cats to treat their pets wisely. 
 

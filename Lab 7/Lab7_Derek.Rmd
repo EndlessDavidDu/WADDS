@@ -9,9 +9,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Derek Individual
 
-My primary question is are certain kinds of breeds more at risk to things like suffering, agressive behavior, or other factors that would lead to euthanasia at the shelter? My backup question 
+My primary question is are certain kinds of breeds more at risk to things like suffering, agressive behavior, or other factors that would lead to euthanasia at the shelter? My backup question is are certain breeds more likely to returned to owner than others after accounting for the distribution of breeds?
 
-I understand these are painful questions to ask, but they are important. If there are correlations between breeds and these factors then breeder policies and owner education programs can be implemented to try and reduce them, and employees can be made aware of which breeds are more at risk for 
+I understand the first is painful question to ask, but if there are correlations between breeds and these factors then breeder policies and owner education programs can be implemented to try and reduce them, and employees can be made aware of which breeds are more at risk for these factors. 
 
 
 

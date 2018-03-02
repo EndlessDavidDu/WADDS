@@ -1,0 +1,22 @@
+---
+title: "Team App - Abby 2/28"
+author: "WADDS"
+date: "February 28, 2018"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE)
+library(tidyverse)
+VOI<-readxl::read_excel("EastAF1.xlsx")
+```
+
+
+```{r tidy}
+VOI2<-as.tibble(subset(VOI,select=c(Year,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec)))
+VOI3<-as.tibble(gather(VOI2,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec, key = "Month", value="rainfall"))
+ggplot(data=VOI3,mapping=aes(x=Year, y=rainfall))+geom_smooth(method="lm",se=FALSE)+facet_wrap(~Month)
+
+write_csv(VOI3,path="VOItidy.csv")
+```
+As we can see from the plot above, we can analyze rainfall trends per month over the years. In the months February, April, May, and December, rainfall in cm has decreased over the years. While it has increased over the years in the months of March, November, and December. The other months have relatively no increase or decrease in rainfall over the years.

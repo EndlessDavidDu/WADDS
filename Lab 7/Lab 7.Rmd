@@ -9,10 +9,21 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 shelter_data <- read_csv("WADDS/Lab 7/aac_shelter_outcomes.csv")
-
 ```
 
 ### Sarah Individual
 A question I would want to answer in Lab 8 is what trends are there in animals entering and leaving a humane society? A backup question would be which factors result in animals getting adopted most frequently in a humane society?
 
 These are important questions because, with this information, a humane society could have a better idea of where to put their resources in order to maximize the number of animals they save, and they could also gain information on what steps could be taken to get more animals adopted. These questions are interesting to me because I interned at the Humane Society of Boulder Valley last spring and have been involved there ever since; it would be interesting to find out if there was any information from our data that could benefit them. Since the Austin Animal shelter has a similar mission as the Humane Society of Boulder Valley, the data from their shelter might be a good place to start. 
+
+## Derek Individual
+
+My primary question is are certain kinds of breeds more at risk to things like suffering, agressive behavior, or other factors that would lead to euthanasia at the shelter? My backup question is are certain breeds more likely to be returned to owner than others after accounting for the distribution of breeds?
+
+I understand the first is painful question to ask, but if there are correlations between breeds and these factors then breeder policies and owner education programs can be implemented to try and reduce them, and employees can be made aware of which breeds are more at risk for these factors. 
+
+## Abby Individual
+
+My primary question would be how age affects the outcome of the animal entering the shelter. Are older animals less or more likely to be adopted? This is an important question as it could influence adoption strategies and policies. If older animals are less likely to be adopted, then the shelter could possibly change marketing strategies. For instance, older people tend to adopt older animals, so holding an adoption day geared toward elderly people could increase adoption rates of animals who are normally left behind. 
+
+My backup question would be how do outcomes differ across species? Are cats more likely to be adopted than birds? How do adoption rates differ among the species based on different age, color, or sex? This is an important question as it can also lead to more in-depth study of how to increase adoption rates among animals. If cats are less likely, controlling for other variables, to be adopted than dogs, a shelter could create new campaigns and events to increase cat adoption rates. These questions are important because finding answers could lead to overall higher adoption rates of animals, which could also lead to a decrease in euthanasia. 

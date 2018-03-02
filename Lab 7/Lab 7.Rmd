@@ -27,3 +27,12 @@ I understand the first is painful question to ask, but if there are correlations
 My primary question would be how age affects the outcome of the animal entering the shelter. Are older animals less or more likely to be adopted? This is an important question as it could influence adoption strategies and policies. If older animals are less likely to be adopted, then the shelter could possibly change marketing strategies. For instance, older people tend to adopt older animals, so holding an adoption day geared toward elderly people could increase adoption rates of animals who are normally left behind. 
 
 My backup question would be how do outcomes differ across species? Are cats more likely to be adopted than birds? How do adoption rates differ among the species based on different age, color, or sex? This is an important question as it can also lead to more in-depth study of how to increase adoption rates among animals. If cats are less likely, controlling for other variables, to be adopted than dogs, a shelter could create new campaigns and events to increase cat adoption rates. These questions are important because finding answers could lead to overall higher adoption rates of animals, which could also lead to a decrease in euthanasia. 
+
+## David Du's Individual Part 
+
+My primary question is: 
+Are different types of animals would have different outcome of entering the shelter, and how different kinds of animals would have different ability to adapt? since we can investigate this problem from age and sex and different outcomes and give consumers information for what they want to breed.
+
+My backup question is:
+How does classifcation of cats could help them get better service? For example, we could classify different kinds of cat by ages. The cats with younger age could adopt much more quickly than adult cats, and younger cats could have more convenience service than others. For example like threapy.
+

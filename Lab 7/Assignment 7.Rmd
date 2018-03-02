@@ -1,0 +1,24 @@
+---
+title: "Assignment 7"
+author: "David Du"
+date: "3/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## David Du's Individual Part 
+
+My primary question is: 
+Are different types of animals would have different outcome of entering the shelter, and how different kinds of animals would have different ability to adapt? since we can investigate this problem from age and sex and different outcomes and give consumers information for what they want to breed.
+
+My backup question is:
+How does classifcation of cats could help them get better service? For example, we could classify different kinds of cat by ages. The cats with younger age could adopt much more quickly than adult cats, and younger cats could have more convenience service than others. For example like threapy.
+
+
+
+
+
+

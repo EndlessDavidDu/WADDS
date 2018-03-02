@@ -11,7 +11,7 @@ library(tidyverse)
 shelter_data <- read_csv("WADDS/Lab 7/aac_shelter_outcomes.csv")
 ```
 
-### Sarah Individual
+## Sarah Individual
 A question I would want to answer in Lab 8 is what trends are there in animals entering and leaving a humane society? A backup question would be which factors result in animals getting adopted most frequently in a humane society?
 
 These are important questions because, with this information, a humane society could have a better idea of where to put their resources in order to maximize the number of animals they save, and they could also gain information on what steps could be taken to get more animals adopted. These questions are interesting to me because I interned at the Humane Society of Boulder Valley last spring and have been involved there ever since; it would be interesting to find out if there was any information from our data that could benefit them. Since the Austin Animal shelter has a similar mission as the Humane Society of Boulder Valley, the data from their shelter might be a good place to start. 
@@ -35,4 +35,9 @@ Are different types of animals would have different outcome of entering the shel
 
 My backup question is:
 How does classifcation of cats could help them get better service? For example, we could classify different kinds of cat by ages. The cats with younger age could adopt much more quickly than adult cats, and younger cats could have more convenience service than others. For example like threapy.
+
+## Will Individual Part
+My primary question comes up with how breed of dog/cats will affect the sex_upon_outcome of animals that entering into the shelter in Austin Animal center. My backup question is are certain breeds of animals are more likerly entering into the Austin Animal center.
+
+There are important questions because teh result could show that the probability of different kinds of breeds of cats/dogs with processed sexuality entering into the Austin Animal center. It will give us the statement to know what kinds of breeds we need to protect, because when we work with their sex_upon_outcome, they probably could not live in a human society anymore, so that they need to com into the animal shelter. Obviously, it is a good study for telling everyone that has pets with dogs/cats to treat their pets wisely. 
 

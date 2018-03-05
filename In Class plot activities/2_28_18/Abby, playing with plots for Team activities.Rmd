@@ -1,0 +1,18 @@
+---
+title: "In-Class Team exercises 3_5"
+author: "WADDS"
+date: "March 5, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+GCC<-as.tibble(read_csv("CRU_MAM_rainfall.csv"))
+```
+
+```{r GCC}
+CRUMAM<-as.tibble(GCC)%>%
+  filter(Dataset=="CRU",Season=="MAM")%>%
+  mean(rainfall)
+```

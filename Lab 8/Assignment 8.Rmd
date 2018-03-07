@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Questions: 
-*Do different types of animals have different outcomes of entering the shelter, and how do different kinds of animals have different abilities to adapt? 
+ * Do different types of animals have different outcomes of entering the shelter, and how do different kinds of animals have different abilities to adapt? 
 Since we can investigate this problem from age and sex and different outcomes and give consumers information for what they want to breed.
    
  * Does classifcation of cats help them get better service? 

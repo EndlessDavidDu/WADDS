@@ -15,19 +15,19 @@ Since we can investigate this problem from age and sex and different outcomes an
 For example, we could classify different kinds of cat by ages. The cats with younger age could adopt much more quickly than adult cats, and younger cats could have more convenience service than others. For example like therapy 
 
 
-## import data into R
+## Import data into R
 ```{r, warning=FALSE, message=FALSE}
 library(tidyverse)
 mydata<-read.csv('aac_shelter_outcomes.csv')
 mydata<-mydata[,1:12]
 ```
 
-## tidy the data
+## Tidy the data
 ```{r, warning=FALSE, message=FALSE}
 mydata %>%group_by(animal_type,outcome_type)%>%count()
 ```
 
-## create and transform variables
+## Create and transform variables
 ```{r, warning=FALSE, message=FALSE}
 library(ggplot2)
 thedata<-subset(mydata,select =c(age_upon_outcome,animal_type,outcome_type))
@@ -39,7 +39,7 @@ cat_data<-subset(thedata,thedata$animal_type=="Cat")
 cat_data<-na.omit(cat_data)
 ```
 
-## create plots of the variables and relationships between variables or create meaningful summaries of the data
+## Create plots of the variables and relationships between variables or create meaningful summaries of the data
 ```{r, warning=FALSE, message=FALSE}
 ggplot(data=thedata,aes(x=animal_type,fill=factor(outcome_type)))+geom_bar(position="fill")+labs(title = "outcomes of entering the shelter for different types of animals", x = "types of animals", y = "percentage")
 ```
@@ -48,9 +48,9 @@ ggplot(data=thedata,aes(x=animal_type,fill=factor(outcome_type)))+geom_bar(posit
 ggplot(data=cat_data,aes(x=age_type,fill=factor(outcome_type)))+geom_bar(position="fill")+labs(title = "outcomes of entering the shelter for different age of cats", x = "types of age", y = "percentage")
 ```
 
-## findings
+## Findings
 For the first question, we can see that the cat and dog have bigger percentage to be adopt, and the cat has bigger percentage to be adopt in the months of age, also we could find that cat has the smallest percentage to be adopt in the days of the month. Therefore, we need to care more about younger cats. 
 
-## write a few sentences in the team report detailing what you did, including which functions from the tidyverse you used.
+## Write a few sentences in the team report detailing what you did, including which functions from the tidyverse you used.
 
-In this report, I firstly count the number of the different animals with the different outcomes using group_by and count in tidyverse. Then we select variables and we use and transform the age variables to category variables including day,days,month,months,week,weeks,year,years to represent the different age. Finally we create plots of the variables to answer the question. re
+In this report, I firstly count the number of the different animals with the different outcomes using group_by and count in tidyverse. Then we select variables and we use and transform the age variables to category variables including day,days,month,months,week,weeks,year,years to represent the different age. Finally we create plots of the variables to answer the question. 

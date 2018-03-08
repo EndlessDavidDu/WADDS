@@ -1,0 +1,38 @@
+---
+title: "Will_tidy data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+```
+
+## Importing Data into R
+We read the data from the given .xlsx file.
+
+```{r}
+# Read from the given file, and the ninth sheet, *i.e.* CRU AND MAM
+GPCC <- read_excel("East Africa lake data.xlsx", sheet = 9)
+```
+
+## Tidying CRU and MAM
+We tidy the datset using gather() then separate().
+```{r}
+names(GPCC)
+GPCC.new <- gather(GPCC, `GPCC MAM Normalized`,`CRU MAM Normalized`,`GPCC OND Normalized`,`CRU OND Normalized`,key="type",value="rainfall")
+GPCC <- separate(GPCC.new,type,into=c("dataset","season"),sep=" ",extra="drop")
+GPCC <- GPCC[c("dataset","season","rainfall")]
+```
+
+## Visualization
+```{r, GPCC, fig.width=6, fig.height=2.5}
+#Plotting
+df <- data.frame(x = 1:440, y = GPCC$rainfall)
+ggplot(data = df, aes(x,y)) + geom_col()
+```
+
+
+
+

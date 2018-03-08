@@ -1,0 +1,54 @@
+---
+title: "Sarah Lab 8"
+author: "Sarah"
+date: "March 7, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+shelter_data <- read_csv("aac_shelter_outcomes.csv")
+```
+
+## Sarah Individual
+
+### Tidying the Data
+
+To begin tidying the data, I first removed columns I didn't feel were necessary for our analysis, including variables like the animal ID and the name of the animal. I then separated the sex and status of whether the animal is neutered or not from one column to two. I then made the datetime column more useful by only including the month and the year and separting the two so that they could be examined separately. The code I used to tidy the data can be found below:  
+
+``` {r tidy1sarah, warning=FALSE, echo=TRUE}
+shelterdata1<-select(shelter_data, -animal_id, -color, -monthyear, -name, -X13, -X14, -X15, -X16, -X17, -X18)
+shelterdata1<- shelterdata1 %>% separate(sex_upon_outcome, into=c("Status","Sex"),sep=" ", fill="left")
+shelterdata1<- shelterdata1 %>% separate(datetime, into=c("Year","Month"),sep="-",extra="drop")
+shelterdata1<-shelterdata1[-31,]
+shelterdata1$Year<-parse_integer(shelterdata1$Year)
+shelterdata1$Month<-parse_integer(shelterdata1$Month)
+```
+
+### Findings
+
+I began by investigating different patterns between years at the animal shelter. First, I analyzed the spread of animals through various years in regards to their spayed and neutered status. The spread seems to have remained constant over the past few years, though it is interesting to note that the number of total animals reported increased significantly between 2013 and 2015. This suggests that the animal shelter has expanded and has made changes that allow them to take in more animals
+
+``` {r sarahfindings}
+ggplot(data=shelterdata1)+geom_bar(aes(x=Year, fill=Status))
+```
+
+Next, I examined patterns in the various outcomes between each type of animal for each year in the dataset. The first plot shows the outcome type per year, and the second shows the outcome subtype. While many of the outcomes seem to be relatively constant throughout the years, some things that stand out are that there is a massive spike in rto-adoptions for dogs in 2017. The animal might want to examine what changes occurred in 2017 that caused this and continue it in the following years to initiate more rto-adoptions. A similar spike occurs in cats for the same year, though not as large. 
+
+``` {r findings2}
+ggplot(data=shelterdata1)+geom_density(aes(x=Year, fill=outcome_type),alpha=0.9)+facet_wrap(~animal_type)
+ggplot(data=shelterdata1)+geom_density(aes(x=Year, fill=outcome_subtype),alpha=0.9)+facet_wrap(~animal_type)
+```
+
+Finally, I examined patterns between months for different types of outcomes in different animals. The most notable trend amongst all this is that there seems to be a pattern between birds, cats, and dogs of larger amount of disposal in the beginning of the year.Overall, the transfer program and adoption rates seem consistent on a monthly basis, so the shelter seems to be doing a good job with that.
+
+``` {r findings3}
+ggplot(data=shelterdata1)+geom_density(aes(x=Month, fill=outcome_type),alpha=0.9)+facet_wrap(~animal_type)
+#ggplot(data=shelterdata1)+geom_density(aes(x=Year, fill=animal_type),alpha=0.9)+facet_wrap(~outcome_type)
+
+```
+
+## Summary of Individual Contribution
+
+Sarah: In order to tidy the dataset, I primarily used select separate, and the parse function. I used these to select important columns, break up columns into multiple variables, and turn them into a type that would be useful to use. I plotted many different variables in the dataset over different years and months to look for patterns amongst them so the shelter might be able to reflect on what they did in those years or months that would have caused these patterns, particularly among the outcomes of animals. 

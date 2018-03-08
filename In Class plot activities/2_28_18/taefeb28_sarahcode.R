@@ -32,3 +32,7 @@ ggplot(data=newdata2)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_sm
 
 
 ggplot(data=newdata2)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_smooth(aes(x=Year,y=BSI.Mar..mgSi02.cm2y.),se=FALSE,color="pink")+geom_smooth(aes(x=Year,y=TEX86),se=FALSE,color="green")+geom_smooth(aes(x=Year,y=BSi),se=FALSE,color="orange")+geom_smooth(aes(x=Year,y=Charcoal),se=FALSE,color="black")+geom_smooth(aes(x=Year,y=adjusted_rainfall),se=FALSE,color="blue")+ggtitle("Measures of Rainfall, East Africa")                                                                                                                                                                                                                                                                               
+
+newdata3<-newdata2 %>% gather(`adjusted_rainfall`,`Charcoal`,`BSi`,`n`,`TEX86`,`BSI.Mar..mgSi02.cm2y.`,key="Type", value="Rainfall_MeasurementsDiffer")
+ ggplot(data=newdata3)+geom_smooth(aes(x=Year, y=Rainfall_MeasurementsDiffer,color=Type),se=FALSE)+ggtitle("Measures of Rainfall, East Africa") 
+ 

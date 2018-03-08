@@ -25,7 +25,10 @@ newlakedata1<-select(newlakedata, -X1,-Age..ybp,-Month)
 #ggplot(data=newlakedata1)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_smooth(aes(x=Year,y=BSI.Mar..mgSi02.cm2y.),se=FALSE,color="pink")+geom_smooth(aes(x=Year,y=rainfall),se=FALSE,color="blue")+geom_smooth(aes(x=Year,y=TEX86),se=FALSE,color="green")
 
 #ggplot(data=newlakedata1)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_smooth(aes(x=Year,y=BSI.Mar..mgSi02.cm2y.),se=FALSE,color="pink")+geom_smooth(aes(x=Year,y=TEX86),se=FALSE,color="green")+geom_smooth(aes(x=Year,y=BSi),se=FALSE,color="orange")+geom_smooth(aes(x=Year,y=Charcoal),se=FALSE,color="black")
-newdata2<-filter(newlakedata1, Year>-1000)
-ggplot(data=newdata2)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_smooth(aes(x=Year,y=BSI.Mar..mgSi02.cm2y.),se=FALSE,color="pink")+geom_smooth(aes(x=Year,y=TEX86),se=FALSE,color="green")+geom_smooth(aes(x=Year,y=BSi),se=FALSE,color="orange")+geom_smooth(aes(x=Year,y=Charcoal),se=FALSE,color="black")
-  #The plot above doesn't have rainfall because I haven't got the scaling right on that
-                                                                                                                                                                                                                                                                               
+newdata2<-filter(newlakedata1, Year>1250)
+newdata2<-mutate(newdata2, adjusted_rainfall=rainfall/100)
+ggplot(data=newdata2)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_smooth(aes(x=Year,y=BSI.Mar..mgSi02.cm2y.),se=FALSE,color="pink")+geom_smooth(aes(x=Year,y=TEX86),se=FALSE,color="green")+geom_smooth(aes(x=Year,y=BSi),se=FALSE,color="orange")+geom_smooth(aes(x=Year,y=Charcoal),se=FALSE,color="black")+geom_smooth(aes(x=Year,y=adjusted_rainfall),se=FALSE,color="blue")
+  #The plot above doesn't have rainfall because I haven't got the scaling right on th
+
+
+ggplot(data=newdata2)+geom_smooth(aes(x=Year, y=n),se=FALSE,color="red")+geom_smooth(aes(x=Year,y=BSI.Mar..mgSi02.cm2y.),se=FALSE,color="pink")+geom_smooth(aes(x=Year,y=TEX86),se=FALSE,color="green")+geom_smooth(aes(x=Year,y=BSi),se=FALSE,color="orange")+geom_smooth(aes(x=Year,y=Charcoal),se=FALSE,color="black")+geom_smooth(aes(x=Year,y=adjusted_rainfall),se=FALSE,color="blue")+ggtitle("Measures of Rainfall, East Africa")                                                                                                                                                                                                                                                                               

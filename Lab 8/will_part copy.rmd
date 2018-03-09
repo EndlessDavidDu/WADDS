@@ -1,0 +1,84 @@
+
+title: "Will_Part"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(plyr)
+shelter_data <- read_csv("aac_shelter_outcomes.csv")
+```
+
+My primary concern is how breed of dog/cats will affect the sex_upon_outcome of animals that enter into the Austin Animal center. We are curious about whether the `sex_upon_outcome` has a significant different when `breed` varies.
+
+Then, we will explore which breeds of animals are more likely to enter into the Austin Animal center.
+
+We divide our result as two parts, one deals with dogs and the other deals with cats.
+
+## Dogs in Austin Animal Shelter
+```{r}
+dog_data <- as.tibble(dplyr::filter(shelter_data, shelter_data$animal_type == "Dog"))
+
+# Compute the frequency of dogs of particualr breed and `sex_upon_outcome`
+dog_result <- count(dog_data, c("breed", "sex_upon_outcome"))
+
+# To see the pattern when the frequncy > 400
+dog_result1 <- as.tibble(filter(dog_result, dog_result$freq > 400))
+
+dog_pct <- dog_result1$freq/44242
+
+dog_result1$pecentage <- dog_pct
+dog_result1[order(dog_result1$freq),]
+```
+After running the R script, we find that the Pit Bull Mix is of most often spayed or neutered: 4.82% is spayed female, and 5.32% is neutered.  
+
+```{r}
+dog_breed <- count(dog_data, "breed")
+dog_breed1 <- as.tibble(filter(dog_breed, dog_breed$freq > 400))
+dog_breed1[order(dog_breed1$freq),]
+```
+
+To explore into more detail, we plot a map of the frequency of breeds of dogs.
+```{r}
+df <- data.frame(x = dog_breed1$breed, y = dog_breed1$freq)
+gg <- ggplot(data = df, aes(x,y)) + geom_col()
+#Ajusting the text of x-axis
+gg1 <- gg + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+#Relable the axes
+gg2 <- gg1 + xlab("Breed of Dogs") + ylab("Frequency") + ggtitle("The Most Adopted Breeds")
+gg2
+```
+
+From the analysis above, we find that Pit Bull Mix, Chihuahua Shorthair Mix and Labrador Retriever Mix are among the most breeds in the Austin Animal center.
+
+## Cats in Austin Animal shelter
+For cats,
+```{r}
+cat_data <- as.tibble(filter(shelter_data, shelter_data$animal_type == "Cat"))
+cat_result <- count(cat_data, c("breed", "sex_upon_outcome"))
+cat_result1 <- as.tibble(filter(cat_result, cat_result$freq > 400))
+cat_result1[order(cat_result$freq),]
+```
+Again, we find that the cat Domestic Shorthair Mix are among the most neutered or spayed.
+
+```{r}
+cat_breed <- count(cat_data, "breed")
+cat_breed1 <- filter(cat_breed, cat_breed$freq > 100)
+cat_breed1[order(cat_breed1$freq),]
+```
+From the analysis above, we know that Domestic Shorthair Mix, Domestic Medium Hair Mix and Domestic longhair Mix are most adopted in the center. There are 23335, 2323 and 1228 cats of corresponding breeds.
+
+## Conclusion 
+We find that Pit Bull Mix and Domestic shorthair Mix are adopted by the Austin 
+Animal Center mostly. In the center, there are 4733 dogs of Chihuahua Shorthair mix and 6135 dogs of Pit Bull Mix. And they are spayed or neutered more than other breeds. 
+
+Domestic Longhair Mix, Dometic Medium Hair and Dometic Shorthair Mix are of  the most adopted cats in the Ausit center. There are 1228, 2323 and 23335 respectively.
+
+Dogs and cats are our friends, they are cute. Everyone, who has a pet whether a dog or a cat, shoud treat their pets wisely. 
+
+If you try to raise a dog or a cat, when your choice is one of Pit Bull Mix/Domestic shorthair Mix dogs or Domestic Longhair Mix/Dometic Medium Hair/Dometic Shorthair Mix cat, maybe you need a second thought. You should think hard whether you can raise him/her along all over his/her life.
+
+## Contribution
+For this report, I used the as.tibble,count and order to figure out the breed of cat and dog. In order to calculate how many dogs and cats entering into the shelter in different species. Finally I created the frequency of the different breed of gods that entering into the animal shelter.

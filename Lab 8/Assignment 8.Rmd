@@ -6,6 +6,7 @@ output: word_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## David
 
 ## Questions: 
  * Do different types of animals have different outcomes of entering the shelter, and how do different kinds of animals have different abilities to adapt? 
@@ -51,6 +52,139 @@ ggplot(data=cat_data,aes(x=age_type,fill=factor(outcome_type)))+geom_bar(positio
 ## Findings
 For the first question, we can see that the cat and dog have bigger percentage to be adopt, and the cat has bigger percentage to be adopt in the months of age, also we could find that cat has the smallest percentage to be adopt in the days of the month. Therefore, we need to care more about younger cats. 
 
-## Write a few sentences in the team report detailing what you did, including which functions from the tidyverse you used.
+##Will
+```{r setup2, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(plyr)
+shelter_data <- read_csv("aac_shelter_outcomes.csv")
+```
 
-In this report, I firstly count the number of the different animals with the different outcomes using group_by and count in tidyverse. Then we select variables and we use and transform the age variables to category variables including day,days,month,months,week,weeks,year,years to represent the different age. Finally we create plots of the variables to answer the question. 
+My primary concern is how breed of dog/cats will affect the sex_upon_outcome of animals that enter into the Austin Animal center. We are curious about whether the `sex_upon_outcome` has a significant different when `breed` varies.
+
+Then, we will explore which breeds of animals are more likely to enter into the Austin Animal center.
+
+We divide our result as two parts, one deals with dogs and the other deals with cats.
+
+## Dogs in Austin Animal Shelter
+```{r Will1}
+dog_data <- as.tibble(filter(shelter_data, shelter_data$animal_type == "Dog"))
+
+# Compute the frequency of dogs of particualr breed and `sex_upon_outcome`
+dog_result <- count(dog_data, c("breed", "sex_upon_outcome"))
+
+# To see the pattern when the frequncy > 400
+dog_result1 <- as.tibble(filter(dog_result, dog_result$freq > 400))
+
+dog_pct <- dog_result1$freq/44242
+
+dog_result1$pecentage <- dog_pct
+dog_result1[order(dog_result1$freq),]
+```
+After running the R script, we find that the Pit Bull Mix is of most often spayed or neutered: 4.82% is spayed female, and 5.32% is neutered.  
+
+```{r Will2}
+dog_breed <- count(dog_data, "breed")
+dog_breed1 <- as.tibble(filter(dog_breed, dog_breed$freq > 400))
+dog_breed1[order(dog_breed1$freq),]
+```
+
+From the analysis above, we find that Pit Bull Mix, Chihuahua Shorthair Mix and Labrador Retriever Mix are among the most breeds in the Austin Animal center.
+
+## Cats in Austin Animal shelter
+For cats,
+```{r Will3}
+cat_data <- as.tibble(filter(shelter_data, shelter_data$animal_type == "Cat"))
+cat_result <- count(cat_data, c("breed", "sex_upon_outcome"))
+cat_result1 <- as.tibble(filter(cat_result, cat_result$freq > 400))
+cat_result1[order(cat_result$freq),]
+```
+Again, we find that the cat Domestic Shorthair Mix are among the most neutered or spayed.
+
+```{r Will4}
+cat_breed <- count(cat_data, "breed")
+cat_breed1 <- filter(cat_breed, cat_breed$freq > 100)
+cat_breed1[order(cat_breed1$freq),]
+```
+From the analysis above, we know that Domestic Shorthair Mix, Domestic Medium Hair Mix and American Shorthair Mix are most adopted in the center.
+
+## Conclusion 
+We find that Pit Bull Mix and Domestic shorthair Mix are adopted by the Austin Animal Center mostly. And they are spayed or neutered more than other breeds. Dogs and cats are our friends, they are cute. Everyone that has pets with dogs/cats to treat their pets wisely.
+
+## Sarah
+```{r setup3, include=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+shelter_data <- read_csv("aac_shelter_outcomes.csv")
+```
+
+## Sarah Individual
+
+### Tidying the Data
+
+To begin tidying the data, I first removed columns I didn't feel were necessary for our analysis, including variables like the animal ID and the name of the animal. I then separated the sex and status of whether the animal is neutered or not from one column to two. I then made the datetime column more useful by only including the month and the year and separting the two so that they could be examined separately. The code I used to tidy the data can be found below:  
+
+``` {r tidy1sarah, warning=FALSE, echo=TRUE}
+shelterdata1<-select(shelter_data, -animal_id, -color, -monthyear, -name, -X13, -X14, -X15, -X16, -X17, -X18)
+shelterdata1<- shelterdata1 %>% separate(sex_upon_outcome, into=c("Status","Sex"),sep=" ", fill="left")
+shelterdata1<- shelterdata1 %>% separate(datetime, into=c("Year","Month"),sep="-",extra="drop")
+shelterdata1<-shelterdata1[-31,]
+shelterdata1$Year<-parse_integer(shelterdata1$Year)
+shelterdata1$Month<-parse_integer(shelterdata1$Month)
+```
+
+### Findings
+
+I began by investigating different patterns between years at the animal shelter. First, I analyzed the spread of animals through various years in regards to their spayed and neutered status. The spread seems to have remained constant over the past few years, though it is interesting to note that the number of total animals reported increased significantly between 2013 and 2015. This suggests that the animal shelter has expanded and has made changes that allow them to take in more animals
+
+``` {r sarahfindings}
+ggplot(data=shelterdata1)+geom_bar(aes(x=Year, fill=Status))
+```
+
+Next, I examined patterns in the various outcomes between each type of animal for each year in the dataset. The first plot shows the outcome type per year, and the second shows the outcome subtype. While many of the outcomes seem to be relatively constant throughout the years, some things that stand out are that there is a massive spike in rto-adoptions for dogs in 2017. The animal might want to examine what changes occurred in 2017 that caused this and continue it in the following years to initiate more rto-adoptions. A similar spike occurs in cats for the same year, though not as large. 
+
+``` {r findings2}
+ggplot(data=shelterdata1)+geom_density(aes(x=Year, fill=outcome_type),alpha=0.9)+facet_wrap(~animal_type)
+ggplot(data=shelterdata1)+geom_density(aes(x=Year, fill=outcome_subtype),alpha=0.9)+facet_wrap(~animal_type)
+```
+
+Finally, I examined patterns between months for different types of outcomes in different animals. The most notable trend amongst all this is that there seems to be a pattern between birds, cats, and dogs of larger amount of disposal in the beginning of the year.Overall, the transfer program and adoption rates seem consistent on a monthly basis, so the shelter seems to be doing a good job with that.
+
+``` {r findings3}
+ggplot(data=shelterdata1)+geom_density(aes(x=Month, fill=outcome_type),alpha=0.9)+facet_wrap(~animal_type)
+#ggplot(data=shelterdata1)+geom_density(aes(x=Year, fill=animal_type),alpha=0.9)+facet_wrap(~outcome_type)
+
+```
+
+## Abby
+To analyze our overall question of which factors lead to animals being more or less likely to be adopted, I decided to analyze how age affects adoption rates. If we can identify patterns about what aged animals are more and less likely to be adopted, then we can make broader conclusions about the factors that influence both adoption rates, and the likely outcome of an animal coming into the shelter.
+
+```{r Abby1}
+shelterdata2<-as.tibble(select(shelterdata1, age_upon_outcome,animal_type,outcome_type,Sex))
+
+testing1<-as.tibble(filter(shelterdata2,age_upon_outcome!="NULL",outcome_type!="Died",outcome_type!="Missing",outcome_type!="Rto-Adopt",outcome_type!="NA"))
+
+testing2<-testing1%>%
+  separate(age_upon_outcome,c("age_num","age_unit")," ")
+testing3<-as.tibble(filter(testing2,age_unit!="day",age_unit!="days",age_unit!="month",age_unit!="week",age_unit!="year"))
+testing4<-as.tibble(filter(testing3,outcome_type=="Adoption"))
+ggplot(data = testing4,mapping=aes(x=animal_type),na.rm=TRUE)+geom_bar()+facet_wrap(~age_unit)
+```
+First, I seperated the age_upon_outcome column to be able to separate among the age levesl of weeks, months, and years. There seems to be an interesting trend among the adoption levels of animal species among the different age categories. For example, among all animal types none were adopted when they were less than 1 month old. Among birds, there were roughly equal amounts of adoptions among months old and years old birds. Among Other types there was a slightly larger amount of animals being adopted at months old and not years old. There was an increase in adoption of older Dogs compared with younger dogs. While there seemed to be a decrease in adoption of cats as they were older.
+
+This implies that among animals entering shelters, they would be more likely to be adopted younger if they are cats, while they are more likely to be adopted older if they are dogs. We can also analyze to see the general trends among species in outcomes.
+
+```{r Abby2}
+ggplot(data=testing3,mapping=aes(x=animal_type,y=outcome_type))+geom_count()
+```
+From the plot above we can see that among birds, there is no trend in outcome. Thus for birds we cannot make accurate predictions on their eventual outcomes once they have entered a shelter. Among Cats, their likely outcomes upon entering the shelter are being adopted followed by transfering to a new shelter. Dogs are most likely to be adopted, followed by being returned to their owners, and then being transfered. Livestock only seem to be transfered or adopted, but never euthanized. Other types of animals are most likely to be euthanized. This illustrates that species is a big factor in the eventual outcome of the animal entering into the shelter. 
+
+## Summary of Individual Contribution
+
+Sarah: In order to tidy the dataset, I primarily used select separate, and the parse function. I used these to select important columns, break up columns into multiple variables, and turn them into a type that would be useful to use. I plotted many different variables in the dataset over different years and months to look for patterns amongst them so the shelter might be able to reflect on what they did in those years or months that would have caused these patterns, particularly among the outcomes of animals. 
+
+David: In this report, I firstly count the number of the different animals with the different outcomes using group_by and count in tidyverse. Then we select variables and we use and transform the age variables to category variables including day,days,month,months,week,weeks,year,years to represent the different age. Finally we create plots of the variables to answer the question.
+
+Abby: I tidied some of the data Sarah had previously tidied in order to do my analysis. I primarly did this through separate in order to get an age group column to use in my comparisons. I then created a plot to show the adoption counts for each animal type among the different age groups. This allowed me to see how age affected the adoption rates of different species. Finally, I created a plot showing the counts of different outcomes for each animal species. This allowed me to draw more conclusions about the likely outcome of an animal when they first enter the shelter. 
+
+##East Africa Lake Dataset

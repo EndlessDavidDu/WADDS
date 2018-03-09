@@ -1,0 +1,142 @@
+---
+title: "Lab8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(corrplot)
+library(lubridate)
+animals_train = read_csv("~/Downloads/train.csv")
+animals_test = read_csv("~/Downloads/test.csv")
+# Drop 'ID' column (first column)
+animals_train = animals_train[,-1]
+animals_test = animals_test[,-1]
+# merge train and test data together
+animals <- bind_rows(animals_train, animals_test)
+
+# This converts the AgeuponOutcome into number of days
+animals$TimeValue <- sapply(animals$AgeuponOutcome,  
+                      function(x) strsplit(x, split = ' ')[[1]][1])
+animals$UnitofTime <- sapply(animals$AgeuponOutcome,  
+                      function(x) strsplit(x, split = ' ')[[1]][2])
+animals$UnitofTime <- gsub('s', '', animals$UnitofTime)
+animals$TimeValue  <- as.numeric(animals$TimeValue)
+animals$UnitofTime <- as.factor(animals$UnitofTime)
+multiplier <- ifelse(animals$UnitofTime == 'day', 1,
+              ifelse(animals$UnitofTime == 'week', 7,
+              ifelse(animals$UnitofTime == 'month', 30,
+              ifelse(animals$UnitofTime == 'year', 365, NA))))
+animals$AgeinDays <- animals$TimeValue * multiplier
+
+animals$Hour    <- hour(animals$DateTime)
+animals$Weekday <- wday(animals$DateTime)
+animals$Month   <- month(animals$DateTime)
+animals$Year    <- year(animals$DateTime)
+
+#animals$DateTime <- time_length(interval(ymd("1970-01-01"), rep(animals$DateTime, 50000)), "second")
+
+# drop now unnessesary columns
+animals <- subset(animals, select=-c(TimeValue, UnitofTime, AgeuponOutcome))
+# fill in some NAs in the data
+animals$Name[is.na(animals$Name)] <- "Unknown"
+animals$HasName <- ifelse(animals$Name == 'Unknown', 0,
+                    ifelse(animals$Name != 'Unknown', 1, NA))
+
+animals$SexuponOutcome[is.na(animals$SexuponOutcome)] <- "Unknown"
+animals$OutcomeType[is.na(animals$OutcomeType)] <- "Unknown"
+animals$OutcomeSubtype[is.na(animals$OutcomeSubtype)] <- "Unknown"
+# lastly convert to factors
+animals <- animals %>% mutate(Name = as.factor(Name),
+                              OutcomeType = as.factor(OutcomeType),
+                              OutcomeSubtype = as.factor(OutcomeSubtype),
+                              AnimalType = as.factor(AnimalType),
+                              SexuponOutcome = as.factor(SexuponOutcome),
+                              Breed = as.factor(Breed),
+                              Color = as.factor(Color),
+                              HasName = as.factor(HasName))
+summary(animals)
+glimpse(animals)
+
+
+```
+```{r}
+animals %>% select(-DateTime) %>%
+  mutate(Name = as.integer(Name),
+                    OutcomeType = as.integer(OutcomeType),
+                    OutcomeSubtype = as.integer(OutcomeSubtype),
+                    AnimalType = as.integer(AnimalType),
+                    SexuponOutcome = as.integer(SexuponOutcome),
+                    Breed = as.integer(Breed),
+                    Color = as.integer(Color)) %>%
+  cor(use = "pairwise.complete.obs") %>%
+  corrplot(type = "lower", diag = FALSE)
+```
+```{r}
+animals %>%
+  ggplot(aes(AgeinDays, fill=AnimalType)) +
+  geom_density(alpha = 0.5) +
+  scale_x_log10() +
+  geom_vline(xintercept = 7) +
+  geom_vline(xintercept = 30) +
+  geom_vline(xintercept = 60) +
+  geom_vline(xintercept = 365) +
+  geom_vline(xintercept = 730) +
+  geom_vline(xintercept = 1095)
+```
+```{r}
+animals %>%
+  ggplot(aes(SexuponOutcome, OutcomeType, color = SexuponOutcome)) +
+  geom_count()
+```
+```{r}
+ggplot(animals %>% count(AnimalType, HasName) %>%    
+         mutate(pct=n/sum(n)),              
+       aes(AnimalType, n, fill=HasName)) +
+  geom_bar(stat="identity") +
+  geom_text(aes(label=paste0(sprintf("%1.1f", pct*100),"%")), 
+            position=position_stack(vjust=0.5))
+
+library(scales)
+
+ggplot(animals %>% subset(OutcomeType != "Unknown") %>%
+         count(HasName, OutcomeType) %>%    
+         mutate(pct=n/sum(n)),              
+       aes(HasName, n, fill=OutcomeType)) +
+       geom_bar(position = "fill", stat="identity") +
+       scale_y_continuous(labels = percent_format())
+
+ggplot(animals %>% subset(OutcomeSubtype != "Unknown") %>%
+         count(HasName, OutcomeSubtype) %>%    
+         mutate(pct=n/sum(n)),              
+       aes(HasName, n, fill=OutcomeSubtype)) +
+       geom_bar(position = "fill", stat="identity") +
+       scale_y_continuous(labels = percent_format())
+
+
+
+animals %>% ggplot(aes(DateTime, fill=HasName)) +
+  geom_density(alpha=0.5) + 
+  facet_wrap(~AnimalType)
+
+animals %>% subset(OutcomeType != "Unknown" & OutcomeType != "Transfer" & AnimalType == "Cat") %>% ggplot(aes(DateTime, fill=OutcomeType)) +
+  geom_density(alpha=0.25)
+
+animals %>% ggplot(aes(DateTime, fill=AnimalType)) +
+  geom_density(alpha=0.25)
+```
+
+In the last lab the questions I wanted to look at was correlations between breeds and outcome. Upon further inspection of the data I found very little correlation between breed and outcome, perhaps because there are so many breeds. I decided to instead look at outcomes based off name and over time. Dogs are twice as likely to have a known name than a cat. This is probably because dogs are more likely to wear collars at all times than cats. Pets with known names are also far more likely to be adopted or returned to their owners than unknown names.
+
+Interestingly cats with unknown names are far more common during the summer than the winter, whereas dogs remain relatively constant. I suspect this is because more people are likely to leave their doors or windows open during the summer allowing cats to escape. Also interesting is that deaths among cats spiked in the summer of 2015, a quick google shows that texas was undergoing an major heatwave in July 2015 and it may be the animals perished from heat exposure.
+
+I tidyed the dataset by removing superflous columns (like animal ID), filling in NAs with "Unknown" where appropriate, and I created a new feature based on whether the animal had a known name.
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+

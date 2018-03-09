@@ -186,3 +186,5 @@ Sarah: In order to tidy the dataset, I primarily used select separate, and the p
 David: In this report, I firstly count the number of the different animals with the different outcomes using group_by and count in tidyverse. Then we select variables and we use and transform the age variables to category variables including day,days,month,months,week,weeks,year,years to represent the different age. Finally we create plots of the variables to answer the question.
 
 Abby: I tidied some of the data Sarah had previously tidied in order to do my analysis. I primarly did this through separate in order to get an age group column to use in my comparisons. I then created a plot to show the adoption counts for each animal type among the different age groups. This allowed me to see how age affected the adoption rates of different species. Finally, I created a plot showing the counts of different outcomes for each animal species. This allowed me to draw more conclusions about the likely outcome of an animal when they first enter the shelter. 
+
+##East Africa Lake Dataset

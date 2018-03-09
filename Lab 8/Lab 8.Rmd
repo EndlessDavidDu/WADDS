@@ -1,11 +1,47 @@
 ---
 title: "Assignment 8"
-output: word_document
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+shelter_data33 <- read_csv("aac_shelter_outcomes.csv")
 ```
+##Team Part:
+An overall question we would like to investigate in next weeks lab is: what trends are there in animals leaving and entering a humane society and what factors lead to more animals getting adopted?
+
+For our domain expert, we are going to be doing this research for the Austin Animal Shelter in Texas. By analyzing their data, we can help them to determine what factors lead to higher rates of adoption of their animals. We can also see which factors may be applicable to other animal shelters across the country. By discovering the trends present in this data set they will be able to change policy and practices to hopefully increase adoption rates and possibly decrease instances of euthanasia.
+
+The data we will use to answer our questions is a dataset from Kaggle that gives information about thousands of animals admitted to the Austin Animal Center Shelter. The data set describes each animal with details including its age, gender, and condition, and outcome of the animal. This dataset can be found at the following URL: https://www.kaggle.com/aaronschlegel/austin-animal-center-shelter-outcomes-and 
+
+```{r doinit}
+shelterdata3<-select(shelter_data33, -animal_id, -color, -monthyear, -name, -X13, -X14, -X15, -X16, -X17, -X18)
+shelterdata3<- shelterdata3 %>% separate(sex_upon_outcome, into=c("Status","Sex"),sep=" ", fill="left")
+shelterdata3<- shelterdata3 %>% separate(datetime, into=c("Year","Month"),sep="-",extra="drop")
+shelterdata3<-shelterdata3[-31,]
+shelterdata3$Year<-parse_integer(shelterdata3$Year)
+shelterdata3$Month<-parse_integer(shelterdata3$Month)
+shelterdata4<-as.tibble(select(shelterdata3, age_upon_outcome,animal_type,outcome_type,Sex))
+testing6<-as.tibble(filter(shelterdata4,age_upon_outcome!="NULL",outcome_type!="Died",outcome_type!="Missing",outcome_type!="Rto-Adopt",outcome_type!="NA"))
+
+testing7<-testing6%>%
+  separate(age_upon_outcome,c("age_num","age_unit")," ")
+testing8<-as.tibble(filter(testing7,age_unit!="day",age_unit!="days",age_unit!="month",age_unit!="week",age_unit!="year",age_unit!="weeks"))
+testing9<-as.tibble(filter(testing8,outcome_type=="Adoption"))
+ggplot(data = testing9,mapping=aes(x=animal_type),na.rm=TRUE)+geom_bar()+facet_wrap(~age_unit)
+```
+As we can see from the plot above, one of the major factors influencing adoption rates is age, dependent on species. For cats, there are more adoptions when they are younger, while there are conversely more adoptions for older dogs. This could be due to the fact that older dogs are more likely to be perceived as mild, and could have been trained by previous owners to be well-behaved. Since cats tend to wander outside and mate, there could be a correlation between young cats and adoption simply because there may be more young cats born on the street that become strays. Either way, we see a clear trend to adopt more younger cats and older dogs.
+
+##Enter cat missing during summer plot here!
+In this plot, we found that cats go missing from there home significantly more often in the summer than any other time of year, while the rate of dogs coming to the shelter are relatively constant throughout the year. This can probably be attributed to the fact that people may have windows and doors open more often in their homes during the summer than any other time of year, making it easier for cats to escape and explore beyond their boundaries. This means that every summer, there is generally a larger influx of cats admitted to the animal shelter. The shelter could use this information to make sure they are equipped to handle more cats in the summer than the rest of the year; on the other hand, they can expect to have a relatively consistent number of dogs in the shelter. 
+
+##Enter names being adopted plot here with writeup!
+
+
 ## David
 
 ## Questions: 
@@ -188,3 +224,6 @@ David: In this report, I firstly count the number of the different animals with 
 Abby: I tidied some of the data Sarah had previously tidied in order to do my analysis. I primarly did this through separate in order to get an age group column to use in my comparisons. I then created a plot to show the adoption counts for each animal type among the different age groups. This allowed me to see how age affected the adoption rates of different species. Finally, I created a plot showing the counts of different outcomes for each animal species. This allowed me to draw more conclusions about the likely outcome of an animal when they first enter the shelter. 
 
 ##East Africa Lake Dataset
+![](africarain.jpeg)
+
+From the graph above we can see that, on average, rainfall has decrease for the variables rainfall, charcoal, and BSi. However, for the variables BSi.mar, n, and TEX86 there seems to have been neither an increase nor a decrease in the rainfall. The variable for average rainfall seems to fluctuate, but has generally been decreasing, as the years increase.

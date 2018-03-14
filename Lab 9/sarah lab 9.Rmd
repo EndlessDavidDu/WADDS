@@ -1,0 +1,172 @@
+---
+title: "Lab 9"
+author: "Sarah"
+date: "March 13, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+library(stringr)
+library(htmlwidgets)
+library(knitr)
+library(forcats)
+library(lubridate)
+library(fueleconomy)
+```
+
+## Sarah Individual Part
+
+### Chapter 13
+
+
+#### Problem
+
+
+Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
+
+
+#### Solution
+
+``` {r sarah1}
+vehicles
+common
+common_vehicles<-semi_join(vehicles, common)
+common_vehicles
+```
+
+This didn't end up requiring as much work as I anticipated, so I will do a different problem as well for this chapter. 
+
+#### Problem
+
+Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays.
+
+####Solution
+
+``` {r sarah132}
+flights<-filter(flights, arr_delay!=is.na(arr_delay))
+flights1<- flights %>% group_by(dest) %>% summarize(by=mean(arr_delay))
+names(flights1)<-c("faa","avg_delay")
+airportsnew<-right_join(airports,flights1)
+ggplot(data=airportsnew, aes(lon, lat,color=avg_delay)) + borders("state") + geom_point() + coord_quickmap()
+
+```
+
+
+
+### Chapter 14
+
+#### Problem
+Given the corpus of common words in stringr::words, create regular expressions that find all words that:
+
+Start with "y".
+
+End with "x"
+
+Are exactly three letters long. (Don't cheat by using str_length()!)
+
+Have seven letters or more.
+
+Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
+
+
+#### Solution
+
+
+##### Start with y
+
+```{r sarah14}
+str_view(words, "^y", match = TRUE)
+
+```
+
+##### End with x
+
+``` {r sarah142}
+str_view(words, "x$", match=TRUE)
+
+```
+
+##### Are exactly three letters long
+
+``` {r sarah143}
+#str_view(words, "^...$", match=TRUE)
+
+```
+
+The printed list of words is rather long, so I chose to not show the output, but the code is shown above. 
+
+##### Have seven letters or more
+
+``` {r sarah144}
+#str_view(words, "^.......", match=TRUE)
+
+```
+
+The printed list of words is rather long, so I chose to not show the output, but the code is shown above.
+
+
+### Chapter 15
+
+
+#### Problem
+
+What is the most common relig in this survey? What's the most common partyid?
+
+#### Solution
+
+Though answering this problem only required creating two plots and analyzing with riligion and party identification had the largest quantity, I also reordered and relabeled some of the factors to make the plots more clear visually. 
+
+``` {r sarah151}
+gss_cat<-gss_cat %>% mutate(partyid = fct_recode(partyid, "Republican, strong"    = "Strong republican", "Republican, weak"      = "Not str republican", "Independent, near rep" = "Ind,near rep", "Independent, near dem" = "Ind,near dem", "Democrat, weak"        = "Not str democrat", "Democrat, strong"      = "Strong democrat"))
+ggplot(gss_cat, aes(relig, fill=fct_relevel(relig, "Protestant", "Catholic","Jewish"))) + geom_bar()+theme(axis.text.x=element_blank())
+ggplot(gss_cat, aes(partyid, fill=fct_relevel(partyid, "No answer", "Don't know","Other party",after=Inf))) + geom_bar()+theme(axis.text.x=element_blank())
+
+```
+
+We can tell that the most common religion is Protestant and the most common party I.D. is independent. 
+
+### Chapter 16
+
+#### Problem
+
+Use the appropriate lubridate function to parse each of the following dates:
+
+d1 <- "January 1, 2010"
+
+d2 <- "2015-Mar-07"
+
+d3 <- "06-Jun-2017"
+
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+
+d5 <- "12/30/14" # Dec 30, 2014
+
+#### Solution
+
+``` {r sarah16}
+# For d1
+d1 <- "January 1, 2010"
+d1new<-mdy(d1)
+# For d2
+d2 <- "2015-Mar-07"
+d2new<-ymd(d2)
+# For d3
+d3 <- "06-Jun-2017"
+d3new<-dmy(d3)
+# For d4
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d4new<-mdy(d4)
+# For d5
+d5 <- "12/30/14" # Dec 30, 2014
+d5new<-mdy(d5)
+newdates<-c(d1new, d2new,d3new,d4new,d5new)
+kable(newdates, col.names="Dates")
+```
+
+
+## Summary of Contribution
+
+Sarah: For chapter 13, I used the mutating join functions in order to calculate the average number of delays in the flights dataset and combine it wit hthe airports one to plot the average delays per airport on a map of the US. For chapter 14, I filtered out specific words based on different qualifications given by the problem. In chapter 15, I organized factors in the gss_cat dataset and plotted religion and party identification. In chapter 16, I ocnverted different strings into dates.

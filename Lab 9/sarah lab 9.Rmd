@@ -21,23 +21,9 @@ library(fueleconomy)
 
 ### Chapter 13
 
-
 #### Problem
 
 
-Combine fueleconomy::vehicles and fueleconomy::common to find only the records for the most common models.
-
-
-#### Solution
-
-``` {r sarah1}
-vehicles
-common
-common_vehicles<-semi_join(vehicles, common)
-common_vehicles
-```
-
-This didn't end up requiring as much work as I anticipated, so I will do a different problem as well for this chapter. 
 
 #### Problem
 

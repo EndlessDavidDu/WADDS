@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(nycflights13) #for Ex.13.4.6
-library(stringr) # for Ex.
+library(stringr) # for Ex.14.2.5#2
 library(forcats) #included for Ex.15.4.1
 library(lubridate) # included for the last excercise
 ```
@@ -61,17 +61,8 @@ End with `ing` or `ise`.
 
 ### Solution 2
 ```{r}
-### Words starting with a vowel, *i.e.*, `aeiou`
-str_view(stringr::words, "^[aeiou]", match = TRUE)
-
-### Words that contain only consonants
-str_view(stringr::words, "^[^aeiou]+$", match=TRUE)
-
-### Words ending with `ed`, but not with `eed`
-str_view(stringr::words, "^ed$|[^e]ed$", match = TRUE)
-
-### Words ending with `ing` or `ise`
-str_view(stringr::words, "i(ng|se)$", match = TRUE)
+str_c("a", c("a","b"), sep = " ", collapse = ",")
+str_c("a", c("a","b"), sep = " ")
 ```
 
 

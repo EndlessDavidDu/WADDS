@@ -51,13 +51,7 @@ flights %>%
 But suprisingly, the maximal minutes of departure delays decrease with the aging of the plane, especially when the
 the plane is older than 20 years.
 
-## Ex. 13.3.3.1 #1
-> Create regular expressions to find all words that:
-
-> Start with a vowel.
-That only contain consonants. (Hint: thinking about matching "not"-vowels.)
-End with `ed`, but not with `eed`.
-End with `ing` or `ise`.
+## Ex. 14.2.5.2 #2
 
 ### Solution 2
 ```{r}

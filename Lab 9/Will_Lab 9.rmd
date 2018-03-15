@@ -1,0 +1,144 @@
+---
+title: "Will_Lab9"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13) #for Ex.13.4.6
+library(stringr) # for Ex.
+library(forcats) #included for Ex.15.4.1
+library(lubridate) # included for the last excercise
+```
+
+
+## EX. 13.4.6 #3
+> *Is there a relationship between the age of a plane and its delays?*
+
+### Solution 1
+Counter to our intuition, The minimal time of departure dealay tends to increase slightly with the aging of the plane.
+```{r, echo = TRUE}
+### Specify the the ages of the planes.
+ages_plane <- 
+  planes %>%
+  mutate(age = 2018 - year) %>%
+  select(tailnum, age)
+
+### Minimal minutes of delay
+flights %>%
+  inner_join(ages_plane, by = "tailnum") %>%
+  group_by(age) %>%
+  ### Here we use the average 
+  filter(!is.na(dep_delay)) %>%
+  summarise(delay_min = min(dep_delay)) %>%
+  ggplot(aes(x = age, y = delay_min)) +
+      geom_point() +
+      geom_line()
+
+### Maximal minutes of delay
+flights %>%
+  inner_join(ages_plane, by = "tailnum") %>%
+  group_by(age) %>%
+  ### Here we use the average 
+  filter(!is.na(dep_delay)) %>%
+  summarise(delay_max = max(dep_delay)) %>%
+  ggplot(aes(x = age, y = delay_max)) +
+      geom_point() +
+      geom_line()
+```
+
+But suprisingly, the maximal minutes of departure delays decrease with the aging of the plane, especially when the
+the plane is older than 20 years.
+
+## Ex. 13.3.3.1 #1
+> Create regular expressions to find all words that:
+
+> Start with a vowel.
+That only contain consonants. (Hint: thinking about matching "not"-vowels.)
+End with `ed`, but not with `eed`.
+End with `ing` or `ise`.
+
+### Solution 2
+```{r}
+### Words starting with a vowel, *i.e.*, `aeiou`
+str_view(stringr::words, "^[aeiou]", match = TRUE)
+
+### Words that contain only consonants
+str_view(stringr::words, "^[^aeiou]+$", match=TRUE)
+
+### Words ending with `ed`, but not with `eed`
+str_view(stringr::words, "^ed$|[^e]ed$", match = TRUE)
+
+### Words ending with `ing` or `ise`
+str_view(stringr::words, "i(ng|se)$", match = TRUE)
+```
+
+
+## Ex. 15.4.1 #2
+> *For each factor in `gss_cat` identify whether the order of the levels is arbitrary or principled.*
+
+### Solution 3
+There are five six categorical variables: `marital`, `race`, `rincome`, `partyid`, `relig`, `denom`.
+
+The ordering of martial is *partially* principled.  It can be grouped by "never married", married in the past (separated, divorced, widowed), and "married"
+
+```{r, echo = TRUE}
+keep(gss_cat, is.factor) %>% names()
+levels(gss_cat[["marital"]])
+
+gss_cat %>%
+  ggplot(aes(x = marital)) +
+  geom_bar()
+
+### Obviously, The ordering of race is principled.
+
+levels(gss_cat$race)
+
+gss_cat %>%
+  ggplot(aes(race)) +
+  geom_bar(drop = FALSE)
+
+
+###  `rincome` is principledly ordered if we don't take "No answer", "Don't know", "Refused" and "Not applicable" into account, otherwise, it is arbitary.
+levels(gss_cat$rincome)
+
+### The levels of `relig` is arbitrary.
+gss_cat %>%
+  ggplot(aes(relig)) +
+  geom_bar() +
+  coord_flip()
+```
+
+
+## Ex. 16.3.4 #4
+
+> *How does the average delay time change over the course of a day? Should you use `dep_time` or `sched_dep_time`? Why?*
+
+### Solution 4
+`sched_dep_time` is relevant, because the delay time varies with it. So it is used. But `dep_time` is not used explictly here, it is only usded to clean out the missing data.
+```{r, echo = TRUE}
+### Convert the time over the day
+make_datetime1 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+
+flights1 <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime1(year, month, day, dep_time),
+    arr_time = make_datetime1(year, month, day, arr_time),
+    sched_dep_time = make_datetime1(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime1(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time"))
+
+
+flights1 %>%
+  mutate(sched_dep_hour = hour(sched_dep_time)) %>%
+  group_by(sched_dep_hour) %>%
+  summarise(dep_delay = mean(dep_delay)) %>%
+  ggplot(aes(y = dep_delay, x = sched_dep_hour)) +
+  geom_point() +
+  geom_smooth()
+```

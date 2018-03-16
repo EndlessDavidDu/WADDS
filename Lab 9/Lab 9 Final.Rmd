@@ -1,0 +1,448 @@
+---
+title: "Lab 9 Final"
+author: "WADDS"
+date: "March 15, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+library(stringr) 
+library(forcats) 
+library(lubridate) 
+library(htmlwidgets)
+library(fueleconomy)
+library(knitr)
+library(dplyr)
+```
+## Team Plot
+
+
+## Will
+## EX. 13.4.6 #3
+> *Is there a relationship between the age of a plane and its delays?*
+
+### Solution 1
+Counter to our intuition, The minimal time of departure dealay tends to increase slightly with the aging of the plane.
+```{r, echo = TRUE}
+### Specify the the ages of the planes.
+ages_plane <- 
+  planes %>%
+  mutate(age = 2018 - year) %>%
+  select(tailnum, age)
+
+### Minimal minutes of delay
+flights %>%
+  inner_join(ages_plane, by = "tailnum") %>%
+  group_by(age) %>%
+  ### Here we use the average 
+  filter(!is.na(dep_delay)) %>%
+  summarise(delay_min = min(dep_delay)) %>%
+  ggplot(aes(x = age, y = delay_min)) +
+      geom_point() +
+      geom_line()
+
+### Maximal minutes of delay
+flights %>%
+  inner_join(ages_plane, by = "tailnum") %>%
+  group_by(age) %>%
+  ### Here we use the average 
+  filter(!is.na(dep_delay)) %>%
+  summarise(delay_max = max(dep_delay)) %>%
+  ggplot(aes(x = age, y = delay_max)) +
+      geom_point() +
+      geom_line()
+```
+
+But suprisingly, the maximal minutes of departure delays decrease with the aging of the plane, especially when the
+the plane is older than 20 years.
+
+## Ex. 14.2.5.2 #2
+
+### Solution 2
+```{r}
+str_c("a", c("a","b"), sep = " ", collapse = ",")
+str_c("a", c("a","b"), sep = " ")
+```
+
+
+## Ex. 15.4.1 #2
+> *For each factor in `gss_cat` identify whether the order of the levels is arbitrary or principled.*
+
+### Solution 3
+There are five six categorical variables: `marital`, `race`, `rincome`, `partyid`, `relig`, `denom`.
+
+The ordering of martial is *partially* principled.  It can be grouped by "never married", married in the past (separated, divorced, widowed), and "married"
+
+```{r, echo = TRUE}
+keep(gss_cat, is.factor) %>% names()
+levels(gss_cat[["marital"]])
+
+gss_cat %>%
+  ggplot(aes(x = marital)) +
+  geom_bar()
+
+### Obviously, The ordering of race is principled.
+
+levels(gss_cat$race)
+
+gss_cat %>%
+  ggplot(aes(race)) +
+  geom_bar(drop = FALSE)
+
+
+###  `rincome` is principledly ordered if we don't take "No answer", "Don't know", "Refused" and "Not applicable" into account, otherwise, it is arbitary.
+levels(gss_cat$rincome)
+
+### The levels of `relig` is arbitrary.
+gss_cat %>%
+  ggplot(aes(relig)) +
+  geom_bar() +
+  coord_flip()
+```
+
+
+## Ex. 16.3.4 #4
+
+> *How does the average delay time change over the course of a day? Should you use `dep_time` or `sched_dep_time`? Why?*
+
+### Solution 4
+`sched_dep_time` is relevant, because the delay time varies with it. So it is used. But `dep_time` is not used explictly here, it is only usded to clean out the missing data.
+```{r, echo = TRUE}
+### Convert the time over the day
+make_datetime1 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+
+flights1 <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime1(year, month, day, dep_time),
+    arr_time = make_datetime1(year, month, day, arr_time),
+    sched_dep_time = make_datetime1(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime1(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time"))
+
+
+flights1 %>%
+  mutate(sched_dep_hour = hour(sched_dep_time)) %>%
+  group_by(sched_dep_hour) %>%
+  summarise(dep_delay = mean(dep_delay)) %>%
+  ggplot(aes(y = dep_delay, x = sched_dep_hour)) +
+  geom_point() +
+  geom_smooth()
+```
+## Sarah Individual Part
+
+### Chapter 13
+
+#### Problem
+
+
+
+#### Problem
+
+Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays.
+
+####Solution
+
+``` {r sarah132}
+flights<-filter(flights, arr_delay!=is.na(arr_delay))
+flights1<- flights %>% group_by(dest) %>% summarize(by=mean(arr_delay))
+names(flights1)<-c("faa","avg_delay")
+airportsnew<-right_join(airports,flights1)
+ggplot(data=airportsnew, aes(lon, lat,color=avg_delay)) + borders("state") + geom_point() + coord_quickmap()
+
+```
+
+
+
+### Chapter 14
+
+#### Problem
+Given the corpus of common words in stringr::words, create regular expressions that find all words that:
+
+Start with "y".
+
+End with "x"
+
+Are exactly three letters long. (Don't cheat by using str_length()!)
+
+Have seven letters or more.
+
+Since this list is long, you might want to use the match argument to str_view() to show only the matching or non-matching words.
+
+
+#### Solution
+
+
+##### Start with y
+
+```{r sarah14}
+str_view(words, "^y", match = TRUE)
+
+```
+
+##### End with x
+
+``` {r sarah142}
+str_view(words, "x$", match=TRUE)
+
+```
+
+##### Are exactly three letters long
+
+``` {r sarah143}
+#str_view(words, "^...$", match=TRUE)
+
+```
+
+The printed list of words is rather long, so I chose to not show the output, but the code is shown above. 
+
+##### Have seven letters or more
+
+``` {r sarah144}
+#str_view(words, "^.......", match=TRUE)
+
+```
+
+The printed list of words is rather long, so I chose to not show the output, but the code is shown above.
+
+
+### Chapter 15
+
+
+#### Problem
+
+What is the most common relig in this survey? What's the most common partyid?
+
+#### Solution
+
+Though answering this problem only required creating two plots and analyzing with riligion and party identification had the largest quantity, I also reordered and relabeled some of the factors to make the plots more clear visually. 
+
+``` {r sarah151}
+gss_cat<-gss_cat %>% mutate(partyid = fct_recode(partyid, "Republican, strong"    = "Strong republican", "Republican, weak"      = "Not str republican", "Independent, near rep" = "Ind,near rep", "Independent, near dem" = "Ind,near dem", "Democrat, weak"        = "Not str democrat", "Democrat, strong"      = "Strong democrat"))
+ggplot(gss_cat, aes(relig, fill=fct_relevel(relig, "Protestant", "Catholic","Jewish"))) + geom_bar()+theme(axis.text.x=element_blank())
+ggplot(gss_cat, aes(partyid, fill=fct_relevel(partyid, "No answer", "Don't know","Other party",after=Inf))) + geom_bar()+theme(axis.text.x=element_blank())
+
+```
+
+We can tell that the most common religion is Protestant and the most common party I.D. is independent. 
+
+### Chapter 16
+
+#### Problem
+
+Use the appropriate lubridate function to parse each of the following dates:
+
+d1 <- "January 1, 2010"
+
+d2 <- "2015-Mar-07"
+
+d3 <- "06-Jun-2017"
+
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+
+d5 <- "12/30/14" # Dec 30, 2014
+
+#### Solution
+
+``` {r sarah16}
+# For d1
+d1 <- "January 1, 2010"
+d1new<-mdy(d1)
+# For d2
+d2 <- "2015-Mar-07"
+d2new<-ymd(d2)
+# For d3
+d3 <- "06-Jun-2017"
+d3new<-dmy(d3)
+# For d4
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d4new<-mdy(d4)
+# For d5
+d5 <- "12/30/14" # Dec 30, 2014
+d5new<-mdy(d5)
+newdates<-c(d1new, d2new,d3new,d4new,d5new)
+kable(newdates, col.names="Dates")
+```
+
+
+## David
+## Chapter 13 
+
+# Problem: 
+What does it mean for a flight to have a missing tailnum? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
+
+# Solution:
+
+```{r }
+anti_join(flights, planes, by = "tailnum") %>% 
+count(carrier, sort=TRUE)
+```
+
+
+Here, I have anti_join function which could find out the unmatched record, here we need to find out flights have missing tailnum. Therefore, I use this function to find out Amercian Airline and Envoy Airline have most missing record for tailnum. Missing tailnum could mean that the flight is unregistered, unlicensed flight.
+
+
+## Chapter 14
+
+# Problem and Solution
+Create regular expressions to find all words that:
+
+Start with a vowel.
+
+```{r, echo=FALSE}
+#str_view(stringr::words, "^[aeiou]", match = TRUE)
+```
+
+That only contain consonants. (Hint: thinking about matching “not”-vowels.)
+
+```{r, echo=FALSE}
+#str_view(stringr::words, "^[^aeiou]+$", match=TRUE)
+```
+
+End with ed, but not with eed.
+
+```{r, echo=FALSE}
+str_view(stringr::words, "^ed$|[^e]ed$", match = TRUE)
+```
+
+End with ing or ise.
+
+```{r, echo=FALSE}
+#str_view(stringr::words, "i(ng|se)$", match = TRUE)
+```
+
+For some of problems, the output is quite long, so I just leave my code.
+
+## Chapter 15
+
+# Problem 
+There are some suspiciously high numbers in tvhours. Is the mean a good summary?
+```{r , echo=FALSE}
+summary(gss_cat[["tvhours"]])
+ggplot(gss_cat, aes(x=tvhours),filter(!is.na(tvhours)))+geom_histogram(binwidth=1)
+```
+
+I think use median in this question could be much more convince than mean, since there are some values are extremely large, and we could see that there are a lot of people watching TV for 2.5 hours. However, the hours of TV does not look like surprising me. 
+
+## Chapter 16
+
+Functions need to be used prior to do exercises
+
+```{r , echo=FALSE}
+make_datetime_100 <- function(year, month, day, time) {
+make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+flights_dt <- flights %>%
+filter(!is.na(dep_time), !is.na(arr_time)) %>%
+mutate(
+dep_time = make_datetime_100(year, month, day, dep_time),
+arr_time = make_datetime_100(year, month, day, arr_time),
+sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+) %>%
+select(origin, dest, ends_with("delay"), ends_with("time"))
+
+```
+
+
+# Problem 
+What makes the distribution of diamonds$carat and flights$sched_dep_time similar?
+
+# Solution
+```{r, echo=FALSE}
+ggplot(diamonds, aes(x = carat)) + geom_density()
+ggplot(diamonds, aes(x = carat %% 1 * 100)) +geom_histogram(binwidth = 1)
+ggplot(flights_dt, aes(x = minute(sched_dep_time))) +geom_histogram(binwidth = 1)
+```
+
+Here, I have draw three graph in order to help us understand the relationship between these variables. First, we could take out the flights time between 0 and 30 minutes. We can clearly see that the distribution of the flights depart is similar with the count of carat and diamonds. Here, I have divided the flights time by 5 minutes, so we could draw graph based on ending with 5, 0 minutes. This corresponds the carats with 0, 1/3,1/2, 2/3. I have multiply with 100 to see visualization. These trends and numbers could be made by human factors and it is also makes much sense. 
+
+## Abby
+## Joining DataSets Question
+```{r ordering flights}
+mostflights<-left_join(nycflights13::flights, nycflights13::airlines, by="carrier")
+
+ggplot(data=mostflights,aes(color=name))+geom_bar(aes(x=carrier))
+```
+
+Fromt the above plot we can see that the airlines with the most number of flights from New York in 2013 were United Air Lines, JetBlue Airways, ExpressJet Airlines, and Delta Airlines. While Alaska Airlines, Skywest, Hawaiian, Frontier, and Mesa had the least amount of flights from New York that year. 
+
+## 14.2.5 #6
+```{r functionstring}
+str_commasep <- function(x, sep = ", ", last = ", and ") {
+  if (length(x) > 1) {
+    str_c(str_c(x[-length(x)], collapse = sep),
+                x[length(x)],
+                sep = last)
+  } else {
+    x
+  }
+}
+str_commasep("")
+str_commasep("a")
+str_commasep(c("a", "b"))
+str_commasep(c("a", "b", "c"))
+```
+
+## 15.5.1 #2
+```{r factors}
+library(forcats)
+levels(gss_cat$rincome)
+library("stringr")
+gss_cat %>%
+  mutate(rincome =
+           fct_collapse(
+             rincome,
+             `Unknown` = c("No answer", "Don't know", "Refused", "Not applicable"),
+             `Lt $5000` = c("Lt $1000", str_c("$", c("1000", "3000", "4000"),
+                                              " to ", c("2999", "3999", "4999"))),
+             `$5000 to 10000` = str_c("$", c("5000", "6000", "7000", "8000"),
+                                      " to ", c("5999", "6999", "7999", "9999"))
+           )) %>%
+  ggplot(aes(x = rincome)) +
+  geom_bar() +
+  coord_flip()
+```
+
+I condensed the categories, by putting the variables "No answer", "Refused", "Don't know", and "Not applicable" into one unknown category. I then just releveled the remaing income to encompass income ranges lower than \$5000 and between \$5000 and \$10000. This makes it much simpler to view the income variable and make conclusions from the data. 
+
+## 16.3.4 #1
+```{r finalAbby}
+library(lubridate)
+make_datetime_100 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+
+flights_dt <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime_100(year, month, day, dep_time),
+    arr_time = make_datetime_100(year, month, day, arr_time),
+    sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time"))
+flights_dt %>%
+  mutate(time = hour(dep_time) * 100 + minute(dep_time),
+         mon = as.factor(month
+                         (dep_time))) %>%
+  ggplot(aes(x = time, y = ..density.., group = mon, color = mon)) +
+  geom_freqpoly(binwidth = 100)
+```
+
+The distribution of flight times within a day does seem to slightly change over the course of the year, although there does seem to be a general pattern of flight times across all months. In September, for example, there seem to be more flights between 5:00 AM and 10:00 AM than during the rest of the year. There also seem to be slightly more noon flights in May and June than during the rest of the year. Overall, the pattern sees a decrease in flights from 8:00 PM until around 6:00 AM the following day, regardless of the month. 
+
+## Summary of Contribution
+
+David: For chapter 13, I have learnt anti_join function in order to find out the number of flight that has missing record of tailnum. For chapter 14, I have learnt the ways to filter with strings with specific requirements. For chapter 15, I have draw historgam in order to visualize the TV hours. In chapter 16, I have manuipulated with time and dates to answer the question. In this lab, I have implemented with ggplot, geom_density, and geom_histogram function.
+
+Sarah: For chapter 13, I used the mutating join functions in order to calculate the average number of delays in the flights dataset and combine it wit hthe airports one to plot the average delays per airport on a map of the US. For chapter 14, I filtered out specific words based on different qualifications given by the problem. In chapter 15, I organized factors in the gss_cat dataset and plotted religion and party identification. In chapter 16, I ocnverted different strings into dates.
+
+Abby: For joining datasets I merged the flights and airlines datasets within nycflights13. After doing this I created a plot to show how many flights each airline had flown out of New York in 2013 and analyzed it. For strings I learned how to create a function that would make a sentence out of a given vector. For factoring I found the best way to relevel the income variable within a data set to make graphs ana analysis more clear and concise. Finally, I used the data and time functions to determine if there were changes in flight time per day over the course of the year and analyzed my results.
+

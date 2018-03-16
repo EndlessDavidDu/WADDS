@@ -1,0 +1,86 @@
+---
+title: "Studying"
+author: "Abby"
+date: "March 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(nycflights13)
+```
+
+## Joining DataSets Question
+```{r ordering flights}
+mostflights<-left_join(nycflights13::flights, nycflights13::airlines, by="carrier")
+
+ggplot(data=mostflights,aes(color=name))+geom_bar(aes(x=carrier))
+```
+
+Fromt the above plot we can see that the airlines with the most number of flights from New York in 2013 were United Air Lines, JetBlue Airways, ExpressJet Airlines, and Delta Airlines. While Alaska Airlines, Skywest, Hawaiian, Frontier, and Mesa had the least amount of flights from New York that year. 
+
+## 14.2.5 #6
+```{r functionstring}
+str_commasep <- function(x, sep = ", ", last = ", and ") {
+  if (length(x) > 1) {
+    str_c(str_c(x[-length(x)], collapse = sep),
+                x[length(x)],
+                sep = last)
+  } else {
+    x
+  }
+}
+str_commasep("")
+str_commasep("a")
+str_commasep(c("a", "b"))
+str_commasep(c("a", "b", "c"))
+```
+
+## 15.5.1 #2
+```{r factors}
+library(forcats)
+levels(gss_cat$rincome)
+library("stringr")
+gss_cat %>%
+  mutate(rincome =
+           fct_collapse(
+             rincome,
+             `Unknown` = c("No answer", "Don't know", "Refused", "Not applicable"),
+             `Lt $5000` = c("Lt $1000", str_c("$", c("1000", "3000", "4000"),
+                                              " to ", c("2999", "3999", "4999"))),
+             `$5000 to 10000` = str_c("$", c("5000", "6000", "7000", "8000"),
+                                      " to ", c("5999", "6999", "7999", "9999"))
+           )) %>%
+  ggplot(aes(x = rincome)) +
+  geom_bar() +
+  coord_flip()
+```
+
+I condensed the categories, by putting the variables "No answer", "Refused", "Don't know", and "Not applicable" into one unknown category. I then just releveled the remaing income to encompass income ranges lower than \$5000 and between \$5000 and \$10000. This makes it much simpler to view the income variable and make conclusions from the data. 
+
+## 16.3.4 #1
+```{r finalAbby}
+library(lubridate)
+make_datetime_100 <- function(year, month, day, time) {
+  make_datetime(year, month, day, time %/% 100, time %% 100)
+}
+
+flights_dt <- flights %>% 
+  filter(!is.na(dep_time), !is.na(arr_time)) %>% 
+  mutate(
+    dep_time = make_datetime_100(year, month, day, dep_time),
+    arr_time = make_datetime_100(year, month, day, arr_time),
+    sched_dep_time = make_datetime_100(year, month, day, sched_dep_time),
+    sched_arr_time = make_datetime_100(year, month, day, sched_arr_time)
+  ) %>% 
+  select(origin, dest, ends_with("delay"), ends_with("time"))
+flights_dt %>%
+  mutate(time = hour(dep_time) * 100 + minute(dep_time),
+         mon = as.factor(month
+                         (dep_time))) %>%
+  ggplot(aes(x = time, y = ..density.., group = mon, color = mon)) +
+  geom_freqpoly(binwidth = 100)
+```
+
+The distribution of flight times within a day does seem to slightly change over the course of the year, although there does seem to be a general pattern of flight times across all months. In September, for example, there seem to be more flights between 5:00 AM and 10:00 AM than during the rest of the year. There also seem to be slightly more noon flights in May and June than during the rest of the year. Overall, the pattern sees a decrease in flights from 8:00 PM until around 6:00 AM the following day, regardless of the month. 

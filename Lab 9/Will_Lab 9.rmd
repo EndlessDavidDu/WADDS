@@ -127,3 +127,6 @@ flights1 %>%
   geom_point() +
   geom_smooth()
 ```
+
+##Contribution
+For this lab, firstly, I learned how to use inner_join to match the data, then I know the difference between the sep() and collapse(). In chapter 15, I distinguish the difference between principle and artitrary in gas_cat. For chapter 16, I know to use sch_dep_time, because the delay time varies with the sch_dep_time. It's better to use sch_dep_time.

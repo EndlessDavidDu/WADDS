@@ -18,8 +18,14 @@ library(knitr)
 library(dplyr)
 ```
 ## Team Plot
+```{r team}
+team1<-left_join(nycflights13::flights,nycflights13::weather)
+team2<-as.tibble(filter(team1,arr_delay>=30, !is.na(wind_speed)))
+team2<-subset(team2, wind_speed=quantile(team2$wind_speed,c(0.9))['90%'])
+ggplot(data=team2, mapping=aes(x=hour,y=wind_speed))+geom_col()
+```
 
-
+We joinded the flights and weather data set, then filtered to only include flights that were delayed by at least 30 minutes. We then subset the data so that only the 90th percentile of the wind_speed was included. Finally, we plotted the 90th percentil by hour over the course of the year. From the resulting plot we can conclude that it tends to be windier during the later hours of the evening. We can conclude this because the 90th percentile is much larger during the evening than during the afternoon or early morning.
 ## Will
 ## EX. 13.4.6 #3
 > *Is there a relationship between the age of a plane and its delays?*

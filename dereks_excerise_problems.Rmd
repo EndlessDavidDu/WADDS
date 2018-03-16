@@ -50,3 +50,20 @@ ggplot(subset(aggregate(third$wind_speed, list(third$time_hour), mean), x > 0), 
   geom_smooth()
 ```
 
+```{r}
+library(htmlwidgets)
+x <- "This is \\\\a \\sentance \\with numerous \\\\\\"
+
+str_view_all(x, regex("\\\\"))
+str_view_all(x, fixed("\\"))
+```
+
+```{r}
+library(lubridate)
+fourth <- nycflights13::flights
+fourth <- second[!is.na(fourth$arr_delay),]
+ggplot(aggregate(fourth$arr_delay, list(wday(fourth$time_hour)), mean), aes(x=Group.1, y=x)) +
+  geom_bar(stat="identity")
+
+```
+

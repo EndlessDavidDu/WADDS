@@ -156,3 +156,15 @@ kable(newdates, col.names="Dates")
 ## Summary of Contribution
 
 Sarah: For chapter 13, I used the mutating join functions in order to calculate the average number of delays in the flights dataset and combine it wit hthe airports one to plot the average delays per airport on a map of the US. For chapter 14, I filtered out specific words based on different qualifications given by the problem. In chapter 15, I organized factors in the gss_cat dataset and plotted religion and party identification. In chapter 16, I ocnverted different strings into dates.
+
+
+``` {r teampart}
+newflights<-left_join(flights, weather)
+newflights<-filter(newflights, arr_delay >= 30)
+newflights<-filter(newflights, wind_speed!=is.na(wind_speed))
+newflightsmed<- newflights %>% group_by(hour) %>% summarize(by=median(wind_speed))
+newflights90<- newflights %>% group_by(hour) %>% summarize(by=median(wind_speed))
+ggplot(data=newflights1)+geom_col(aes(x=hour,y=by,fill=hour))
+```
+
+

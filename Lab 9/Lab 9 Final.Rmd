@@ -18,6 +18,9 @@ library(knitr)
 library(dplyr)
 ```
 ## Team Plot
+
+The question we wanted to explore was what relationships exist between wind speed and the hour of the day. Particularly, we want to examine this for flights that were delayed more than thirty minutes, because these are instances when the wind may have contributed to delaying the flight a significant amount. To explore this relationship, we will look at the 90th percentile wind speed for each hour to givean indication of the higher wind speeds. This question is important because it will allow us to see what times of day there might be high winds that contribute to flight delays. 
+
 ```{r team}
 team1<-left_join(nycflights13::flights,nycflights13::weather)
 team2<-as.tibble(filter(team1,arr_delay>=30, !is.na(wind_speed)))

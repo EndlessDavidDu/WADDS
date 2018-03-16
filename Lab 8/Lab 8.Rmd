@@ -34,12 +34,41 @@ testing8<-as.tibble(filter(testing7,age_unit!="day",age_unit!="days",age_unit!="
 testing9<-as.tibble(filter(testing8,outcome_type=="Adoption"))
 ggplot(data = testing9,mapping=aes(x=animal_type),na.rm=TRUE)+geom_bar()+facet_wrap(~age_unit)
 ```
+
 As we can see from the plot above, one of the major factors influencing adoption rates is age, dependent on species. For cats, there are more adoptions when they are younger, while there are conversely more adoptions for older dogs. This could be due to the fact that older dogs are more likely to be perceived as mild, and could have been trained by previous owners to be well-behaved. Since cats tend to wander outside and mate, there could be a correlation between young cats and adoption simply because there may be more young cats born on the street that become strays. Either way, we see a clear trend to adopt more younger cats and older dogs.
 
-##Enter cat missing during summer plot here!
+##Cats end up in the shelter more in the Summer
+```{r, warning=FALSE, message=FALSE}
+animals_train = read_csv("~/Downloads/train.csv")
+animals_test = read_csv("~/Downloads/test.csv")
+animals_train = animals_train[,-1]
+animals_test = animals_test[,-1]
+animals <- bind_rows(animals_train, animals_test)
+
+animals$Name[is.na(animals$Name)] <- "Unknown"
+animals$HasName <- ifelse(animals$Name == 'Unknown', 0,
+                    ifelse(animals$Name != 'Unknown', 1, NA))
+animals <- animals %>% mutate(HasName = as.factor(HasName))
+
+animals %>% ggplot(aes(DateTime, fill=HasName)) +
+  geom_density(alpha=0.5) + 
+  facet_wrap(~AnimalType)
+```
+
 In this plot, we found that cats go missing from there home significantly more often in the summer than any other time of year, while the rate of dogs coming to the shelter are relatively constant throughout the year. This can probably be attributed to the fact that people may have windows and doors open more often in their homes during the summer than any other time of year, making it easier for cats to escape and explore beyond their boundaries. This means that every summer, there is generally a larger influx of cats admitted to the animal shelter. The shelter could use this information to make sure they are equipped to handle more cats in the summer than the rest of the year; on the other hand, they can expect to have a relatively consistent number of dogs in the shelter. 
 
-##Enter names being adopted plot here with writeup!
+##Nameless animals are unloved
+```{r, warning=FALSE, message=FALSE}
+library(scales)
+ggplot(animals %>% subset(OutcomeType != "Unknown") %>%
+         count(HasName, OutcomeType) %>%    
+         mutate(pct=n/sum(n)),              
+       aes(HasName, n, fill=OutcomeType)) +
+       geom_bar(position = "fill", stat="identity") +
+       scale_y_continuous(labels = percent_format())
+```
+
+Here we can see that animals that have a known name fare far better than ones with an unknown name. Animals with an unknown name are far less likely to be adopted or returned to their owner and far more likely to die or be euthanised. This is important for animal owners to note, making sure your pet is identifiebly taged will greatly increase your chances of you pet being returned to you should you lose it.
 
 
 ## David
@@ -147,14 +176,74 @@ From the analysis above, we know that Domestic Shorthair Mix, Domestic Medium Ha
 ## Conclusion 
 We find that Pit Bull Mix and Domestic shorthair Mix are adopted by the Austin Animal Center mostly. And they are spayed or neutered more than other breeds. Dogs and cats are our friends, they are cute. Everyone that has pets with dogs/cats to treat their pets wisely.
 
+## Derek
+
+### Tidying the Data
+```{r tidyderek, echo=TRUE, message=FALSE, warning=FALSE}
+animals_train = read_csv("~/Downloads/train.csv", suppressMessages(TRUE))
+animals_test = read_csv("~/Downloads/test.csv", suppressMessages(TRUE))
+# Drop 'ID' column (first column)
+animals_train = animals_train[,-1]
+animals_test = animals_test[,-1]
+# merge train and test data together
+animals <- bind_rows(animals_train, animals_test)
+
+# This converts the AgeuponOutcome into number of days
+animals$TimeValue <- sapply(animals$AgeuponOutcome,  
+                      function(x) strsplit(x, split = ' ')[[1]][1])
+animals$UnitofTime <- sapply(animals$AgeuponOutcome,  
+                      function(x) strsplit(x, split = ' ')[[1]][2])
+animals$UnitofTime <- gsub('s', '', animals$UnitofTime)
+animals$TimeValue  <- as.numeric(animals$TimeValue)
+animals$UnitofTime <- as.factor(animals$UnitofTime)
+multiplier <- ifelse(animals$UnitofTime == 'day', 1,
+              ifelse(animals$UnitofTime == 'week', 7,
+              ifelse(animals$UnitofTime == 'month', 30,
+              ifelse(animals$UnitofTime == 'year', 365, NA))))
+animals$AgeinDays <- animals$TimeValue * multiplier
+
+# drop now unnessesary columns
+animals <- subset(animals, select=-c(TimeValue, UnitofTime, AgeuponOutcome))
+# fill in some NAs in the data
+animals$Name[is.na(animals$Name)] <- "Unknown"
+animals$SexuponOutcome[is.na(animals$SexuponOutcome)] <- "Unknown"
+animals$OutcomeType[is.na(animals$OutcomeType)] <- "Unknown"
+animals$OutcomeSubtype[is.na(animals$OutcomeSubtype)] <- "Unknown"
+# create a new value based on whether the name is known
+animals$HasName <- ifelse(animals$Name == 'Unknown', 0,
+                    ifelse(animals$Name != 'Unknown', 1, NA))
+# lastly convert to factors
+animals <- animals %>% mutate(Name = as.factor(Name),
+                              OutcomeType = as.factor(OutcomeType),
+                              OutcomeSubtype = as.factor(OutcomeSubtype),
+                              AnimalType = as.factor(AnimalType),
+                              SexuponOutcome = as.factor(SexuponOutcome),
+                              Breed = as.factor(Breed),
+                              Color = as.factor(Color),
+                              HasName = as.factor(HasName))
+```
+
+### Findings
+```{r echo=TRUE}
+animals %>% subset(OutcomeType != "Unknown" & OutcomeType != "Transfer" & AnimalType == "Cat") %>% ggplot(aes(DateTime, fill=OutcomeType)) +
+  geom_density(alpha=0.25)
+
+animals %>% subset(AnimalType == "Cat") %>% ggplot(aes(DateTime, AgeinDays)) +
+  geom_point(alpha = 0.01) +
+  scale_y_log10()
+```
+
+I wanted to investigate the odd behavior of cats in the datset, particularly the large increase in cats entering the shelter in the summer compared to the the winter. Especially becuase dogs don't show these seasonal variations. In the first plot I looked at the distribution of outcomes over time. While return to owner remains relatively constant, we see large spikes in the other three outcomes during the summer months. Especially deaths in the summer of 2015. A quick google search found that Texas was undergoing a large heatwave in July 2015 and I believe many more cats may have dies to heat exposure.
+
+I had two theories as to why cat may turn up more in the shelter in the summer. The first was that owners may be leaving their doors and windows open and cats would escape the house, or was this due to the breading cycle of the cats, which typically give birth in the spring. To do this I plotted the age of cats over time. The horizontal banding is due to the coversion of discrete time increments to linear. The darkest line (and therefore most frequent) is right at the 3 month or 90 day mark. Additionally we see distinct gaps during the winter of young cats, while older cats do not display these same gaps. Based on this I believe the spikes in cats are due to outdoor or feral cats breeding each year. This is a known problem and many states and contries have passed laws requiring neutering of cats to pevent rampant breeding.
+
+
 ## Sarah
 ```{r setup3, include=FALSE,warning=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 shelter_data <- read_csv("aac_shelter_outcomes.csv")
 ```
-
-## Sarah Individual
 
 ### Tidying the Data
 
@@ -213,6 +302,7 @@ This implies that among animals entering shelters, they would be more likely to 
 ```{r Abby2}
 ggplot(data=testing3,mapping=aes(x=animal_type,y=outcome_type))+geom_count()
 ```
+
 From the plot above we can see that among birds, there is no trend in outcome. Thus for birds we cannot make accurate predictions on their eventual outcomes once they have entered a shelter. Among Cats, their likely outcomes upon entering the shelter are being adopted followed by transfering to a new shelter. Dogs are most likely to be adopted, followed by being returned to their owners, and then being transfered. Livestock only seem to be transfered or adopted, but never euthanized. Other types of animals are most likely to be euthanized. This illustrates that species is a big factor in the eventual outcome of the animal entering into the shelter. 
 
 ## Summary of Individual Contribution
@@ -221,7 +311,11 @@ Sarah: In order to tidy the dataset, I primarily used select separate, and the p
 
 David: In this report, I firstly count the number of the different animals with the different outcomes using group_by and count in tidyverse. Then we select variables and we use and transform the age variables to category variables including day,days,month,months,week,weeks,year,years to represent the different age. Finally we create plots of the variables to answer the question.
 
+Derek: I tidyied the dataset by droping uneccessary columns, appropriately converting columns to factors, I fixed NA values by filling in an "Unknown" value. Lastly I created a HasName variable and converted the age of the animal into days. This let me compare ages as a linear values instead of factors. I then looks at whether the absence of a known name affected animal outcome, and then I looked at some of the pecularities of cats during the summer.
+
 Abby: I tidied some of the data Sarah had previously tidied in order to do my analysis. I primarly did this through separate in order to get an age group column to use in my comparisons. I then created a plot to show the adoption counts for each animal type among the different age groups. This allowed me to see how age affected the adoption rates of different species. Finally, I created a plot showing the counts of different outcomes for each animal species. This allowed me to draw more conclusions about the likely outcome of an animal when they first enter the shelter. 
+
+Will: For this report, I used the as.tibble,count and order to figure out the breed of cat and dog. In order to calculate how many dogs and cats entering into the shelter in different species. Finally I created the frequency of the different breed of gods that entering into the animal shelter.
 
 ##East Africa Lake Dataset
 ![](africarain.jpeg)

@@ -1,0 +1,52 @@
+---
+title: "Readings4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(nycflights13)
+
+first <- left_join(nycflights13::weather, nycflights13::flights)
+first <- first[!is.na(first$arr_delay) & !is.na(first$precip),]
+first <- subset(first, arr_delay >= quantile(first$arr_delay, c(0.8))['80%'])
+```
+
+```{r}
+ggplot(subset(aggregate(first$precip, list(first$time_hour), mean), x > 0), aes(x=Group.1, y=x)) + 
+  geom_point() +
+  geom_smooth()
+```
+
+```{r}
+second <- nycflights13::flights
+second <- second[!is.na(second$dest) & !is.na(second$arr_delay),]
+landings <- second %>% 
+  group_by(dest) %>%
+  summarise(no_rows = length(dest)) %>%
+  subset(no_rows >= 100)
+landings <- second %>%
+  subset(arr_delay >= 15) %>% 
+  group_by(dest) %>%
+  summarise(late = length(dest)) %>%
+  inner_join(landings)
+landings$perc <- landings$no_rows / landings$late
+landings <- landings %>% mutate(dest = as.factor(dest))
+landings$dest <- factor(landings$dest, levels = landings$dest[rev(order(landings$perc))])
+
+ggplot(subset(landings, dest %in% levels(landings$dest)[1:5]), aes(x=dest, y=perc)) +
+  geom_bar(stat="identity")
+```
+
+```{r}
+third <- left_join(nycflights13::weather, nycflights13::flights)
+third <- third[!is.na(third$arr_delay) & !is.na(third$wind_speed),]
+third <- subset(first, arr_delay >= 30 & wind_speed < 200)
+
+ggplot(subset(aggregate(third$wind_speed, list(third$time_hour), mean), x > 0), aes(x=Group.1, y=x)) + 
+  geom_point() +
+  geom_smooth()
+```
+

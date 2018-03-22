@@ -40,5 +40,6 @@ ggplot(data=answers,mapping=aes(x=questions,y=Score))+geom_smooth()
 ```
 Surprisingly, even after accounting for the outlier, it seems the more questions present in an answer, the more highly rated it becomes. This could be explained because it shows a deeper understanding of the question being asked. It could also show knowledge regarding the program/language being asked about, as different programs have multiple ways to code something. Asking more questions could imply the answer has multiple pathways, so answering the questions in the answer could more easily direct you to the information you needed to find. 
 
+## Individual Contributions
 Abby:
 I first analyzed how verbs could impact the score of a question. I found that in general, more "ing" verbs in the question title contributed to a lower score for that question. I then analyzed the number of questions found in the answer to a question to see if it would lower the score by indicating a lack of knowledge. However, I found that the more questions the answerer asked, the higher the score for that answer became. This could be in part because questions can often lead to clarifications and show a depth of knowledge in the subject area. 

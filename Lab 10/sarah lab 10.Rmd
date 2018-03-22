@@ -1,0 +1,75 @@
+---
+title: "Sarah Lab 10"
+author: "Sarah"
+date: "March 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message=FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+
+questions <- read.csv("Questions_trunc.csv")
+answers <- read.csv("Answers_trunc.csv")
+```
+
+## Sarah Individual
+
+Below, I have examined the relationships between the number of question marks per question and the number of paragraphs per answer and score of each. I found that while there are no correlations between each in the majority of the data, if an question has too many question marks and if an answer has too many paragraphs, they tend to not have a tremendously high rating. 
+
+### Questions
+
+I chose to analyze the number of question marks in each question. This will give an idea of how many different aspects of a single problem each post is asking about. It will be interesting to see whether more questions result in more specificity and therefore higher ratings, or if they result in more confusion and lower ratings. 
+
+```{r sarahquestion1}
+questions<-questions %>% mutate(internalquestions=str_count(questions$Body,"//?"))
+ggplot(data=questions)+geom_jitter(aes(x=internalquestions,y=Score),alpha=0.2)+geom_smooth(aes(x=internalquestions,y=Score),se=FALSE, method="lm")
+```
+                                  
+                                    
+
+There are some questions with an absurdly large number of question marks in them. The scores tend to be lower the more question marks there are; however, I will examine the trends in the majority of the data points by filtering out those with very high scores or those with very high numbers of question marks. 
+
+```{r sarahquestion2}
+questions2<-filter(questions, Score < 1000 & internalquestions < 20)
+questions2$internalquestions<-factor(questions2$internalquestions)
+#ggplot(data=questions2)+geom_jitter(aes(x=internalquestions,y=Score),alpha=0.2)+geom_smooth(aes(x=internalquestions,y=Score),se=FALSE, method="lm")
+ggplot(data=questions2)+geom_violin(aes(x=internalquestions,y=Score))
+questions3<-filter(questions2, Score < 50 )
+ggplot(data=questions3)+geom_violin(aes(x=internalquestions,y=Score))
+```
+
+There don't seem to be any noticable trends in the most common numbers of question marks within a question and their scores. 
+
+### Answers
+
+I chose to analyze how many paragraphs an answer has and what relationship that might have with the scores an answer received. Exploring this will allow us to see if breaking an answer into more pargraphs and writing a long enough answer that requires paragraphs results in higher scores, or if more succinct answers tend to do better. 
+
+```{r sarahanswer1}
+answers<-answers %>% mutate(paragraphs=str_count(answers$Body,"<p>"))
+ggplot(data=answers)+geom_jitter(aes(x=paragraphs,y=Score),alpha=0.2)+geom_smooth(aes(x=paragraphs,y=Score),se=FALSE, method="lm")
+```
+
+From this plot, it appears that there are some anwers with absurdly large scores and number of paragraphs that are making it difficult to see the general trend of the majority of the dataset, so I will filter those out so we can look at the patterns of the more commons scores and paragraph numbers. 
+
+``` {r sarahanswer2}
+answers2<-filter(answers, Score<1000)
+ggplot(data=answers2)+geom_jitter(aes(x=paragraphs,y=Score),alpha=0.2)+geom_smooth(aes(x=paragraphs,y=Score),se=FALSE, method="lm")
+```
+
+From this plot, there doesn't seem to be a strong linear correlation between the number of paragraphs and the score; however, it does seem like having a very lengthy answer (i.e. over ten paragraphs long) will not result in an absurdly high score. That being said, among the answers under ten paragprahs, there is almost no correlation between the scores and the paragraphs.
+
+``` {r sarahanswer3}
+answers3<-filter(answers, Score<1000 & paragraphs<10)
+answers3$paragraphs<-factor(answers3$paragraphs)
+ggplot(data=answers3)+geom_violin(aes(x=paragraphs,y=Score))
+#ggplot(data=answers3)+geom_jitter(aes(x=paragraphs,y=Score),alpha=0.2)+geom_smooth(aes(x=paragraphs,y=Score),se=FALSE, method="lm")
+```
+
+## Summary of Individual Contributions
+
+Sarah: For my individual contribution, I found the number of question marks in the body of each question and the number of paragraphs in the body of each answer, and compared each of these with their score, looking for relationships between the two. I did this to see if longer, more in depth, answers or more broken up answers got higher ratings than simpler ones and to see if more complicated questions got higher or lower ratings. 
+ 

@@ -1,0 +1,85 @@
+---
+title: 'Assignment 10'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = F, message = F)
+```
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(scales)
+library(ggplot2)
+library(tidytext)
+library(stringr)
+library(tidytext)
+library(broom)
+library(readr)
+
+questions <- read_csv("Questions_trunc.csv")
+answers <- read_csv("Answers_trunc.csv")
+
+head(get_sentiments("bing"))
+
+words <- questions  %>% unnest_tokens(word, Body) 
+
+scoresentiment <- words %>%
+  left_join(get_sentiments("bing")) %>%
+  count(Id,sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative) %>% select(Id, sentiment)
+
+head(scoresentiment)
+
+questions$feature_sentiment_score <- scoresentiment$sentiment
+
+words2 <- answers  %>% unnest_tokens(word, Body) 
+
+scoresentiment2 <- words2 %>%
+  left_join(get_sentiments("bing")) %>%
+  count(Id,sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative) %>% select(Id, sentiment)
+
+head(scoresentiment2)
+
+answers$feature_sentiment_score <- scoresentiment2$sentiment
+
+```
+
+Here, I have defined a variable called sentiment score for both of questions and answers as feature, and this variable will be used to find the relationship between created feature and score in question/answers data. The sentimet score is computed by number of positive words minus number of negative words.
+
+# Relationship between created feature and score in questions/answers data:
+
+I have created two plots, and the first one is used as finding the relationship between created feature and score in question data, and another one is for the answers data 
+
+```{r}
+ggplot(questions, aes( feature_sentiment_score, log(abs(Score)+1))) + geom_point() + geom_smooth( method = "lm", fill = NA) + xlim(-20,20)
+```
+
+```{r}
+ggplot(answers, aes( feature_sentiment_score, log(abs(Score)+1))) + geom_point() + geom_smooth( method = "lm", fill = NA) + xlim(-20,20)
+```
+
+
+Note here, the sentiment scores are limited into -20 to 20 which drop some outliers and it makes the result more reliable, and here I use log-scale of the score to check relations more obviously, I add 1 to avoid cases where score is 0. 
+
+
+# Individual findings and Contributions: 
+
+David: Here, I mainly created a useful feature called sentiment score for both questions and answers. I think this is interesting because we can know that for sometimes, when people ask questions, they need to consider whether it is useful or not. They may also have the similar problems and the score difference of the votes could be very effective for their way of thinkning. From both of the questions and answers plots, I use a same feature which is sentiment score, from the plots, we can find that there are  positive relations between the scores and the sentiment scores in both cases as the fitted straight lines show ascend trend, it means that higher sentiment score obtained from the questions or answers, higher score would be obtained.
+
+
+
+
+
+
+
+
+
+

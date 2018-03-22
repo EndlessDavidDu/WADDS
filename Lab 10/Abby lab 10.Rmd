@@ -1,0 +1,44 @@
+---
+title: "Abby Lab 10"
+author: "WADDS"
+date: "March 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message=FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(reshape)
+library(stringi)
+library(tidyverse)
+library(data.table)
+questions <- read.csv("Questions_trunc.csv")
+answers <- read.csv("Answers_trunc.csv")
+```
+
+## Abby
+I am curious to see if using "ing" verbs in the title of the question increases the score of the question. Since action verbs might imply a more clear answer than a "how" question, there may be a relationship between verbs and higher scores.
+```{r Abby}
+questions<-questions %>% mutate(ing=str_count(questions$Title,"ing"))
+ggplot(data=questions)+geom_point(aes(x=ing,y=Score))
+```
+From the plot above, it looks as though there is a slight relationship between the number of "ing" verbs and the questions rating. However, it is not the relationship I was expecting. I thought more ing verbs would correspond to a higher rating, while the opposite seems to be true. This could be explained because of how people approach different questions. When people have preconceived notions of what may be causing a problem it can be harder to help them. Whereas, if a person asks more open-ended questions such as how can... then it can be easier to answer the question, and more specific information may have been provided.
+
+There is also an interesting question as to what makes an answer highly rated or not. I am curious to see if the presence of questions within the answer contribute to a lower rating. More questions may imply a lack of understanding on the part of the person answering. This could lead to an unhelpful answer and thus a lower score. 
+```{r Abby2}
+answers<-answers %>% mutate(questions=str_count(answers$Body,"//?"))
+ggplot(data=answers,mapping=aes(x=questions,y=Score))+geom_point()+geom_smooth(method="lm")
+```
+
+From the plot above, it seems as though the relationship is the opposite of what I was expecting, with the presence of more question marks indicating a higher score for the answer. However, there is an extreme outlier with a score above 8000 that could be skewing the data.
+
+```{r Abby3}
+ggplot(data=answers,mapping=aes(x=questions,y=Score))+geom_smooth()
+```
+Surprisingly, even after accounting for the outlier, it seems the more questions present in an answer, the more highly rated it becomes. This could be explained because it shows a deeper understanding of the question being asked. It could also show knowledge regarding the program/language being asked about, as different programs have multiple ways to code something. Asking more questions could imply the answer has multiple pathways, so answering the questions in the answer could more easily direct you to the information you needed to find. 
+
+Abby:
+I first analyzed how verbs could impact the score of a question. I found that in general, more "ing" verbs in the question title contributed to a lower score for that question. I then analyzed the number of questions found in the answer to a question to see if it would lower the score by indicating a lack of knowledge. However, I found that the more questions the answerer asked, the higher the score for that answer became. This could be in part because questions can often lead to clarifications and show a depth of knowledge in the subject area. 

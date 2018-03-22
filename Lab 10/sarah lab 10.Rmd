@@ -18,7 +18,7 @@ answers <- read.csv("Answers_trunc.csv")
 
 ## Sarah Individual
 
-Below, I have examined the relationships between the number of question marks per question and the number of paragraphs per answer and score of each. I found that while there are no correlations between each in the majority of the data, if an question has too many question marks and if an answer has too many paragraphs, they tend to not have a tremendously high rating. 
+Below, I have examined the relationships between the number of question marks per question and the number of paragraphs per answer and score of each. I found that while there are no correlations between each in the majority of the data, if a question has too many question marks and if an answer has too many paragraphs, they tend to not have a tremendously high rating. 
 
 ### Questions
 

@@ -84,7 +84,7 @@ We are curious about what make the question or answer in the dataset to be a goo
 Straightforwardly, we find two  coarse features, *i.e.* the length of the title and body of the questions. 
 
 ```{r, echo = TRUE}
-stackQuestions <- read.csv("D:\\Desktop\\Questions_trunc.csv",header= TRUE, sep = ",")
+stackQuestions <- read.csv("Questions_trunc.csv",header= TRUE, sep = ",")
 stackScore_Questions <- stackQuestions$Score
 countBody_Questions <- sapply(gregexpr("\\W+", stackQuestions$Body), length)
 countTitle_Questions <- sapply(gregexpr("\\W+", stackQuestions$Title), length)
@@ -115,7 +115,7 @@ Intuitively, the answer is too long or, too short, it may not be good enough.
 
 ```{r, echo = TRUE}
 
-stackAnss <- read.csv("D:\\Desktop\\Answers_trunc.csv", header = TRUE, sep = ",")
+stackAnss <- read.csv("Answers_trunc.csv", header = TRUE, sep = ",")
 score_anss <- stackAnss$Score
 countBody_Ans <- sapply(gregexpr("\\W+", stackAnss$Body), length)
 df3 <- data.frame(countBody_Ans, score_anss)
@@ -301,3 +301,6 @@ David: Here, I mainly created a useful feature called sentiment score for both q
 
 Abby:
 I first analyzed how verbs could impact the score of a question. I found that in general, more "ing" verbs in the question title contributed to a lower score for that question. I then analyzed the number of questions found in the answer to a question to see if it would lower the score by indicating a lack of knowledge. However, I found that the more questions the answerer asked, the higher the score for that answer became. This could be in part because questions can often lead to clarifications and show a depth of knowledge in the subject area.
+
+Will:
+For this lab, I try to analyze what kinds of questions counts as a good question, and I'm fouces on the length of title and body of the questions. In order to do it, I used the sapply function to figure out the length of title and body of the questions. Next, I created the plot to show the relationship between length of the body of the question and score. Finally, I got that the longer the body of the question, the lower the quality of a question.

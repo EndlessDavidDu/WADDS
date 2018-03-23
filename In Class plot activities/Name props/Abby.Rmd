@@ -1,0 +1,27 @@
+---
+title: "Abby Name"
+author: "WADDS"
+date: "March 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(babynames)
+```
+
+## R Abby
+```{r Abby}
+Abbs97<-filter(babynames,str_detect(babynames$name, "^Abb[iy]$"), year==1997,sex=="F")
+Abbs15<-filter(babynames,str_detect(babynames$name, "^Abb[iy]$"), year==2015,sex=="F")
+Abbs79<-filter(babynames,str_detect(babynames$name,"^Abb[iy]$"),year==1979,sex=="F")
+Abbsv.1<-left_join(Abbs97,Abbs15,by=c("name","sex"))
+Abbsv.2<-left_join(Abbsv.1,Abbs79,by=c("name","sex"))
+Abbsv.2<-Abbsv.2%>%
+  select("year.x","year.y","year","prop.x","prop.y","prop","name","sex")%>%
+  mutate(diff15=prop.y-prop.x)%>%
+  mutate(diff79=prop.x-prop)
+ggplot(data=Abbsv.2,mapping=aes(x=name,y=diff15))+geom_jitter()
+ggplot(data=Abbsv.2,mapping=aes(x=name,y=diff79))+geom_jitter()
+```

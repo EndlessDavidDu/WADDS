@@ -23,6 +23,12 @@ library(readr)
 questions <- read.csv("Questions_trunc.csv")
 answers <- read.csv("Answers_trunc.csv")
 ```
+## Team
+
+We found that in general, questions containing obscene amounts of question marks had lower scores overall. We also found that the more code characters within a question, the lower score it got as well. We also found that the longer the question was, the lower the score. This makes sense since most people may not want to read a long question, but rather get straight to the answer. Finally, we found that the more "ing" verbs the question contained, the lower the score. This could be because open-ended questions such as "how" allow for more options that more specific questions about using certain functions.
+
+
+From our analysis we found that the most prominent factors that affect the rating were the number of paragraphs in an answer, the number of questions within an answer, the length of the answer, and the amount of special characters. It seems that if an answer is too long or too short, it will have a lower rating, and similarly, while there is no general correlation between the number of paragraphs and rating, if there is an absurdly high number of paragraphs, then the rating will tend to be lower. This suggests that answers that are mid-length and not broken up into too many paragraphs will have a better rating overall. Also, if an answer has too many questions within it, it has a lower rating, but if an answer has more special characters--indicating more blocks of code in the answer--then the answer is generally rated higher. Therefore, for a highest chance of getting a good rating in an answer, it would be best to minimize questions, maximize code, not be too long or too short, and not have an absurdly high number of paragraphs. 
 
 ## Sarah
 Below, I have examined the relationships between the number of question marks per question and the number of paragraphs per answer and score of each. I found that while there are no correlations between each in the majority of the data, if a question has too many question marks and if an answer has too many paragraphs, they tend to not have a tremendously high rating. 

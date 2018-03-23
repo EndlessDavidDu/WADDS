@@ -1,0 +1,303 @@
+---
+title: "Assignment 10"
+author: "WADDS"
+date: "March 22, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message=FALSE)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+library(reshape)
+library(stringi)
+library(tidyverse)
+library(data.table)
+library(scales)
+library(tidytext)
+library(stringr)
+library(broom)
+library(readr)
+questions <- read.csv("Questions_trunc.csv")
+answers <- read.csv("Answers_trunc.csv")
+```
+
+## Sarah
+Below, I have examined the relationships between the number of question marks per question and the number of paragraphs per answer and score of each. I found that while there are no correlations between each in the majority of the data, if a question has too many question marks and if an answer has too many paragraphs, they tend to not have a tremendously high rating. 
+
+### Questions
+
+I chose to analyze the number of question marks in each question. This will give an idea of how many different aspects of a single problem each post is asking about. It will be interesting to see whether more questions result in more specificity and therefore higher ratings, or if they result in more confusion and lower ratings. 
+
+```{r sarahquestion1}
+questions<-questions %>% mutate(internalquestions=str_count(questions$Body,"//?"))
+ggplot(data=questions)+geom_jitter(aes(x=internalquestions,y=Score),alpha=0.2)+geom_smooth(aes(x=internalquestions,y=Score),se=FALSE, method="lm")
+```
+                                  
+                                    
+
+There are some questions with an absurdly large number of question marks in them. The scores tend to be lower the more question marks there are; however, I will examine the trends in the majority of the data points by filtering out those with very high scores or those with very high numbers of question marks. 
+
+```{r sarahquestion2}
+questions2<-filter(questions, Score < 1000 & internalquestions < 20)
+questions2$internalquestions<-factor(questions2$internalquestions)
+#ggplot(data=questions2)+geom_jitter(aes(x=internalquestions,y=Score),alpha=0.2)+geom_smooth(aes(x=internalquestions,y=Score),se=FALSE, method="lm")
+ggplot(data=questions2)+geom_violin(aes(x=internalquestions,y=Score))
+questions3<-filter(questions2, Score < 50 )
+ggplot(data=questions3)+geom_violin(aes(x=internalquestions,y=Score))
+```
+
+There don't seem to be any noticable trends in the most common numbers of question marks within a question and their scores. 
+
+### Answers
+
+I chose to analyze how many paragraphs an answer has and what relationship that might have with the scores an answer received. Exploring this will allow us to see if breaking an answer into more pargraphs and writing a long enough answer that requires paragraphs results in higher scores, or if more succinct answers tend to do better. 
+
+```{r sarahanswer1}
+answers<-answers %>% mutate(paragraphs=str_count(answers$Body,"<p>"))
+ggplot(data=answers)+geom_jitter(aes(x=paragraphs,y=Score),alpha=0.2)+geom_smooth(aes(x=paragraphs,y=Score),se=FALSE, method="lm")
+```
+
+From this plot, it appears that there are some anwers with absurdly large scores and number of paragraphs that are making it difficult to see the general trend of the majority of the dataset, so I will filter those out so we can look at the patterns of the more commons scores and paragraph numbers. 
+
+``` {r sarahanswer2}
+answers2<-filter(answers, Score<1000)
+ggplot(data=answers2)+geom_jitter(aes(x=paragraphs,y=Score),alpha=0.2)+geom_smooth(aes(x=paragraphs,y=Score),se=FALSE, method="lm")
+```
+
+From this plot, there doesn't seem to be a strong linear correlation between the number of paragraphs and the score; however, it does seem like having a very lengthy answer (i.e. over ten paragraphs long) will not result in an absurdly high score. That being said, among the answers under ten paragprahs, there is almost no correlation between the scores and the paragraphs.
+
+``` {r sarahanswer3}
+answers3<-filter(answers, Score<1000 & paragraphs<10)
+answers3$paragraphs<-factor(answers3$paragraphs)
+ggplot(data=answers3)+geom_violin(aes(x=paragraphs,y=Score))
+#ggplot(data=answers3)+geom_jitter(aes(x=paragraphs,y=Score),alpha=0.2)+geom_smooth(aes(x=paragraphs,y=Score),se=FALSE, method="lm")
+```
+
+## Will
+## Simple rules to judge a question
+
+We are curious about what make the question or answer in the dataset to be a good/bad one. 
+
+Straightforwardly, we find two  coarse features, *i.e.* the length of the title and body of the questions. 
+
+```{r, echo = TRUE}
+stackQuestions <- read.csv("D:\\Desktop\\Questions_trunc.csv",header= TRUE, sep = ",")
+stackScore_Questions <- stackQuestions$Score
+countBody_Questions <- sapply(gregexpr("\\W+", stackQuestions$Body), length)
+countTitle_Questions <- sapply(gregexpr("\\W+", stackQuestions$Title), length)
+
+df <- data.frame(countTitle_Questions, stackScore_Questions)
+df2 <- data.frame(countBody_Questions, stackScore_Questions)
+
+
+ggplt <- ggplot(df, aes(x = countTitle_Questions, y = stackScore_Questions)) + geom_point()
+
+ggplt2 <- ggplot(df, aes(x = countBody_Questions, y = stackScore_Questions)) + geom_point()
+
+
+
+ggplt
+```
+It coincides with our first thought, a good question is with a balanced length of title.
+```{r}
+ggplt2
+```
+
+On the other side, from the graph above, we can draw the conclusion that the quanlity of a question has a negative correction with the length of body of the question.
+
+But the feature is too coarse to character how to be a good question.
+
+## Simple rules to judge an answer
+Intuitively, the answer is too long or, too short, it may not be good enough. 
+
+```{r, echo = TRUE}
+
+stackAnss <- read.csv("D:\\Desktop\\Answers_trunc.csv", header = TRUE, sep = ",")
+score_anss <- stackAnss$Score
+countBody_Ans <- sapply(gregexpr("\\W+", stackAnss$Body), length)
+df3 <- data.frame(countBody_Ans, score_anss)
+
+ggplt3 <- ggplot(df3, aes(x = countBody_Ans, y = score_anss)) + geom_point()
+ggplt3
+```
+
+From the plot, we can see most of the answers are less than 1000 words. From practical point of view, too long meeans impatience. So a balanced length of the answer can improve the quality of the answer. Elegancy and simpleness can earn a good score.
+
+But again this feature is too coarse to character how to be a good answer.
+
+## Derek
+```{r Derek}
+fix.contractions <- function(doc) {
+  # "won't" is a special case as it does not expand to "wo not"
+  doc <- gsub("won't", "will not", doc)
+  doc <- gsub("can't", "can not", doc)
+  doc <- gsub("n't", " not", doc)
+  doc <- gsub("'ll", " will", doc)
+  doc <- gsub("'re", " are", doc)
+  doc <- gsub("'ve", " have", doc)
+  doc <- gsub("'m", " am", doc)
+  doc <- gsub("'d", " would", doc)
+  # 's could be 'is' or could be possessive: it has no expansion
+  doc <- gsub("'s", "", doc)
+  return(doc)
+}
+
+answers <- read_csv("~/Desktop/Answers_trunc.csv")
+questions <- read_csv("~/Desktop/Questions_trunc.csv")
+
+# Drop rogue column
+answers <- answers[,!(names(answers) %in% c("X7"))]
+questions <- questions[,!(names(questions) %in% c("X7"))]
+
+# Find number of <code> tags
+answers$numOfCode <- str_count(answers$Body, "<code>")
+questions$numOfCode <- str_count(questions$Body, "<code>")
+
+# Remove HTML tags
+answers$Body <- gsub("<.*?>", "", answers$Body)
+questions$Body <- gsub("<.*?>", "", questions$Body)
+
+# Remove Escape characters
+answers$Body <- gsub("[\r\n\t\b]+", " ", answers$Body)
+questions$Body <- gsub("[\r\n\t\b]+", " ", questions$Body)
+
+# Remove misc HTML notation
+answers$Body <- gsub("-*&[gte]+;", " ", answers$Body)
+questions$Body <- gsub("-*&[gte]+;", " ", questions$Body)
+
+# fix (expand) contractions
+answers$Body <- sapply(answers$Body, fix.contractions)
+questions$Body <- sapply(questions$Body, fix.contractions)
+
+# convert everything to lower case
+answers$Body <- sapply(answers$Body, tolower)
+questions$Body <- sapply(questions$Body, tolower)
+
+# get number of special characters
+answers$numOfSpecial <- str_count(answers$Body, "[^a-zA-Z0-9 ]")
+questions$numOfSpecial <- str_count(questions$Body, "[^a-zA-Z0-9 ]")
+
+#aggregate(first$precip, list(first$time_hour), mean)
+
+```
+
+
+
+```{r}
+summary(answers)
+summary(questions)
+```
+
+
+
+```{r}
+ggplot (answers, aes(x=numOfSpecial, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 750), ylim=c(0,96)) +
+  geom_smooth()
+  
+
+ggplot (questions, aes(x=numOfSpecial, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 500), ylim=c(0,149)) +
+  geom_smooth()
+  
+
+ggplot (answers, aes(x=numOfCode, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 40), ylim=c(0,96)) +
+  geom_smooth()
+  
+
+ggplot (questions, aes(x=numOfCode, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 20), ylim=c(0,149)) +
+  geom_smooth()
+```
+
+Here I am looking at two features, both estimates for the amount of code contained in a question or answer. The first feature is special characters. These should be the "<>()!=+-:;", etc. found in python. Obviously there will be some overlap between special characters in enlgish but the occurence of these characters in python is far higher. The second feature is the number of <code> tags. These are HTML tags that cause stackoverflow to render code in a special way: with additional formating and color coding.
+
+The point of looking at these features is to see if there is a correlation between amount of code and the score of a question or answer. Intertingly they all have different results. The score of answers appears to go up with increased special characters, while the score of questions appears to go down. The score of answers goes up and then quickly plummets with increased code tags, and code tags seem to have no effect on questions. I suspect that shorter more specific questions (featuring less code) get a higher score while longer answers with more worked examples (featuring more code) get a higher score. I am not sure what is happening to answers with too many code tags, but prusmably at some point the answers go from being "thorough" to "overwhelming and confusing".
+
+## David
+```{r David}
+head(get_sentiments("bing"))
+
+words <- questions  %>% unnest_tokens(word, Body) 
+
+scoresentiment <- words %>%
+  left_join(get_sentiments("bing")) %>%
+  count(Id,sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative) %>% select(Id, sentiment)
+
+head(scoresentiment)
+
+questions$feature_sentiment_score <- scoresentiment$sentiment
+
+words2 <- answers  %>% unnest_tokens(word, Body) 
+
+scoresentiment2 <- words2 %>%
+  left_join(get_sentiments("bing")) %>%
+  count(Id,sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative) %>% select(Id, sentiment)
+
+head(scoresentiment2)
+
+answers$feature_sentiment_score <- scoresentiment2$sentiment
+
+```
+
+Here, I have defined a variable called sentiment score for both of questions and answers as feature, and this variable will be used to find the relationship between created feature and score in question/answers data. The sentimet score is computed by number of positive words minus number of negative words.
+
+# Relationship between created feature and score in questions/answers data:
+
+I have created two plots, and the first one is used as finding the relationship between created feature and score in question data, and another one is for the answers data 
+
+```{r}
+ggplot(questions, aes( feature_sentiment_score, log(abs(Score)+1))) + geom_point() + geom_smooth( method = "lm", fill = NA) + xlim(-20,20)
+```
+
+```{r}
+ggplot(answers, aes( feature_sentiment_score, log(abs(Score)+1))) + geom_point() + geom_smooth( method = "lm", fill = NA) + xlim(-20,20)
+```
+
+
+Note here, the sentiment scores are limited into -20 to 20 which drop some outliers and it makes the result more reliable, and here I use log-scale of the score to check relations more obviously, I add 1 to avoid cases where score is
+0.
+
+## Abby
+I am curious to see if using "ing" verbs in the title of the question increases the score of the question. Since action verbs might imply a more clear answer than a "how" question, there may be a relationship between verbs and higher scores.
+```{r Abby}
+questions<-questions %>% mutate(ing=str_count(questions$Title,"ing"))
+ggplot(data=questions)+geom_point(aes(x=ing,y=Score))
+```
+From the plot above, it looks as though there is a slight relationship between the number of "ing" verbs and the questions rating. However, it is not the relationship I was expecting. I thought more ing verbs would correspond to a higher rating, while the opposite seems to be true. This could be explained because of how people approach different questions. When people have preconceived notions of what may be causing a problem it can be harder to help them. Whereas, if a person asks more open-ended questions such as how can... then it can be easier to answer the question, and more specific information may have been provided.
+
+There is also an interesting question as to what makes an answer highly rated or not. I am curious to see if the presence of questions within the answer contribute to a lower rating. More questions may imply a lack of understanding on the part of the person answering. This could lead to an unhelpful answer and thus a lower score. 
+```{r Abby2}
+answers<-answers %>% mutate(questions=str_count(answers$Body,"//?"))
+ggplot(data=answers,mapping=aes(x=questions,y=Score))+geom_point()+geom_smooth(method="lm")
+```
+
+From the plot above, it seems as though the relationship is the opposite of what I was expecting, with the presence of more question marks indicating a higher score for the answer. However, there is an extreme outlier with a score above 8000 that could be skewing the data.
+
+```{r Abby3}
+ggplot(data=answers,mapping=aes(x=questions,y=Score))+geom_smooth()
+```
+Surprisingly, even after accounting for the outlier, it seems the more questions present in an answer, the more highly rated it becomes. This could be explained because it shows a deeper understanding of the question being asked. It could also show knowledge regarding the program/language being asked about, as different programs have multiple ways to code something. Asking more questions could imply the answer has multiple pathways, so answering the questions in the answer could more easily direct you to the information you needed to find. 
+
+## Summary of Individual Contributions
+
+Sarah: For my individual contribution, I found the number of question marks in the body of each question and the number of paragraphs in the body of each answer, and compared each of these with their score, looking for relationships between the two. I did this to see if longer, more in depth, answers or more broken up answers got higher ratings than simpler ones and to see if more complicated questions got higher or lower ratings. 
+ 
+Derek: I created two features, both looking at code embdedded in the text. One counts special characters (after the html, newlines, and other markup has been removed) as a standin for code (because its counting all the "<>()!=+-:;", etc.), and the other looks at the number of code tags. The premise being that since these are questions and answers for python, a programming language, answers lots of code maybe better because they are provided larger worked out solutions, and conversely answers may be asking specific or broad questions based on the amount of code they include. I also did a lot of regex text preprocessing as I was playing around with the data.
+
+David: Here, I mainly created a useful feature called sentiment score for both questions and answers. I think this is interesting because we can know that for sometimes, when people ask questions, they need to consider whether it is useful or not. They may also have the similar problems and the score difference of the votes could be very effective for their way of thinkning. From both of the questions and answers plots, I use a same feature which is sentiment score, from the plots, we can find that there are  positive relations between the scores and the sentiment scores in both cases as the fitted straight lines show ascend trend, it means that higher sentiment score obtained from the questions or answers, higher score would be obtained.
+
+Abby:
+I first analyzed how verbs could impact the score of a question. I found that in general, more "ing" verbs in the question title contributed to a lower score for that question. I then analyzed the number of questions found in the answer to a question to see if it would lower the score by indicating a lack of knowledge. However, I found that the more questions the answerer asked, the higher the score for that answer became. This could be in part because questions can often lead to clarifications and show a depth of knowledge in the subject area.

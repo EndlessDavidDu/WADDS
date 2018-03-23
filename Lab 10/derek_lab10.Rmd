@@ -1,0 +1,103 @@
+---
+title: "Derek_lab10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+fix.contractions <- function(doc) {
+  # "won't" is a special case as it does not expand to "wo not"
+  doc <- gsub("won't", "will not", doc)
+  doc <- gsub("can't", "can not", doc)
+  doc <- gsub("n't", " not", doc)
+  doc <- gsub("'ll", " will", doc)
+  doc <- gsub("'re", " are", doc)
+  doc <- gsub("'ve", " have", doc)
+  doc <- gsub("'m", " am", doc)
+  doc <- gsub("'d", " would", doc)
+  # 's could be 'is' or could be possessive: it has no expansion
+  doc <- gsub("'s", "", doc)
+  return(doc)
+}
+
+answers <- read_csv("~/Desktop/Answers_trunc.csv")
+questions <- read_csv("~/Desktop/Questions_trunc.csv")
+
+# Drop rogue column
+answers <- answers[,!(names(answers) %in% c("X7"))]
+questions <- questions[,!(names(questions) %in% c("X7"))]
+
+# Find number of <code> tags
+answers$numOfCode <- str_count(answers$Body, "<code>")
+questions$numOfCode <- str_count(questions$Body, "<code>")
+
+# Remove HTML tags
+answers$Body <- gsub("<.*?>", "", answers$Body)
+questions$Body <- gsub("<.*?>", "", questions$Body)
+
+# Remove Escape characters
+answers$Body <- gsub("[\r\n\t\b]+", " ", answers$Body)
+questions$Body <- gsub("[\r\n\t\b]+", " ", questions$Body)
+
+# Remove misc HTML notation
+answers$Body <- gsub("-*&[gte]+;", " ", answers$Body)
+questions$Body <- gsub("-*&[gte]+;", " ", questions$Body)
+
+# fix (expand) contractions
+answers$Body <- sapply(answers$Body, fix.contractions)
+questions$Body <- sapply(questions$Body, fix.contractions)
+
+# convert everything to lower case
+answers$Body <- sapply(answers$Body, tolower)
+questions$Body <- sapply(questions$Body, tolower)
+
+# get number of special characters
+answers$numOfSpecial <- str_count(answers$Body, "[^a-zA-Z0-9 ]")
+questions$numOfSpecial <- str_count(questions$Body, "[^a-zA-Z0-9 ]")
+
+#aggregate(first$precip, list(first$time_hour), mean)
+
+```
+
+
+
+```{r}
+summary(answers)
+summary(questions)
+```
+
+
+
+```{r}
+ggplot (answers, aes(x=numOfSpecial, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 750), ylim=c(0,96)) +
+  geom_smooth()
+  
+
+ggplot (questions, aes(x=numOfSpecial, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 500), ylim=c(0,149)) +
+  geom_smooth()
+  
+
+ggplot (answers, aes(x=numOfCode, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 40), ylim=c(0,96)) +
+  geom_smooth()
+  
+
+ggplot (questions, aes(x=numOfCode, y=Score)) +
+  geom_point(alpha = 0.2) +
+  coord_cartesian(xlim = c(0, 20), ylim=c(0,149)) +
+  geom_smooth()
+```
+
+Here I am looking at two features, both estimates for the amount of code contained in a question or answer. The first feature is special characters. These should be the "<>()!=+-:;", etc. found in python. Obviously there will be some overlap between special characters in enlgish but the occurence of these characters in python is far higher. The second feature is the number of <code> tags. These are HTML tags that cause stackoverflow to render code in a special way: with additional formating and color coding.
+
+The point of looking at these features is to see if there is a correlation between amount of code and the score of a question or answer. Intertingly they all have different results. The score of answers appears to go up with increased special characters, while the score of questions appears to go down. The score of answers goes up and then quickly plummets with increased code tags, and code tags seem to have no effect on questions. I suspect that shorter more specific questions (featuring less code) get a higher score while longer answers with more worked examples (featuring more code) get a higher score. I am not sure what is happening to answers with too many code tags, but prusmably at some point the answers go from being "thorough" to "overwhelming and confusing".
+
+Derek: I created two features, both looking at code embdedded in the text. One counts special characters (after the html, newlines, and other markup has been removed) as a standin for code (because its counting all the "<>()!=+-:;", etc.), and the other looks at the number of code tags. The premise being that since these are questions and answers for python, a programming language, answers lots of code maybe better because they are provided larger worked out solutions, and conversely answers may be asking specific or broad questions based on the amount of code they include. I also did a lot of regex text preprocessing as I was playing around with the data.

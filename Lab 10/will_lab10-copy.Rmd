@@ -1,0 +1,63 @@
+---
+title: "will_Lab10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Simple rules to judge a question
+
+We are curious about what make the question or answer in the dataset to be a good/bad one. 
+
+Straightforwardly, we find two  coarse features, *i.e.* the length of the title and body of the questions. 
+
+```{r, echo = TRUE}
+stackQuestions <- read.csv("Questions_trunc.csv",header= TRUE, sep = ",")
+stackScore_Questions <- stackQuestions$Score
+countBody_Questions <- sapply(gregexpr("\\W+", stackQuestions$Body), length)
+countTitle_Questions <- sapply(gregexpr("\\W+", stackQuestions$Title), length)
+
+df <- data.frame(countTitle_Questions, stackScore_Questions)
+df2 <- data.frame(countBody_Questions, stackScore_Questions)
+
+
+ggplt <- ggplot(df, aes(x = countTitle_Questions, y = stackScore_Questions)) + geom_point()
+
+ggplt2 <- ggplot(df, aes(x = countBody_Questions, y = stackScore_Questions)) + geom_point()
+
+
+
+ggplt
+```
+It coincides with our first thought, a good question is with a balanced length of title.
+```{r}
+ggplt2
+```
+
+On the other side, from the graph above, we can draw the conclusion that the quality of a question has a negative correction with the length of body of the question.
+
+But the feature is too coarse to character how to be a good question.
+
+## Simple rules to judge an answer
+Intuitively, the answer is too long or, too short, it may not be good enough. 
+
+```{r, echo = TRUE}
+
+stackAnss <- read.csv("Answers_trunc.csv", header = TRUE, sep = ",")
+score_anss <- stackAnss$Score
+countBody_Ans <- sapply(gregexpr("\\W+", stackAnss$Body), length)
+df3 <- data.frame(countBody_Ans, score_anss)
+
+ggplt3 <- ggplot(df3, aes(x = countBody_Ans, y = score_anss)) + geom_point()
+ggplt3
+```
+
+From the plot, we can see most of the answers are less than 1000 words. From practical point of view, too long meeans impatience. So a balanced length of the answer can improve the quality of the answer. Elegancy and simpleness can earn a good score.
+
+But again this feature is too coarse to character how to be a good answer.
+
+## Contribution
+For this lab, I try to analyze what kinds of questions counts as a good question, and I'm fouces on the length of title and body of the questions. In order to do it, I used the sapply function to figure out the length of title and body of the questions. Next, I created the plot to show the relationship between length of the body of the question and score. Finally, I got that the longer the body of the question, the lower the quality of a question.

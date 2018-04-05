@@ -1,0 +1,264 @@
+---
+title: "Will_Lab 11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(babynames)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ariel and Rachel regexs
+
+```{r, echo = TRUE}
+# Baby name of girl born in 1973
+babynamesF1973 <- as.tibble(filter(babynames, sex == "F", year == 1973))
+num_Female1973 <- sum(babynamesF1973$n, dims =2)
+
+# Baby name of girl born in 1988
+babynamesF1988 <- as.tibble(filter(babynames, sex == "F", year == 1988))
+num_Female1988 <- sum(babynamesF1988$n, dims =2)
+
+# Baby name of girl born in 1989
+babynamesF1989 <- as.tibble(filter(babynames, sex == "F", year == 1989))
+num_Female1989 <- sum(babynamesF1989$n, dims =2)
+
+# Baby name of girl born in 1990
+babynamesF1990 <- as.tibble(filter(babynames, sex == "F", year == 1990))
+num_Female1990 <- sum(babynamesF1990$n,dim =2)
+
+# In 1973,Female baby names with different versions of "Ariel"
+pattern_ariel1973 <- str_detect(babynamesF1973$name, "^Ariel")
+Ariel1973 <- babynamesF1973[pattern_ariel1973,]
+unique(Ariel1973$name)
+versions_Ariel1973 <- length(unique(Ariel1973$name))
+num_Ariel1973 <- sum(Ariel1973$n, dims =2)
+prob_Ariel1973 <- num_Ariel1973/num_Female1973
+
+# Number of versions of female name Ariel
+versions_Ariel1973
+
+# In 1988,Female baby names with different versions of "Ariel"
+pattern_ariel1988 <- str_detect(babynamesF1988$name, "^Ariel")
+Ariel1988 <- babynamesF1988[pattern_ariel1988,]
+unique(Ariel1988$name)
+versions_Ariel1988 <- length(unique(Ariel1988$name))
+num_Ariel1988 <- sum(Ariel1988$n, dims =2)
+prob_Ariel1988 <- num_Ariel1988/num_Female1988
+
+# Number of versions of female name Ariel
+versions_Ariel1988
+
+
+# In 1989,Female baby names with different versions of "Ariel"
+pattern_ariel1989 <- str_detect(babynamesF1989$name, "^Ariel")
+Ariel1989 <- babynamesF1989[pattern_ariel1989,]
+# unique(Ariel1989$name)
+# versions_Ariel1989 <- length(unique(Ariel1989$name))
+num_Ariel1989 <- sum(Ariel1989$n, dims =2)
+# prob_Ariel1989 <- num_Ariel1989/num_Female1989
+
+# Number of versions of female name Ariel
+versions_Ariel1988
+
+# In 1990,Female baby names with different versions of "Ariel"
+pattern_ariel1990 <- str_detect(babynamesF1990$name, "^Ariel")
+Ariel1990 <- babynamesF1990[pattern_ariel1990,]
+unique(Ariel1990$name)
+versions_Ariel1990 <- length(unique(Ariel1990$name))
+num_Ariel1990 <- sum(Ariel1990$n, dims =2)
+prob_Ariel1990 <- num_Ariel1990/num_Female1990
+
+# Number of versions of female name Ariel
+versions_Ariel1990
+
+## output_prob_Ariel <- c(prob_Ariel1973,prob_Ariel1988,prob_Ariel1990)
+## output_prob_Ariel
+```
+
+So, there 3, 6  and 6 different versions of "Ariel" in the year 1973, 1988 and 1990 respectively.
+
+
+```{r, echo = TRUE}
+# In 1973,Female baby names with different versions of "Rachel"
+pattern_rachel1973 <- str_detect(babynamesF1973$name, "^Rachel")
+Rachel1973 <- babynamesF1973[pattern_rachel1973,]
+## Rachel1973
+unique(Rachel1973$name)
+versions_Rachel1973 <- length(unique(Rachel1973$name))
+num_Rachel1973 <- sum(Rachel1973$n, dims =2)
+prob_Rachel1973 <- num_Rachel1973/num_Female1973
+
+
+# Number of versions of female name Racel
+versions_Rachel1973
+
+# In 1988,Female baby names with different versions of "Rachel"
+pattern_rachel1988 <- str_detect(babynamesF1988$name, "^Rachel")
+Rachel1988 <- babynamesF1988[pattern_rachel1988,]
+## Rachel1988
+unique(Rachel1988$name)
+versions_Rachel1988 <- length(unique(Rachel1988$name))
+Rachel1988 <- filter(Rachel1973, !(name %in% c("Rachelanne","Rachelann","Rachelleann")))
+num_Rachel1988 <- sum(Rachel1988$n, dims =2)
+prob_Rachel1988 <- num_Rachel1988/num_Female1988
+
+# Number of versions of female name Rachel
+versions_Rachel1988
+
+# In 1990,Female baby names with different versions of "Rachel"
+pattern_rachel1990 <- str_detect(babynamesF1990$name, "^Rachel")
+Rachel1990 <- babynamesF1990[pattern_rachel1990,]
+## Rachel1990
+unique(Rachel1990$name)
+versions_Rachel1990 <- length(unique(Rachel1990$name))
+Rachel1988 <- filter(Rachel1973, !(name %in% c("Rachelann","Rachelmarie")))
+num_Rachel1990 <- sum(Rachel1988$n, dims =2)
+prob_Rachel1990 <- num_Rachel1990/num_Female1990
+
+# Number of versions of female name Rachel
+versions_Rachel1990
+
+output_prob <- c(prob_Ariel1973+prob_Rachel1973,prob_Ariel1988+prob_Rachel1988,prob_Ariel1990+prob_Rachel1990)
+output_prob
+```
+So, there 5, 4  and 4 different versions of "Ariel" in the year 1973, 1988 and 1990 respectively. Here we find that the name ended with "n" or "ne" and "RachelMarie" have no common orign with that of "Rachel".
+
+The chances a girl born in 1973 would be named either Rachel or Ariel (including various versions) are 0.49%, 0.50% and 0.66% in corresponding year.
+
+
+## *The Little Mermaid* Effect
+
+*The Little Mermaid* was released in the US in 1989. We want to eplore how much the release of the film affect the behavior of name-taking.
+
+To answer the question our clients are intersted inm *i.e.* "What was the change in proportion in female Ariel baby names", we will consider changes in female names starting with a vowel from 1988 to 1990.
+
+```{r, echo = TRUE}
+# Female names starting with a vowel in various years 1988~1990
+# 1988
+pattern_vowel1988 <- str_detect(babynamesF1988$name, "^[AEIOU]")
+vowel_babynames1988 <- babynamesF1988[pattern_vowel1988,]
+num_withVowel1988 <- sum(vowel_babynames1988$n, dims=2)
+
+# 1989
+pattern_vowel1989 <- str_detect(babynamesF1989$name, "^[AEIOU]")
+vowel_babynames1989 <- babynamesF1989[pattern_vowel1989,]
+num_withVowel1989 <- sum(vowel_babynames1989$n, dims=2)
+
+# 1990
+pattern_vowel1990 <- str_detect(babynamesF1990$name, "^[AEIOU]")
+vowel_babynames1990 <- babynamesF1990[pattern_vowel1990,]
+num_withVowel1990 <- sum(vowel_babynames1990$n, dims=2)
+
+diff_WithVowel <- num_withVowel1990 - num_withVowel1988
+diff_Ariel <- num_Ariel1990 - num_Ariel1988
+Ratio_Vowel <- diff_Ariel/diff_WithVowel
+
+# In context of name "Tom"
+# 1988
+pattern_Tom1988 <- str_detect(babynamesF1988$name, "^Tom")
+Tom1988 <- babynamesF1988[pattern_Tom1988,]
+num_Tom1988 <- sum(Tom1988$n, dims=2)
+
+# 1990
+pattern_Tom1990 <- str_detect(babynamesF1990$name, "^Tom")
+Tom1990 <- babynamesF1990[pattern_Tom1990,]
+num_Tom1990 <- sum(Tom1990$n, dims=2)
+
+diff_Tom <- num_Tom1990 - num_Tom1988
+Ratio_Tom <- diff_Ariel/diff_Tom
+
+
+# In the context of name "Sam"
+pattern_Sam1988 <- str_detect(babynamesF1988$name, "^Sam")
+Sam1988 <- babynamesF1988[pattern_Sam1988,]
+num_Sam1988 <- sum(Sam1988$n, dims=2)
+
+# 1990
+pattern_Sam1990 <- str_detect(babynamesF1990$name, "^Sam")
+Sam1990 <- babynamesF1990[pattern_Sam1990,]
+num_Sam1990 <- sum(Sam1990$n, dims=2)
+
+diff_Sam <- num_Sam1990 - num_Sam1988
+Ratio_Sam <- diff_Ariel/diff_Sam
+Ratio_Sam
+c(diff_Sam,diff_Ariel,diff_Tom)
+```
+Considering all the changes in female names starting with a vowel from 1988 to 1990, Ariel names increased with about 13.1%?
+
+
+```{r , echo=TRUE}
+df <- data.frame(x = c("Vowel", "Tom", "Sam"), y = c(Ratio_Vowel,Ratio_Tom,Ratio_Sam))
+ggplot(df, aes(x,y)) + geom_point()
+```
+
+We take name "Tom" and "Sam" as two referene names, we can have an educated guess that  the change in the proportion of Ariels is medium compared to the changes in other female names over that time period.
+
+## Our names
+```{r, echo=TRUE}
+babynames1979 <- as.tibble(filter(babynames, year == 1979))
+num1979 <- sum(babynames1979$n, dims = 2)
+
+babynames1997 <- as.tibble(filter(babynames, year == 1997))
+num1997 <- sum(babynames1997$n, dims = 2)
+
+babynames2015 <- as.tibble(filter(babynames, year == 2015))
+num2015 <- sum(babynames2015$n, dims = 2)
+
+pattern1_will1979 <- str_detect(babynames1979$name,"^Wil")
+will1_1979 <- babynames1979[pattern1_will1979, ]
+num_will1_1979 <- sum(will1_1979$n, dims = 2)
+
+pattern1_will1997 <- str_detect(babynames1997$name,"^Wil")
+will1_1997 <- babynames1997[pattern1_will1997, ]
+num_will1_1997 <- sum(will1_1997$n, dims = 2)
+
+pattern1_will2015 <- str_detect(babynames2015$name,"^Wil")
+will1_2015 <- babynames2015[pattern1_will2015, ]
+num_will1_2015 <- sum(will1_2015$n, dims = 2)
+
+pattern2_will1979 <- str_detect(babynames1979$name,"ill$")
+will2_1979 <- babynames1979[pattern2_will1979, ]
+num_will2_1979 <- sum(will2_1979$n, dims =2)
+
+pattern2_will1997 <- str_detect(babynames1997$name,"ill$")
+will2_1997 <- babynames1997[pattern2_will1997, ]
+num_will2_1997 <- sum(will2_1997$n, dims =2)
+
+pattern2_will2015 <- str_detect(babynames2015$name,"ill$")
+will2_2015 <- babynames2015[pattern2_will2015, ]
+num_will2_2015 <- sum(will2_2015$n, dims =2)
+
+diff1979 <- num1997 -num1979
+diff2015 <- num2015 - num1997
+
+diff1_1979 <- num_will1_1997 - num_will1_1979
+Ratio1_1979 <- diff1_1979/num_will1_1979
+relRatio1_1979 <- diff1_1979/diff1979
+diff1_2015 <- num_will1_2015 - num_will1_1997
+Ratio1_2015 <- diff1_2015/num_will1_1997
+relRatio1_2015 <- diff1_2015/diff2015
+
+
+diff2_1979 <- num_will2_1997 - num_will2_1979
+Ratio2_1979 <- diff2_1979/num_will2_1979
+relRatio2_1979 <- diff2_1979/diff1979
+diff2_2015 <- num_will2_2015 - num_will2_1997
+Ratio2_2015 <- diff2_2015/num_will2_1997
+relRatio2_2015 <- diff2_2015/diff2015
+c(Ratio1_2015,Ratio1_1979,Ratio2_2015,Ratio2_1979,Ratio1_2015,Ratio1_1979,relRatio2_2015,relRatio2_1979)
+```
+
+From the statistics computed above, we can see that the popularity of "Will" decreased consistantly.
+
+```{r, echo=TRUE}
+df1 <- data.frame(x= c("1st Period","2nd Period"),y=c(relRatio1_1979,relRatio1_2015)) 
+ggplot(df1,aes(x,y))+geom_col()  
+df2 <- data.frame(x= c("1st Period","2nd Period"),y=c(relRatio2_1979,relRatio2_2015)) 
+ggplot(df2,aes(x,y))+geom_col()  
+
+
+```
+
+From the plotting above, we find that in the first period(1979~1997) of the second version of "Will" is in the "Tails".

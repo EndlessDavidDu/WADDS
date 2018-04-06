@@ -82,12 +82,17 @@ all2015 <- filter(babynames,year==2015)
 
 Abby.diff15 <- filter(babynames,str_detect(babynames$name,"^Abb[iy]$"),year==2015,sex=="F") %>% count(wt=prop) - filter(babynames,str_detect(babynames$name,"^Abb[iy]$"),year==1997,sex=="F") %>% count(wt=prop)
 
+A15.diff <- filter(babynames,str_detect(babynames$name,"^AbbyS"),year==1997,sex=="F") %>% count(wt=prop) - filter(babynames,str_detect(babynames$name,"^Abby$"),year==2015,sex=="F") %>% count(wt=prop)
+
 all97to15 <- inner_join(all97,all2015,by="name") %>% mutate(diff=prop.y-prop.x) %>% select(name,prop.x,prop.y,diff)
 ggplot(all97to15) +
   geom_histogram(aes(x=diff),bins=100) + 
   geom_vline(aes(xintercept=Abby.diff15),color="red",lwd=1)
+
+filter(all97to15,diff<-0.0003715553) %>% count() /
+  all97to15 %>% count()
 ```
-Above is the change in proportion of my name between 1997 and 2015. Between 1997 and 2015 the popularity of my name has decreased by 0.046% which is below the change in proportion of most other baby names.
+Above is the change in proportion of my name between 1997 and 2015. Between 1997 and 2015 the popularity of my name has decreased by 0.046% which is below the change in proportion of most other baby names. The name Abby falls in the 100th percentile. 
 
 ```{r Abbyprops from 1979}
 all79 <- filter(babynames,year==1979)

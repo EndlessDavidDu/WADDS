@@ -20,7 +20,7 @@ sum(str_count(babynames$names),"dav")   # 274
 sum(str_count(babynames$names),"Dav")   # 3852
 3852/(274+3852)= 0.934
 
-# Ratio of "Dav" = 0.934
+Ratio of "Dav" = 0.934
 
 How many versions of the female name “Ariel” were there in 1973? 1988? 1990?
 
@@ -140,4 +140,4 @@ ALL77TO96 <- inner_join(ALL1977,ALL1996,by="name") %>% mutate(diff=prop.y-prop.x
 ggplot(ALL77TO96) +  geom_histogram(aes(x=diff),bins=100) + geom_vline(aes(xintercept=David1977.diff),color="red",lwd=1)
 ```
 
-Based on the to plot above, I have found out both of the two graphs has been changed, and both of them are decreasing. 
+The 1st histogram shows the change of the proportion of my name between 1997 and 2015. During this time I have found that my name has been decreased by 0.019% which is below the change compared with other baby names. The 2nd histogram shows the change of the proportion of my name between 1979 and 1997. During this time I have found that my name has been increased by 0.087% which is above the change compared with other baby names.  

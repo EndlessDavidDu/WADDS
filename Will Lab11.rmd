@@ -262,3 +262,6 @@ ggplot(df2,aes(x,y))+geom_col()
 ```
 
 From the plotting above, we find that in the first period(1979~1997) of the second version of "Will" is in the "Tails".
+
+## Contribution
+For the first part, I used a lot str_detect and length to determine the different version of the names. In 1988 and 1900, we find 6 different versions of the "Ariel" and 4 differnet versions for "Rachel". For the second part, I take name "Tom" and "Sam" as two referene names, we can have an educated guess that  the change in the proportion of Ariels is medium compared to the changes in other female names over that time period. For the third part, I calculated a lot probability that reflects the change from 1979 to 1997 and 1997 to 2015. The result is the "will" is in the "tails". The popularity of "will" decreased consistantly.

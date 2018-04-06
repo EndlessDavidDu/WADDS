@@ -141,3 +141,8 @@ ggplot(ALL77TO96) +  geom_histogram(aes(x=diff),bins=100) + geom_vline(aes(xinte
 ```
 
 The 1st histogram shows the change of the proportion of my name between 1997 and 2015. During this time I have found that my name has been decreased by 0.019% which is below the change compared with other baby names. The 2nd histogram shows the change of the proportion of my name between 1979 and 1997. During this time I have found that my name has been increased by 0.087% which is above the change compared with other baby names.  
+
+
+
+David: Here, I have implemented the factors and strings to answer some of questions in the lab. First, I have calculated the ratio of my name from the whole babyname data set, which is 0.934. After that, I have used the knowledge from factors and strings to calculate the number of names of Ariel and Rachel appear in the dataset. Then, I implemented the ratio from 1988 to 1990 to calculate the change of Ariel is -0.00177116. Therefore, we could conclude that the Little Mermaid cause less baby girls to be named Ariel. I have drawn a histogram about the Ariel among all the female names and found that Ariel has been placed in the 100 percentile change so it means that it has biggest change. Finally, I have implemented my name "David" to calculate the name change from 1979 to 1997 and 1997 to 2015. I have drawn a histogram to show the change of my name in these years. My name has been decreased by 0.019% from 1997 and 2015. My name has been increased by 0.087% between 1979 and 1997 
+

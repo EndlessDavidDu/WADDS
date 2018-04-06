@@ -7,6 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
+library(XML)
 
 fix.contractions <- function(doc) {
   # "won't" is a special case as it does not expand to "wo not"
@@ -33,6 +34,15 @@ questions <- questions[,!(names(questions) %in% c("X7"))]
 # Find number of <code> tags
 answers$numOfCode <- str_count(answers$Body, "<code>")
 questions$numOfCode <- str_count(questions$Body, "<code>")
+
+Adoc = htmlParse(questions$Body, asText=TRUE)
+Qdoc = htmlParse(questions$Body, asText=TRUE)
+
+Acode <- xpathSApply(Adoc, "//code", xmlValue)
+Qcode <- xpathSApply(Qdoc, "//code", xmlValue)
+
+ACodeLength <- str_count(Acode, ".")
+QCodeLength <- str_count(Qcode, ".")
 
 # Remove HTML tags
 answers$Body <- gsub("<.*?>", "", answers$Body)
@@ -74,26 +84,29 @@ summary(questions)
 ```{r}
 ggplot (answers, aes(x=numOfSpecial, y=Score)) +
   geom_point(alpha = 0.2) +
-  coord_cartesian(xlim = c(0, 750), ylim=c(0,96)) +
+  coord_cartesian(xlim = c(0, 750), ylim=c(-23,96)) +
   geom_smooth()
   
 
 ggplot (questions, aes(x=numOfSpecial, y=Score)) +
   geom_point(alpha = 0.2) +
-  coord_cartesian(xlim = c(0, 500), ylim=c(0,149)) +
+  coord_cartesian(xlim = c(0, 500), ylim=c(-6,149)) +
   geom_smooth()
   
 
 ggplot (answers, aes(x=numOfCode, y=Score)) +
   geom_point(alpha = 0.2) +
-  coord_cartesian(xlim = c(0, 40), ylim=c(0,96)) +
+  coord_cartesian(xlim = c(0, 40), ylim=c(-23,96)) +
   geom_smooth()
   
 
 ggplot (questions, aes(x=numOfCode, y=Score)) +
   geom_point(alpha = 0.2) +
-  coord_cartesian(xlim = c(0, 20), ylim=c(0,149)) +
+  coord_cartesian(xlim = c(0, 20), ylim=c(-6,149)) +
   geom_smooth()
+
+aggregate(first$precip, list(first$time_hour), mean)
+
 ```
 
 Here I am looking at two features, both estimates for the amount of code contained in a question or answer. The first feature is special characters. These should be the "<>()!=+-:;", etc. found in python. Obviously there will be some overlap between special characters in enlgish but the occurence of these characters in python is far higher. The second feature is the number of <code> tags. These are HTML tags that cause stackoverflow to render code in a special way: with additional formating and color coding.

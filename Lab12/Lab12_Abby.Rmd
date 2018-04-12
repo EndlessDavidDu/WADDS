@@ -1,0 +1,127 @@
+---
+title: "Individual Part Lab 12"
+author: "Abby"
+date: "April 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gapminder)
+library(stringr)
+gap<-gapminder %>% mutate(decade=parse_character(year))
+gap$decade<-str_c(str_extract(gap$decade, "^..."),"0")
+gap<-gapminder %>% mutate(decade=parse_factor(gap$decade,c("1950","1960","1970","1980","1990","2000")))
+```
+
+##Life Expectancy
+```{r lifeExpect}
+calc_lifeExp<-function(df1, c1, d1){
+  testing<-filter(df1, continent==c1 & decade==d1)
+  #print(c(c1,d1),quote=FALSE,sep="")
+  lifeExp_min<-min(testing$lifeExp)
+  lifeExp_max<-max(testing$lifeExp)
+  lifeExp_mean<-mean(testing$lifeExp)
+  lifeExp_median<-median(testing$lifeExp)
+  lifeExp_IQR<-IQR(testing$lifeExp)
+  statistics<-list(min=lifeExp_min, max=lifeExp_max, mean=lifeExp_max, median=lifeExp_median, IQR=lifeExp_IQR)
+  return(statistics)
+  
+}
+lifeExp_continent_decade<-tibble(continent=character(0), decade=character(0), minLifeExp=numeric(0), maxLifeExp=numeric(0), meanLifeExp=numeric(0), medianLifeExp=numeric(0), IQRLifeExp=numeric(0))
+for (i in (1:length(levels(gap$continent)))){
+  cont<-levels(gap$continent)[[i]]
+  for (h in (1:length(levels(gap$decade)))){
+    dec<-levels(gap$decade)[[h]]
+      row<-length(levels(gap$decade))*(i-1)+h
+      statistics<-calc_lifeExp(gap, cont, dec)
+      lifeExp_continent_decade[row,]<-c(cont,dec, statistics[[1]], statistics[[2]],statistics[[3]],statistics[[4]],statistics[[5]])
+  }
+}
+
+lifeExp_continent_decade
+```
+
+##GDP
+```{r GDP}
+calc_GDP<-function(df1, c1, d1){
+  testing<-filter(df1, continent==c1 & decade==d1)
+  #print(c(c1,d1),quote=FALSE,sep="")
+  GDP_min<-min(testing$gdpPercap)
+  GDP_max<-max(testing$gdpPercap)
+  GDP_mean<-mean(testing$gdpPercap)
+  GDP_median<-median(testing$gdpPercap)
+  GDP_IQR<-IQR(testing$gdpPercap)
+  statistics2<-list(min=GDP_min, max=GDP_max, mean=GDP_max, median=GDP_median, IQR=GDP_IQR)
+  return(statistics2)
+  
+}
+GDP_continent_decade<-tibble(continent=character(0), decade=character(0), minGDP=numeric(0), maxGDP=numeric(0), meanGDP=numeric(0), medianGDP=numeric(0), IQRGDP=numeric(0))
+for (j in (1:length(levels(gap$continent)))){
+  cont<-levels(gap$continent)[[j]]
+  for (k in (1:length(levels(gap$decade)))){
+    dec<-levels(gap$decade)[[k]]
+      row<-length(levels(gap$decade))*(j-1)+k
+      statistics2<-calc_GDP(gap, cont, dec)
+      GDP_continent_decade[row,]<-c(cont,dec, statistics2[[1]], statistics2[[2]],statistics2[[3]],statistics2[[4]],statistics2[[5]])
+  }
+}
+
+GDP_continent_decade
+```
+##Subquestions
+```{r graph, error=FALSE,warning=FALSE}
+data2<-full_join(GDP_continent_decade,lifeExp_continent_decade,by=c("continent","decade"))
+data2$meanGDP<-as.numeric(data2$meanGDP)
+data2$meanLifeExp<-as.numeric(data2$meanLifeExp)
+data2$medianLifeExp<-as.numeric(data2$medianLifeExp)
+data2$decade<-as.numeric(data2$decade)
+ggplot(data=data2,mapping=aes(x=meanGDP,y=meanLifeExp,color=continent))+geom_jitter()+geom_smooth(method="lm",se=FALSE)
+```
+From the graph above we can see that in general as the mean GDP for a continent increases, the mean life expectancy for that continent also increases. This holds true for Africa, the Americas, Europe, and Oceania. However, we notice a different pattern in Asia, where it seems as the mean GDP increases, life expectancy decreases. However, it does appear that up to a certain point as the mean GDP of Asia increases, so does the life expectancy. The point where we notice a decrease comes around 45000 in GDP. This indicates that GDP is not necessarily an accurate measure of a continent's life expectancy. This could imply that simply having more money does not mean the money is invested in health care or other services that may impact life expectancy. 
+```{r graph2,error=FALSE,warning=FALSE}
+ggplot(data=data2,mapping=aes(x=decade,y=meanLifeExp,color=continent))+geom_jitter()+geom_smooth(se=FALSE,method="lm")
+```
+From the graph above we can see how the mean life expectancy has increased for every continent over the decades since 1950 to 2007. The continent with the fastest and largest increase in life expectancy seems to be Asia. This might be a result of rapid industrialization, and a growing health care industry. Although we have seen from above that GDP does not necessarily equate to higher life expectancy in Asia, health care could possibly be independent of GDP. We can see from the increasing trend of Americans flying to countries such as India and Thailand for cheaper surgeries, the health care systems in Asia are inexpensive, effective, and safe. Thus, this rapid progression of the health care system may explain the sharp increase in life expectancy in Asia over the decades.
+```{r graph3,error=FALSE,warning=FALSE}
+ggplot(data=data2,mapping=aes(x=decade,y=meanGDP,color=continent))+geom_jitter()+geom_smooth(method="lm",se=FALSE)
+```
+From the graph above we can see that in general the mean GDP has increased for almost every continent. This holds true for Africa, the Americas, Europe, and Oceania. However, we notice a different pattern in Asia, where it seems as though the mean GDP decreased until 1990, where it then seemed to increase. This could be explained by the severe global economic recession in the early 1980s. While Japan recovered fairly quickly, countries such as Laos and Cambodia could be skewing the mean down, thus showing a decrease in GDP for Asia from the 1970s to the 1980s.
+##Question
+How well are population and life expectancy correlated? We would expect to see a negative relationship between population and life expectancy. From the Demographic Transition Model we know that countries with lots of children (high fertility rates) also have high mortality rates, implying lower life expectancies. However, this model came from old data and may not be as accurate today. It is important to analyze this question as a failure to do so can leave us believing in wrong assumptions regarding supposedly third world and western countries.
+```{r pop}
+calc_pop<-function(df1, c1, d1){
+  testing<-filter(df1, continent==c1 & decade==d1)
+  #print(c(c1,d1),quote=FALSE,sep="")
+  pop_min<-min(testing$pop)
+  pop_max<-max(testing$pop)
+  pop_mean<-mean(testing$pop)
+  pop_median<-median(testing$pop)
+  pop_IQR<-IQR(testing$pop)
+  statistics3<-list(min=pop_min, max=pop_max, mean=pop_max, median=pop_median, IQR=pop_IQR)
+  return(statistics3)
+  
+}
+pop_continent_decade<-tibble(continent=character(0), decade=character(0), minPop=numeric(0), maxPop=numeric(0), meanPop=numeric(0), medianPop=numeric(0), IQRPop=numeric(0))
+for (j in (1:length(levels(gap$continent)))){
+  cont<-levels(gap$continent)[[j]]
+  for (k in (1:length(levels(gap$decade)))){
+    dec<-levels(gap$decade)[[k]]
+      row<-length(levels(gap$decade))*(j-1)+k
+      statistics3<-calc_GDP(gap, cont, dec)
+      pop_continent_decade[row,]<-c(cont,dec, statistics3[[1]], statistics3[[2]],statistics3[[3]],statistics3[[4]],statistics3[[5]])
+  }
+}
+pop_continent_decade
+```
+
+```{r graph4,error=FALSE,warning=FALSE}
+data3<-full_join(pop_continent_decade,lifeExp_continent_decade,by=c("continent","decade"))
+data3$meanp=Pop<-as.numeric(data3$meanPop)
+data3$meanLifeExp<-as.numeric(data3$meanLifeExp)
+data3$medianLifeExp<-as.numeric(data3$medianLifeExp)
+data3$decade<-as.numeric(data3$decade)
+ggplot(data=data3,mapping=aes(x=meanPop,y=meanLifeExp,color=continent))+geom_jitter()+coord_fixed()
+```
+From the plot above we can see that, in general as population increases, so does life expectancy. From the Demographic Transition Model, this is not the result we were expecting. This could be attributed to an improving health care system, and better farming practices, which can make large populations more sustainable than previously thought. However, if we look at Africa, the trend seems to indicate that the larger the population, the lower the life expectancy. This does fit with our conception of the Demographic Transition Model, and since we consider many countries in Africa developing, there may not be a well-developed health care system, as evidenced by the devestation caused by the Ebola outbreak a few years ago. 

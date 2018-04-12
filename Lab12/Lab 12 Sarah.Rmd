@@ -85,7 +85,6 @@ cont_gdpPercap[order(cont_gdpPercap$mediangdp),]
 ## Answering a Question
 
 ``` {r question}
-
 all<-full_join(cont_gdpPercap,cont_lifeExp)
 all$meangdp<-as.numeric(all$meangdp)
 all$meanLifeExp<-as.numeric(all$meanLifeExp)

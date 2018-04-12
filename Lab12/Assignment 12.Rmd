@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# 1 How does life expectancy vary by continent and by decade? Write functions and employ iteration to calculate 5 statistics (min, max, mean, median, IQR=difference between 75%tile and 25%tile) for each continent for each decade.
+1. How does life expectancy vary by continent and by decade? Write functions and employ iteration to calculate 5 statistics (min, max, mean, median, IQR=difference between 75%tile and 25%tile) for each continent for each decade.
  
 ```{r}
 library(gapminder)
@@ -52,7 +52,7 @@ stat1
 
 From the table, we can find that life expectancy is increasing for each  continent with decades from 1950 to 2000 which reflected mainly on the mean and median life expectancy  for each continent. For different continents, we also find that the life expectancy  are different, Africa shows shortest average  life expectancy while continent Oceania  shows longest average  life expectancy, also we can find that the IQR for continent  Oceania is very small which is even less than 1 while continents Africa, Americas and Asia  are all very large.
 
-# 2 How does GDP per capita vary by continent and by decade? Write functions and employ iteration to calculate 5 statistics (min, max, mean, median, IQR=difference between 75%tile and 25%tile) for each continent for each decade.
+2. How does GDP per capita vary by continent and by decade? Write functions and employ iteration to calculate 5 statistics (min, max, mean, median, IQR=difference between 75%tile and 25%tile) for each continent for each decade.
 
 ```{r}
 #function give summary statistics for sepcified continent and decade

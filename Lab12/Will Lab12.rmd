@@ -219,3 +219,6 @@ abline(v=gdp_obsdiff1_median, col="red", lwd=2)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Contribution
+For the life expeectancy, we find the question interesing whether the religeon affects the life expectancy. From the analysis below, we find that the life expecancy decreasing by the order of Oceania, Europe, Americas, Asia and Arican. From the plots below, we can see that the measurement such as mean is significant. For the gdp, we find that the quantity decreasing by the order of Oceania, Europe, Asia, Americas, and Arican. From the plots below and statistics, we come to a conclustion that the related measurement is too votile so that the result is unreliable. 

@@ -1,0 +1,58 @@
+---title: "Lab 13 Sarah"
+author: "Sarah Liddle"
+date: "April 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+library(tidyverse)
+library(gapminder)
+```
+
+# Sarah Individual
+
+## GDP Per Capita in Europe between 1960 and 1990
+
+In this section, I will analyze trends in GDP Per Capita in Europe between the 1960's and the 1990's. Particularly I woud like to know the answer to the question: was there a statistically significant increase in GDP per capita in European countries between the year 1962 and 1992? This question is important because from the table below, which shows each continent and the mean change in GDP per capita between 1962 and 1992, it is clear that each continent shows an increase in GDP per capita and that Europe has the highest, but it isn't clear quite yet whether this change is significantly high compared to the others. Answering this question will give an understanding of if European citizens have increased in personal prosperity significantly more than in other continents throughout the world.
+
+```{r sarah1}
+changeingdp<-c(mean(filter(gapminder,continent=="Europe", year==1992)$gdpPercap)-mean(filter(gapminder,continent=="Europe", year==1962)$gdpPercap),mean(filter(gapminder,continent=="Oceania", year==1992)$gdpPercap)-mean(filter(gapminder,continent=="Oceania", year==1962)$gdpPercap),mean(filter(gapminder,continent=="Americas", year==1992)$gdpPercap)-mean(filter(gapminder,continent=="Americas", year==1962)$gdpPercap),mean(filter(gapminder,continent=="Asia", year==1992)$gdpPercap)-mean(filter(gapminder,continent=="Asia", year==1962)$gdpPercap),mean(filter(gapminder,continent=="Africa", year==1992)$gdpPercap)-mean(filter(gapminder,continent=="Africa", year==1962)$gdpPercap))
+names<-c("Europe", "Oceania", "Americas","Asia", "Africa")
+library(knitr)
+kable(cbind(names, changeingdp))
+```
+
+
+The null hypothesis is that European countries did not have a statistically significant increase in GDP per capita between 1962 and 1992. The test statistic I will use to test this hypothesis will be the mean change in GD per capita between countries in non European countries for different years. The distribution of the test statistic according to the null hypothesis is normal with a mean equal to the mean of change in GDP per capita from the perturbed, unlabeled countries and years sampled, which should be representative of the average change in GDP per capita for all years and all countries. This value, as shown below, is 2323.83 units. 
+
+
+``` {r sarah2}
+
+change_all<-tibble(change1=numeric(), change2=numeric())
+for (i in 1:1000){
+  country0<-sample(levels(filter(gapminder, continent != "Europe")$country),1)
+  year1<-sample(filter(gapminder,year<2007)$year, 1)
+  year2<-sample(filter(gapminder,year>year1)$year, 1)
+  change_all[i,1]<-mean(filter(gapminder,country==country0, year==year2)$gdpPercap)-mean(filter(gapminder,country==country0, year==year1)$gdpPercap)
+}
+europe_countries1992<-filter(gapminder, continent=="Europe", year==1992) %>% group_by(country)%>% summarize(mean2=mean(gdpPercap))
+europe_countries1962<-filter(gapminder, continent=="Europe", year==1962)%>% group_by(country)%>% summarize(mean1=mean(gdpPercap))
+europe_diff<-full_join(europe_countries1992,europe_countries1962)
+europe_diff<-europe_diff %>% mutate(europe_diff_mean=mean2-mean1)
+
+ggplot(data=change_all)+geom_histogram(aes(x=change1), fill="blue", alpha=0.3, binwidth=1000)+geom_histogram(data=europe_diff, aes(x=europe_diff_mean), binwidth=2000, fill="red", alpha=0.7)+geom_vline(xintercept=mean(europe_diff$europe_diff_mean), color="red")
+
+percentile<-ecdf(change_all$change1)
+
+percentile(mean(europe_diff$europe_diff_mean))
+```
+
+The plot above shows the distribution of the null hypothesis, created using the mixed up labels, in blue. The red is the change in mean GDP er capita's between the two years for countries in Europe, and the red line represents the change in mean GDP per capita for all European countries between 1962 and 1992. This value is in the 90.2 percentile of the distribution for the null hypothesis. I would consider this statistically significant and conclude that European countries had a high increase in GDP per capita with regards to other countries between 1962 and 1992. 
+
+
+
+
+
+
+

@@ -11,9 +11,11 @@ library(tidyverse)
 library(gapminder)
 library(stringr)
 
-gapminder2<-gapminder %>% mutate(decade=parse_character(year))
+
+
+gapminder2<-gapminder_unfiltered %>% mutate(decade=parse_character(year))
 gapminder2$decade<-str_c(str_extract(gapminder2$decade, "^..."),"0")
-gapminder2<-gapminder %>% mutate(decade=parse_factor(gapminder2$decade,c("1950","1960","1970","1980","1990","2000")))
+gapminder2<-gapminder_unfiltered %>% mutate(decade=parse_factor(gapminder2$decade,c("1950","1960","1970","1980","1990","2000")))
 ```
 
 ## Life Expectancy

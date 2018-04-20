@@ -1,0 +1,45 @@
+---
+title: "Sarah Lab 13"
+author: "Sarah Liddle"
+date: "April 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
+library(tidyverse)
+indicator_sugar_consumption <- read_csv("indicator sugar_consumption.csv")
+```
+
+## Sugar Consumption Between 1960 an 1970
+
+The question I want to answer is: has there been a significant change in sugar consumption worldwide between 1960 and 1970? This is an important question to answer because it will allow us to gain insight on patterns in how much sugar people are eating all over the world in this decade relative to others and why that might be the case. 
+
+The null hypothesis is that there is no significant change in sugar consumption worldwide between 1960 and 1970. The test statistic I will use is the change mean sugar consumption between years. The null hypothesis will be the distribution of the means of sampled sugar consumptions minus the mean of a different sample of sugar consumption, with years and countries unlabeled. 
+
+
+``` {r arghhhh}
+sug<-indicator_sugar_consumption
+
+sug<-sug%>%gather(`1961`, `1962`, `1963`,`1964`, `1965`,`1966`,`1967`,`1968`,`1969`,`1970`,`1971`,`1972`,`1973`,`1974`,`1975`,`1976`,`1977`,`1978`, `1979`,`1980`,`1981`,`1982`,`1983`,`1984`,`1985`,`1986`,`1987`,`1988`, `1989`,`1990`,`1991`,`1992`,`1993`,`1994`,`1995`,`1996`,`1997`,`1998`, `1999`,`2000`,`2001`,`2002`,`2003`,`2004`, key="Year", value="Sugar_Intake")
+sug<-dplyr::select(sug, X1, Year, Sugar_Intake)
+names(sug)<-c("Country","Year","Sugar_Intake")
+sug<-filter(sug, Sugar_Intake != is.na(Sugar_Intake))
+#base<-mean(filter(sug, Year==1961)$Sugar_Intake)
+sub_mean<-mean(filter(sug, Year==1970)$Sugar_Intake)-mean(filter(sug, Year==1961)$Sugar_Intake)
+null<-tibble(mean_diff=numeric())
+set.seed(405)
+for (i in 1:1000){
+  temp.sample<-mean(sample(sug$Sugar_Intake,10))-mean(sample(sug$Sugar_Intake,10))
+  null[i,1]<-mean(temp.sample)
+}
+ggplot(data=null)+geom_histogram(aes(x=mean_diff))+geom_vline(xintercept=sub_mean, color="red")
+percentile<-ecdf(null$mean_diff)
+percentile(sub_mean)
+```
+
+
+The difference in mean sugar consumption between 1960 and 1970 represents the 67.8 percentile of the simulated data under our null hypothesis. Therefore, there is no evidence suggesting that the sugar consumption changes worldwide significantly different than in other time periods. 
+
+
+

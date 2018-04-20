@@ -1,0 +1,77 @@
+---
+title: "Assignment 13"
+author: "David Du"
+date: "4/18/2018"
+output: html_document
+---
+
+Step 1: What is the question? Why is it important/interesting?
+
+My question for this lab is considering whether there is a significant change in sugar consumption worldwide between 1990 and 2000? I think this is interesting because it's worth for us to know how much sugar does people take for every day. Also we could find out the pattern here. 
+
+Step 2: Write down the null hypothesis, which is a statement usually along the lines of ‘Nothing is going on. We expect to see no changes and no effects when considering different variables. Labels do not matter. If you mix them up, nothing will change. Things will always remain boring.
+
+The null hopythesis is that there is no significant change in sugar consumption worldwide between 1990 and 2000. The test statistics here could be the average sugar consumption among years, and the null hypothesis will be the distribution of the average sugar consumption minus average of different sample of sugar consumption 
+
+
+Step 3: Determine your test statistic, or “summary” of the data.
+
+Step 4. What is the distribution of this statistic according to the null hypothesis? Assume that the year labels don’t matter. Mix up the labels, calculate the test statistic for the mixed-up labels, and store this “plausible” statistic. Then do it 999 more times. Plot a histogram of this distribution of the mixed-up statistic.
+
+Step 5: How does the real data summary statistic compare to the distribution generated in Step 4? Answer this with a percentile.
+```{r}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE,message=FALSE,header= TRUE)
+library(tidyverse)
+library(readr)
+library(ggplot2)
+data1 <-read.csv("sugar_consumption.csv",stringsAsFactors = FALSE)
+data2 <- data1[complete.cases(data1),]
+colnames(data2)
+
+```
+
+```{r}
+
+c_temp <- sort(unique(data2$X))
+ct <- rep(c_temp,44)
+mt <- rep(1961:2004,each = 151)
+Sugar <- data2[,2]
+mydat <- for(i in 2:45){
+  Sugar <- c(Sugar,data2[,i])
+}
+Sugar_con <- Sugar[-c(1:151)]
+mydata <- data.frame(Country = ct,year = mt, Sugar_Consumption = Sugar_con)
+
+subdat <- subset(mydata,year == 1990 | year == 2000)
+head(subdat)
+
+temp <- mean(subdat$Sugar_Consumption) 
+subdat <- mutate(subdat, abvalerror = abs(Sugar_Consumption-temp))
+mean_sugar <- with(subdat,tapply(abvalerror,year,mean))
+real.diff <- as.numeric(mean_sugar[2]- mean_sugar[1])
+
+len <- nrow(subdat)
+fake.diffs <- vector("double",length=1000) 
+set.seed(3)
+for (i in seq_along(fake.diffs)){
+  fake.data <- sample(subdat$Sugar_Consumption,len,replace=F) 
+  fake.diffs[i] <- mean(fake.data[1:151])-mean(fake.data[152:302]) 
+}
+ggplot() +
+  geom_histogram(aes(x=fake.diffs),binwidth=0.1)
+```
+
+```{r}
+sum(real.diff > fake.diffs)/1000     # 59% 
+ggplot() +
+  geom_histogram(aes(x=fake.diffs),binwidth=0.1) +
+  geom_vline(aes(xintercept=real.diff),col="blue",lty=2)
+```
+
+Step 6: Make a conclusion about the question you tested in Step 1. Plot the data in a way that shows the data underlying your conclusion.
+
+Compare to 97% tile, it does not reject the null hypothesis, and we could see that there is no significant change in sugar consumption worldwide between 1990 and 2000
+
+David Du’s contribution:
+
+For this lab we have implemented the function iteration and we have tried to analyze different decades for people’s sugar take. I have analyzed between 1990 and 2000. and based on the histogram I have plot, and I have not found out that there is no significiant change between 1990 and 2000 

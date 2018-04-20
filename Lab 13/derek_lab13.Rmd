@@ -1,0 +1,78 @@
+---
+title: "Lab13"
+output: html_document
+---
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+library(readxl)
+library(tidyverse)
+sugar <- read_excel("~/Downloads/indicator sugar_consumption.xlsx")
+sugar <- gather(sugar, year, consumption, -X__1)
+colnames(sugar)[1] = "country"
+sugar <- sugar[order(sugar$country),]
+sugar <- transform(sugar, year = as.numeric(year))
+sugar <- na.omit(sugar)
+
+```
+
+```{r}
+ggplot(sugar, aes(x=year, y=consumption, col=country))+
+  geom_line() +
+  theme(legend.position="none")
+
+```
+
+```{r}
+
+medians <- sugar %>% group_by(year) %>% summarize(med = median(consumption))
+means <- sugar %>% group_by(year) %>% summarize(mean = mean(consumption))
+mins <- sugar %>% group_by(year) %>% summarize(min = min(consumption))
+maxs <- sugar %>% group_by(year) %>% summarize(max = max(consumption))
+IQRs <- sugar %>% group_by(year) %>% summarize(iqr = IQR(consumption))
+medians
+ggplot()+
+  geom_line(aes(x=means$year, y=mean$mean, col="Mean")) 
+  #geom_line(aes(x=means$year, y=means$mean, col="Mean")) 
+  #geom_line(aes(x=mins$year, y=mins$min, col="Min")) +
+  #geom_line(aes(x=maxs$year, y=maxs$max, col="Max")) +
+  #geom_line(aes(x=IQRs$year, y=IQRs$iqr, col="IQR")) 
+```
+
+```{r}
+mixedup_consumption <- function(Country,years=c(1995,1999)) {
+  diff <- filter(sugar,country==Country,year==years[2]) %>% select(consumption) -
+    filter(sugar,country==Country,year==years[1]) %>% select(consumption) 
+  diff <- as.numeric(diff) #This gets rid of the structure of diff and makes it just a number, which means that the next line is just a numeric vector.
+  c(0,diff,-diff,0)
+}
+
+
+sugar.tbl <- tibble(country=unique(filter(sugar,year==1967)$country),a=0,b=0,c=0,d=0)
+
+for (nm in seq_along(sugar.tbl$country)) {
+  sugar.tbl[nm,2:5] <-  mixedup_consumption(sugar.tbl$country[nm])
+}
+
+null.median<-vector("double",length=1000)
+for(i in seq_along(null.median)){
+  temp.draw<-sample(sugar.tbl$b,10)
+  null.median[i]<-median(temp.draw)
+}
+
+ggplot()+geom_histogram(aes(x=null.median))
+statMedian<-sum(null.median)/1000
+sugar.tbl <- na.omit(sugar.tbl)
+#sugar.tbl$b
+real.median<-median(sugar.tbl$b)
+#real.median
+percentile.data<-sum(null.median<real.median)/1000 #0.464
+ggplot()+geom_histogram(aes(x=null.median))+geom_vline(xintercept=real.median, color="green")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

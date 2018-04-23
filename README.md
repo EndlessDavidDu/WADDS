@@ -9,7 +9,7 @@ Sarah, <br />
 Will, <br />
 
 Completed Assignments: <br />
-Assignment 2 - Team profile
+Assignment 2 - Team profile <br />
 Assignment 3 - Plotting Health Data
 Assignment 4 - Smoking and Low Birth Weight?
 Assignment 5 - Aerosol Mass Spectrometry

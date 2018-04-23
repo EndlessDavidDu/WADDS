@@ -21,5 +21,5 @@ Assignment 10 - Text and Time Analysis <br />
 Assignment 11 - Baby Names <br />
 Assignment 12 - Writing function, interpreting gapminder dataset <br />
 Assignment 13 - World Indicaors <br />
-Assignment 14 - Redo Lab 3 <br />
+Assignment 14 - Redo Lab 3,using advanced techniques <br />
 Assignment 15 - TBA <br />

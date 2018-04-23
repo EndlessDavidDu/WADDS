@@ -1,0 +1,71 @@
+---
+title: "Lab 14 Sarah"
+author: "Sarah Liddle"
+date: "April 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+library(tidyverse)
+library(modelr)
+library(purrr)
+library(stringr)
+source("http://www.openintro.org/stat/data/cdc.R")
+cdc <- as_tibble(cdc)
+```
+
+## Sarah Individual
+
+In this section, I will be examining the relationship between regular exercise and general health. I want to use hypothesis testing to determine if there seems to be a significant difference in general health between those who do exercise regularly and those who don't. In order to do this, I am going to first change the levels in the General Health column to be on a numbered scale instead of qualitative ratings. More specifically, I will make "poor" equal to "1", "fair" equal to "2", "good" equal to "3", "very good" equal to "4", and "excellent" equal to "5". Then I will examine the mean value of general health for those who exercise in relation to the distribution of unlabeled general health measurement sample means. 
+
+The null hypothesis is that there is no significant difference in general health for people who exercise. The test statistic I will use for this is the mean general health rating. The results are depicted below.
+
+``` {r sarah1}
+cdc1<-cdc
+cdc1$genhlth<-str_replace_all(cdc$genhlth, "excellent", "5")%>%str_replace_all("very good", "4") %>% str_replace_all("good", "3") %>% str_replace_all("fair", "2") %>% str_replace_all("poor", "1")
+cdc1$genhlth<-as.numeric(cdc1$genhlth)
+null.hyp<-tibble(health=numeric())
+
+set.seed(506)
+for (i in 1:1000){
+  temp.samp.mean<-mean(sample(cdc1$genhlth, 200))
+  null.hyp[i,1]<-temp.samp.mean
+}
+exercise.mean<-mean(filter(cdc1, exerany==1)$genhlth)
+ggplot(data=null.hyp)+geom_histogram(aes(x=health), binwidth=0.05)+geom_vline(xintercept=exercise.mean, color="red")
+percentile<-ecdf(null.hyp$health)
+print("The percentile of the mean general health rating for those who exercise under the null hypothesis:")
+percentile(exercise.mean)
+
+
+```
+
+
+The results indicate that the mean general health rating for people who exercise falls into the 96.1 percentile of the data under the null hypothesis. This indicates that there does seem to be a significant impact of exercise on general health. 
+
+
+## Team Stuff Maybe?
+
+Below, I've broken the data set up to analyze males and females separately and have shown summaries of the linear fits of all other covariates in the table and their effect on general health. 
+
+```{r teammaybe}
+cdcfemale<-filter(cdc1, gender=="f")%>% dplyr::select(-gender)
+cdcmale<-filter(cdc1, gender=="m")%>% dplyr::select(-gender)
+fit.female<-lm(genhlth~., data=cdcfemale)
+summary(fit.female)
+fit.male<-lm(genhlth~., data=cdcmale)
+summary(fit.male)
+```
+
+For females, it appears that the desired weight covariate is not significant, meaning it does not affect the general health rating based on the data. It does, hwoever, appear to be significant in male general health, showing that for every unit increasein desired weight, the general health rating will go up by an average of 0.0017. This shows that males who want to gain more weight tend to be slightly healthier, which makes sense because men in this category are generally wanting to be building muscle. However, even healthy women generally don't want to gain weight, so it is logical that this particular covariate isn't significant for them.
+
+Based on the summaries above, we get the linear model for general health in women:
+$$  Y_f=1.64+0.43x_{exerany}+0.35x_{hlthplan}-0.17x_{smoke}+0.044x_{ht}-0.0061x_{wt}-0.012x_{age} $$
+and the linear model for general health in men:
+$$  Y_m=1.72+0.37x_{exerany}+0.28x_{hlthplan}-0.25x_{smoke}+0.039x_{ht}-0.0052x_{wt}+0.0017x_{wtdes}-0.012x_{age} $$
+where Y is the predicted general health rating.
+
+Based on these results, it seems that exercise, having a health plan, and height seem to positively affect the general health rating of both men and women, while smoking, weight, and age seem to negatively affect the general health rating of both men and women, on average. 
+
+

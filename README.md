@@ -9,6 +9,7 @@ Sarah, <br />
 Will, <br />
 
 Completed Assignments: <br />
+Assignment 1 - REALI <br />
 Assignment 2 - Team profile <br />
 Assignment 3 - Plotting Health Data <br />
 Assignment 4 - Smoking and Low Birth Weight? <br />
@@ -21,5 +22,5 @@ Assignment 10 - Text and Time Analysis <br />
 Assignment 11 - Baby Names <br />
 Assignment 12 - Writing function, interpreting gapminder dataset <br />
 Assignment 13 - World Indicaors <br />
-Assignment 14 - Redo Lab 3, using advanced techniques <br />
-Assignment 15 - TBA <br />
+Assignment 14 - Redo Lab 3, using advanced techniques + Redo REALI <br />
+Assignment 15 - Final Project and Redo Lab 2 <br />

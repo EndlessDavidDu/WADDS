@@ -1,0 +1,18 @@
+---
+title: "Youtube Data"
+output: html_document
+---
+title: "Lab 7 Will Rao"
+author: "Xinzhi Rao"
+date: "3/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Will Individual Part
+My primary question comes up with how breed of dog/cats will affect the sex_upon_outcome of animals that entering into the shelter in Austin Animal center. My backup question is are certain breeds of animals are more likerly entering into the Austin Animal center.
+
+There are important questions because teh result could show that the probability of different kinds of breeds of cats/dogs with processed sexuality entering into the Austin Animal center. It will give us the statement to know what kinds of breeds we need to protect, because when we work with their sex_upon_outcome, they probably could not live in a human society anymore, so that they need to com into the animal shelter. Obviously, it is a good study for telling everyone that has pets with dogs/cats to treat their pets wisely. 

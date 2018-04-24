@@ -1,0 +1,87 @@
+---
+title: 'Assignment 12'
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. How does life expectancy vary by continent and by decade? Write functions and employ iteration to calculate 5 statistics (min, max, mean, median, IQR=difference between 75%tile and 25%tile) for each continent for each decade.
+ 
+```{r}
+library(gapminder)
+#life expectancy
+#function convert years to decades for decades 1950,1960,...,2000
+my_decide_gapminder <- function(gapminder) {
+  gapminder$decade <-  cut(gapminder$year, seq(1950,2010,10),
+                           labels = as.character(seq(1950,2000,10)))
+  return(gapminder)
+}
+#function give summary statistics for sepcified continent and decade
+my_summary_life <- function(gapminder, continent, decade) {
+  #subset for each continent and decade
+  gapminder2 <- gapminder[which(gapminder$continent == continent & gapminder$decade == decade),]
+  #compute summary statistics
+  statistics <- c( min(gapminder2$lifeExp), max(gapminder2$lifeExp), 
+                   mean(gapminder2$lifeExp), median(gapminder2$lifeExp),
+                   quantile(gapminder2$lifeExp, 0.75) - quantile(gapminder2$lifeExp, 0.25))
+  names(statistics) <- c("min","max","mean","median","IQR")
+  return(statistics)
+}
+gapminder <- my_decide_gapminder(gapminder)
+#employ iterations to compute statistics for each continent for each decade
+combs <- c()
+result <- c()
+for(continent in  levels(gapminder$continent)) {
+  for(decade in levels(gapminder$decade)) {
+    combs <- rbind(combs, c(continent, decade))
+    result <- rbind(result,  my_summary_life(gapminder, continent, decade ))
+  }
+}
+#statistics results
+stat1 <- data.frame(combs,  result )
+colnames(stat1)[1:2] <- c("continent","decade")
+stat1
+
+```
+
+From the table, we can find that life expectancy is increasing for each  continent with decades from 1950 to 2000 which reflected mainly on the mean and median life expectancy  for each continent. For different continents, we also find that the life expectancy  are different, Africa shows shortest average  life expectancy while continent Oceania  shows longest average  life expectancy, also we can find that the IQR for continent  Oceania is very small which is even less than 1 while continents Africa, Americas and Asia  are all very large.
+
+2. How does GDP per capita vary by continent and by decade? Write functions and employ iteration to calculate 5 statistics (min, max, mean, median, IQR=difference between 75%tile and 25%tile) for each continent for each decade.
+
+```{r}
+#function give summary statistics for sepcified continent and decade
+my_summary_gdp <- function(gapminder, continent, decade) {
+  #subset for each continent and decade
+  gapminder2 <- gapminder[which(gapminder$continent == continent & gapminder$decade == decade),]
+  #compute summary statistics
+  statistics <- c( min(gapminder2$gdpPercap), max(gapminder2$gdpPercap), 
+                   mean(gapminder2$gdpPercap), median(gapminder2$gdpPercap),
+                   quantile(gapminder2$gdpPercap, 0.75) - quantile(gapminder2$gdpPercap, 0.25))
+  names(statistics) <- c("min","max","mean","median","IQR")
+  return(statistics)
+}
+gapminder <- my_decide_gapminder(gapminder)
+#employ iterations to compute statistics for each continent for each decade
+combs <- c()
+result <- c()
+for(continent in  levels(gapminder$continent)) {
+  for(decade in levels(gapminder$decade)) {
+    combs <- rbind(combs, c(continent, decade))
+    result <- rbind(result,  my_summary_gdp(gapminder, continent, decade ))
+  }
+}
+#statistics results
+stat2 <- data.frame(combs,  result )
+colnames(stat2)[1:2] <- c("continent","decade")
+stat2
+
+```
+
+From the table,  we can find that GDP is generally growing with decades for all of the continents, but the 
+speed of growing are much different among the  continents, for example, Africa shows a much lower growing speed than other continents, also, some continents show fast growing of GDP in mean values such as Asia but the median values of GDP increases quite slower, finally, we can find that the overall GDP quantities are much different among the continents, Africa shows a quite lower GDP than other continents while  Americas, Europe  and Oceania show much hihger GDP

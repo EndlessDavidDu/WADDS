@@ -79,6 +79,7 @@ Below, we've analyzed the residuals of both linear models to examine if the mode
 cdcfemale<-cdcfemale%>% add_residuals(fit.female, "lresid") %>%add_predictions(fit.female, "lhealth")
 cdcmale<-cdcmale%>% add_residuals(fit.male, "lresid")%>%add_predictions(fit.male, "lhealth")
 ggplot(data=cdcfemale)+geom_jitter(aes(x=lhealth, y=lresid), height=0.6)+labs(title="Fitted vs. Residual Values, Female")
+#Made the jitter have a higher height because otherwise the general health ratings make it look weird since they only have five different numbers they can take.
 ggplot(data=cdcfemale)+geom_histogram(aes(x=lresid))+labs(title="Histogram of Residuals, Female")
 ggplot(data=cdcmale)+geom_jitter(aes(x=lhealth, y=lresid), height=0.6)+labs(title="Fitted vs. Residual Values, Male")
 ggplot(data=cdcmale)+geom_histogram(aes(x=lresid))+labs(title="Histogram of Residuals, Male")
@@ -86,6 +87,8 @@ ggplot(data=cdcmale)+geom_histogram(aes(x=lresid))+labs(title="Histogram of Resi
 ```
 
 
+## Summary of Individual Contributions
 
+Sarah: I performed a permutation hypothesis test in order to examine if there was a significant difference in general health for people who have claimed to exercise in comparison with the general health of the sample overall. 
 
 

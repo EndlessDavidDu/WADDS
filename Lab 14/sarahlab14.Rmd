@@ -47,9 +47,13 @@ The results indicate that the mean general health rating for people who exercise
 
 ## Team Stuff Maybe?
 
-Below, I've broken the data set up to analyze males and females separately and have shown summaries of the linear fits of all other covariates in the table and their effect on general health. 
+Below, we've broken the data set up to analyze males and females separately and have shown summaries of the linear fits of all other covariates in the table and their effect on general health. Note that general health was changed from a factor to a numerical rating in order to do this. More specifically, "poor" will instead equal "1", "fair" will equal"2", "good" will equal "3", "very good" will equal "4", and "excellent" will equal "5".
 
 ```{r teammaybe}
+cdc1<-cdc
+cdc1$genhlth<-str_replace_all(cdc$genhlth, "excellent", "5")%>%str_replace_all("very good", "4") %>% str_replace_all("good", "3") %>% str_replace_all("fair", "2") %>% str_replace_all("poor", "1")
+cdc1$genhlth<-as.numeric(cdc1$genhlth)
+
 cdcfemale<-filter(cdc1, gender=="f")%>% dplyr::select(-gender)
 cdcmale<-filter(cdc1, gender=="m")%>% dplyr::select(-gender)
 fit.female<-lm(genhlth~., data=cdcfemale)
@@ -66,6 +70,25 @@ and the linear model for general health in men:
 $$  Y_m=1.72+0.37x_{exerany}+0.28x_{hlthplan}-0.25x_{smoke}+0.039x_{ht}-0.0052x_{wt}+0.0017x_{wtdes}-0.012x_{age} $$
 where Y is the predicted general health rating.
 
-Based on these results, it seems that exercise, having a health plan, and height seem to positively affect the general health rating of both men and women, while smoking, weight, and age seem to negatively affect the general health rating of both men and women, on average. 
+Based on these results, it seems that exercise, having a health plan, and height seem to positively affect the general health rating of both men and women, while smoking, weight, and age seem to negatively affect the general health rating of both men and women, on average.
+
+Below, we've analyzed the residuals of both linear models to examine if the model seems to have accounted for all the patterns in the data. Based on the fitted versus residual plots for both genders, the points have an appearance of random noise, and the reisudals for each are approximately normal with a mean close to zero. This indicates that our linear model is a sufficient predictor of these covariates on general health. 
+
+```{r resids}
+
+cdcfemale<-cdcfemale%>% add_residuals(fit.female, "lresid") %>%add_predictions(fit.female, "lhealth")
+cdcmale<-cdcmale%>% add_residuals(fit.male, "lresid")%>%add_predictions(fit.male, "lhealth")
+ggplot(data=cdcfemale)+geom_jitter(aes(x=lhealth, y=lresid), height=0.6)+labs(title="Fitted vs. Residual Values, Female")
+#Made the jitter have a higher height because otherwise the general health ratings make it look weird since they only have five different numbers they can take.
+ggplot(data=cdcfemale)+geom_histogram(aes(x=lresid))+labs(title="Histogram of Residuals, Female")
+ggplot(data=cdcmale)+geom_jitter(aes(x=lhealth, y=lresid), height=0.6)+labs(title="Fitted vs. Residual Values, Male")
+ggplot(data=cdcmale)+geom_histogram(aes(x=lresid))+labs(title="Histogram of Residuals, Male")
+
+```
+
+
+## Summary of Individual Contributions
+
+Sarah: I performed a permutation hypothesis test in order to examine if there was a significant difference in general health for people who have claimed to exercise in comparison with the general health of the sample overall. 
 
 

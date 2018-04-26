@@ -1,6 +1,6 @@
 ---
-title: "Lab 13 Abby"
-author: "Abby"
+title: "Lab 13 WADDS"
+author: "WADDS"
 date: "April 18, 2018"
 output: html_document
 ---
@@ -104,6 +104,72 @@ ggplot()+geom_histogram(aes(x=null.median))+geom_vline(xintercept=real.median, c
 ```
 
 From the plot above we can see visually that our distribution of medians seems to correctly approximate the real median difference in sugar intake between 1980 and 1989. Looking at the percentile of the real median, we see that the real median falls at the 46.4th percentile. Thus, roughly half the differences are less than 0 and roughly half the data is greater than 0. From this, we fail to reject the null hypothesis that there is no difference in sugar intake from 1980 to 1989. Thus, we can conclude that sugar intake did not increase worldwide from 1980 to 1989. 
+
+##Derek
+```{r pressure, echo=FALSE}
+library(readxl)
+library(tidyverse)
+sugar <- sugardata3
+colnames(sugar)[1] = "country"
+sugar <- sugar[order(sugar$country),]
+sugar <- transform(sugar, year = as.numeric(year))
+sugar <- na.omit(sugar)
+
+```
+
+```{r}
+ggplot(sugar, aes(x=year, y=intake, col=country))+
+  geom_line() +
+  theme(legend.position="none")
+
+```
+
+```{r}
+
+medians <- sugar %>% group_by(year) %>% summarize(med = median(intake))
+means <- sugar %>% group_by(year) %>% summarize(mean = mean(intake))
+mins <- sugar %>% group_by(year) %>% summarize(min = min(intake))
+maxs <- sugar %>% group_by(year) %>% summarize(max = max(intake))
+IQRs <- sugar %>% group_by(year) %>% summarize(iqr = IQR(intake))
+
+ggplot()+
+  geom_line(aes(x=medians$year, y=medians$med, col="Median")) +
+  geom_line(aes(x=means$year, y=means$mean, col="Mean")) + 
+  geom_line(aes(x=mins$year, y=mins$min, col="Min")) +
+  geom_line(aes(x=maxs$year, y=maxs$max, col="Max")) +
+  geom_line(aes(x=IQRs$year, y=IQRs$iqr, col="IQR")) 
+```
+
+```{r}
+mixedup_consumption <- function(Country,years=c(2000,2004)) {
+  diff <- filter(sugar,country==Country,year==years[2]) %>% select(intake) -
+    filter(sugar,country==Country,year==years[1]) %>% select(intake) 
+  diff <- as.numeric(diff) #This gets rid of the structure of diff and makes it just a number, which means that the next line is just a numeric vector.
+  c(0,diff,-diff,0)
+}
+
+
+sugar.tbl <- tibble(country=unique(filter(sugar,year==1967)$country),a=0,b=0,c=0,d=0)
+
+for (nm in seq_along(sugar.tbl$country)) {
+  sugar.tbl[nm,2:5] <-  mixedup_consumption(sugar.tbl$country[nm])
+}
+
+null.median<-vector("double",length=1000)
+for(i in seq_along(null.median)){
+  temp.draw<-sample(sugar.tbl$b,10)
+  null.median[i]<-mean(temp.draw)
+}
+
+ggplot()+geom_histogram(aes(x=null.median))
+statMedian<-sum(null.median)/1000
+sugar.tbl <- na.omit(sugar.tbl)
+#sugar.tbl$b
+real.median<-mean(sugar.tbl$b)
+#real.median
+percentile.data<-sum(null.median<real.median)/1000 #0.464
+ggplot()+geom_histogram(aes(x=null.median))+geom_vline(xintercept=real.median, color="green")
+```
 
 ##Individual Contributions
 Abby: I first read in and tidied the data. First, I renamed the column variables to exclude letters from the years and include a label for the country column. Then, I gathered the data by year to reduce the number of columns from 45 to 3 variables. Then, I created a subquestion to help answer our overall question about whether sugar intake has increased worldwide since 1961. I wanted to see if sugar intake had increased during the 1980s, and tested to see if a distribution of sample means would indicate that there was or was not a difference in median sugar intake between 1980 and 1989. Then, I came to the conclusion using my data that sugar intake may not have changed during the 80s, as the test was not significantly difference to indicate otherwise. 

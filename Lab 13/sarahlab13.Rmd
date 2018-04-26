@@ -41,5 +41,8 @@ percentile(sub_mean)
 
 The difference in mean sugar consumption between 1960 and 1970 represents the 67.8 percentile of the simulated data under our null hypothesis. Therefore, there is no evidence suggesting that the sugar consumption changes worldwide significantly different than in other time periods. 
 
+## Summary of Individual Contribution
+
+Sarah: I tested whether there was a significant increase in sugar consumption between 1960 and 1970 relative to the change in cugar consumption overall. I did this by taking the difference in mean sugar consumption overall between 1960 and and 1970 and comparing it with mixed up samples of changes in sugar consumption for all countries and all decades without labels. 
 
 

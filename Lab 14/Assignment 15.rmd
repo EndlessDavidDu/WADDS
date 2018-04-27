@@ -1,0 +1,107 @@
+---
+title: ''
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+__what are the primary factors that affect a person's general health?__
+
+First, we encode the response into orders "poor","fair","good","very good","excellent good", if we use 1 to 5 scores to measure it, we have "poor"=1,...,"excellent good"=5, this design can let us apply linear regression, we use modelr and purr to perform two models: the first one is the model with all terms without interaction, the second one is the model with interaction terms added. The results are:
+
+```{r}
+library(modelr)
+library(purrr)
+library(tidyverse)
+library(MASS)
+#source("http://www.openintro.org/stat/data/cdc.R")
+#cdc <- as_tibble(cdc)
+
+load("cdc.rdata")
+
+cdc$genhlth <- factor(cdc$genhlth, levels = c("poor","fair","good","very good","excellent good"))
+
+cdc$genhlth2 <- as.integer(cdc$genhlth)
+
+models <- formulas(~genhlth2,
+additive = ~ exerany + hlthplan + smoke100 + height + weight + wtdesire  + age + gender,
+interaction = ~ (exerany + hlthplan + smoke100 + height + weight + wtdesire  + age + gender)^2
+)
+
+fits <- cdc %>% fit_with(lm, models)
+```
+
+The first additive model is
+
+```{r}
+summary(fits$additive)
+```
+
+The secoond interaction  model is
+
+```{r}
+summary(fits$interaction)
+```
+
+We can compare the model quaility between the two models:
+
+
+```{r}
+rmse(fits$additive, cdc)
+rsquare(fits$additive, cdc)
+mae(fits$additive, cdc)
+
+rmse(fits$interaction, cdc)
+rsquare(fits$interaction, cdc)
+mae(fits$interaction, cdc)
+```
+
+It can be found that the two models are very close in the performances, r-squared values are close, and MAE and RMSE are close too, also, from the summary output of the interaction model, we observe lots of predictors are insignificant, that we choose the simpler one which is the additive model to make inferences.
+
+
+From this model, we can find the  primary factors that affect a person's general health are significant predictors with p values lower than 0.05 which are exerany, hlthplan, smoke100, height , weight, age  and gender. We can find that the desired weight is not a primary factor. Gender Female shows a higher score of health than male, the respondent exercised in the past month has a  0.3322855 scores higher than people who did not,  respondent has some form of health coverage has a 0.2658968  scores higher than people who did not, and people smoked at least 100 cigarettes in their entire life  has a 0.1226863 lower than people who did not smoke, also we can find with 1 addtional year in age, the health score would decrease 0.0098826  scores, and 1 addtional pound in weight the health score would decrease 0.0030696 scores, but 1  inch in height is associated with 0.0293000 scores increase in health. We also show the p values in the dot chart, the significant predictors locate in the left side of the red dashed line.
+
+```{r}
+
+dotchart(summary(fits$additiv)$coefficients[,4], xlab = "p value", main = "p values of additive linear model")
+abline(v= 0.05, lty = 2, col = "red")
+```
+
+
+As an alternative way, we can encode the health status "poor","fair" as not good, and "good","very good","excellent good" as good then we can apply logistic model, we can repeat the analysis using logistic regression instead of linear regression above:
+
+```{r}
+cdc$genhlth <- factor(cdc$genhlth, levels = c("poor","fair","good","very good","excellent good"))
+
+#1 for good+, 0 for not good yet
+
+cdc$genhlth3 <- ifelse( as.integer(cdc$genhlth) >3,1,0)
+
+models3 <- formulas(~genhlth3,
+additive = ~ exerany + hlthplan + smoke100 + height + weight + wtdesire  + age + gender,
+interaction = ~ (exerany + hlthplan + smoke100 + height + weight + wtdesire  + age + gender)^2
+)
+
+fits3 <- cdc %>% fit_with(glm, models3, family = binomial(link = "logit"))
+```
+
+```{r}
+summary(fits3$additive)
+```
+
+We use the same addtive model, from the summary output we can find that all of predictors except wtdesire are significant, the signs of the estimated coefficients of the significant predictors are the same with the previous ones in linear model, the only difference is that for here, the changes are the probabilities of whether health to be good or not, for example, with other factors fixed, female would have a  exp(0.1550666) - 1 = 0.1677 which means about 16.77% more chance to be good health than male,  but the results are consistent with the linear regression model. We also show the p values in the dot chart, the significant predictors locate in the left side of the red dashed line.
+
+```{r}
+
+dotchart(summary(fits3$additiv)$coefficients[,4], xlab = "p value", main = "p values of additive  logistic model")
+abline(v= 0.05, lty = 2, col = "red")
+```
+
+Individual Contribution:
+
+Here I have redo the Lab 3 and workout the general question as "What's the primary factor to affect people's health" we can find the  primary factors that affect a person's general health are significant predictors with p values lower than 0.05 which are exerany, hlthplan, smoke100, height , weight, age  and gender.

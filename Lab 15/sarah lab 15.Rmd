@@ -57,6 +57,16 @@ The goals I set for myself for six months and five years after graduation haven'
 Sarah: I used permutation hypothesis testing to analyze whether there was a significant difference in the mean of the ten happiest countries' freedom contribution as compared with the rest of the data. I also used linear regression to determine the relationship between freedom and happiness. Finally, I reflected on the goals I set for myself during the beginning of the semester. 
 
 
+```{r teampartmaybe}
 
+fit.total<-lm(Happiness.Score~Economy..GDP.per.Capita.+Family+Health..Life.Expectancy.+Freedom+Generosity+Trust..Government.Corruption., data=happiness)
+summary(fit.total)
 
+```
+
+The linear model describing happiness of a country is given by the equation:
+
+$$ Y_{happiness}=1.74+0.78x_{GDP}+1.12x_{fam}+1.29x_{heatlh}+1.48x_{free}+0.38x_{gen}+0.83x_{trust}  $$
+
+This means that for every unit increase in the economy variable, there will be an average increase in 0.78 on the happiness score when all else is held fixed. For every unit increase of the family variable, there will be an average of a 1.12 increase in the happiness score. For every unit increase in the health variable, the happiness score will increase by 1.29 on average. For every unit increase in freedom, there is an average of a 1.48 increase in the happiness score. For every unit increase in generosity, there is an average of a 0.38 increase in happiness score, and finally, for every unit increase in trust in the government, there is an average of a 0.83 increase in the happiness score when all else is held fixed. 
 

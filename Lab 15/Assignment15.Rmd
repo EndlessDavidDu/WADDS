@@ -1,0 +1,59 @@
+---
+title: ''
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+data <- read.csv("2017.csv")
+```
+
+__Distributions of Happiness Score and Trust Governmen Corruption__
+
+```{r}
+library(ggplot2)
+ggplot(data, aes(Happiness.Score)) + geom_histogram(bins = 20, fill = "lightblue")
+ggplot(data, aes(Trust..Government.Corruption.)) + geom_histogram(bins = 20, fill = "indianred")
+```
+
+The histograms shows that the distribution of Happiness Score of the 155 countries appears to be symmetric and approximate normal while the distribution of Trust Governmen Corruption of the 155 countries is seriously right-skewed. It means that the happiness score follows normal distribution but the Trust Governmen Corruption has large proportion of low scores which means lots of countries people do not trust Governmen Corruption.
+
+__Correlation between  Happiness Score and Trust Governmen Corruption__
+
+Now use Correlation test, the hypotheses are:
+
+$H0: \rho = 0$ vs. $H1: \rho \neq 0$
+
+```{r}
+cor.test(data$Trust..Government.Corruption., data$Happiness.Score)
+```
+
+We test the correlation between the Happiness Score and Trust Governmen Corruption, the p value of the test isclose to 0 so that we should reject the H0 null hypothesis and conclude H1 that there is significant correlation between the Happiness Score and Trust Governmen Corruption at 5% level.
+
+__Linear regression of the Happiness Score and Trust Governmen Corruption__
+
+```{r}
+ggplot(data, aes(Trust..Government.Corruption., Happiness.Score)) + geom_point() + geom_smooth(method = "lm")
+m1 <- lm( Happiness.Score ~Trust..Government.Corruption., data = data)
+summary(m1)
+```
+
+The linear regression model shows significant relation between happiness score and 
+Trust Government Corruption, we can find that there is clearly ascend trend in the plot that with increasing of the Trust Government Corruption there would also increase in the happiness score. The summary output shows 1 addtional score in Trust Government Corruption is associated with 4.7746 increase in happiness score.
+
+If I could travel back, I would discuss more with my teammates and finish my work on time. Six month after graduation, I still plan to attend graduate school and I will be majoring statistics, during this time, I should have finished 1st semester graduate study. I also have some understanding about statistics (at least for some programming skills in R). After five years, I should finish my graduate study and work in the company. In the future, I plan to do some work relate to statistics and apply my knowledge into real life,
+help people solve problems. Actually these goals does not change, at least in couple of years. 
+
+From this course I have learnt so many techniques to deal with data analysis problem by R. Compared with a lot of languages I have learnt here. I feel that R is one of the most easiest language, and it's actually a very powerful language used in Data Analysis. Although it is difficult for us to choose to best method to solve a single data science problem. It's very important for me to learn deeply so we could train ourself to solve more complex problems. If time traveled to the beginning of the semester. I would tell myself I could communicate with our teammates often, and read more books in order to prepare me for the class well. I would keep contributing my ideas and help my teammates to finish labs and projects. If I were tell myself to stop doing something, it would be like following: just stay here and do my work and submit! Be an activte person!
+
+David: In this lab I have analyzed hapiness score and trust government corruption in the given data using linear regression, and I have used linear regression model significant relation between happiness score and Trust Government Corruption. I have also made historgram to shows that the distribution of Happiness Score of the 155 countries appears to be symmetric and approximate normal.
+
+
+
+

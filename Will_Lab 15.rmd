@@ -1,0 +1,89 @@
+---
+title: "Will_Lab 15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+```
+
+## GDP per Capita
+
+In this section, we will discussion whether GDP per Capita has a significant influence in Happiness Score.
+
+This question is interesting and important. If there is a strong positive and significant association between happiness and GDP per Capita, each government's budgeting, focus and priority will and should shift over all the world.
+
+At the early stage, when we try to study this kind of question, the most efficient way is to load the dataset and then draw one or more plots, sometimes this method will inspire us. But only if we combine the heuristic approach like visualization with some formal tool (such as *hypothesis test* and *linear regression*) can we discover the hidden pattern. The new learned toolkit is powerful and elegant.  
+
+## Hypothesis Test Approach
+First, we try to figure out whether happiness score has a significant change when GDP per capita moves from 1 unit below to the above. 
+```{r}
+#Load the dataset
+WorldHappiness2017 <- as.tibble(read.csv( "2017.csv", sep = ",",header = TRUE, quote = "\"",fill = TRUE))
+#head(WorldHappiness2017)
+#summary(WorldHappiness2017)
+#colnames(WorldHappiness2017)
+
+#Grouping by GDP per Capita, study the corresponding happiness score.
+scoreHappiness_below <- filter(WorldHappiness2017, Economy..GDP.per.Capita. < 1) %>% select(Happiness.Score) %>% unlist
+scoreHappiness_above <- filter(WorldHappiness2017, Economy..GDP.per.Capita. > 1) %>% select(Happiness.Score) %>% unlist
+
+# Find the difference of means of the two groups.
+obsDiff <- mean(scoreHappiness_above) - mean(scoreHappiness_below)
+obsDiff
+```
+We assume that no matter GDP per Capita is above or below, the happiness scores are almost the same. It is our null hypothesis. To test the hypothesis, we mix up the GDP per capita labels. Then we will compare the stimulated statistics with the observed one.
+
+```{r, echo = TRUE}
+# Mix up the GDP labels
+N = 75
+diffAverage <- replicate(1000, {
+    all <- sample(c(scoreHappiness_above,scoreHappiness_below))
+    testGroup1 <- all[1:N]
+    testGroup2 <- all[(N+1):(2*N)]
+  return(mean(testGroup2) - mean(testGroup1))
+})
+hist(diffAverage)
+abline(v=obsDiff, col="red", lwd=2)
+```
+
+```{r, echo = TRUE}
+# Find the percentile
+percentile <- ecdf(diffAverage)
+percentile(obsDiff)
+```
+From the plot, we can see than the observed difference between the two groups lies far right from the "normal" ones. And the percentile is almost 100%. That is to say, no matter what the confidence level is, we will refuse the null hypothesis. Put in another word, happiness score will change significantly when the GDP per capita moves from 1 unit below to the above (under the confidence level 95% or 99%)¡£
+
+## Linear Regression Approach
+
+Now we study the happiness-GDP association problem by using linear regression
+```{r, echo = TRUE}
+happyGDP_model <- lm(Happiness.Score ~ Economy..GDP.per.Capita., data = WorldHappiness2017)
+summary(happyGDP_model)
+plot(Happiness.Score ~ Economy..GDP.per.Capita., data = WorldHappiness2017, main="Happniess and GDP per Capita")
+
+## find the regression line
+interceptHappy <- coef(summary(happyGDP_model))["(Intercept)",1]
+slopeHappy <- coef(summary(happyGDP_model))["Economy..GDP.per.Capita.",1]
+abline(a = interceptHappy, b = slopeHappy, col="red")
+```
+From the summary, we know that $R^2 = 0.6617$, which means that the variability of the happiness score can a mostly be explained by GDP per Capita. 
+
+We can conclude that happiness of different country and GDP per Capita has as a significantly positive association. Here we use two different formal tools, we have a strong confidance about the conlusion.
+
+
+# Reflection on Lab 2
+William Blake once wrote:
+
+> "To see a World in a Grain of Sand 
+And a Heaven in a Wild Flower, 
+Hold Infinity in the palm of your hand 
+And Eternity in an hour. "
+
+I have not changed my wish to apply machine learning/deep learning tools to real world such as *finance*. 
+
+Technique such as programming and statistical thinking have no meaning if we don't have any human understanding. The various data analyzed in computer science are standard or would put in a standard way. At the same time, it means that the data is too "thin" to make a difference. But our intuitions are always mis-guiding. We need the tools just as the ones we pick up from this course the filter the confused and wrong intuitions.
+
+This is the first big lesion I learned from the course. Secondly, in the course and other studies, I find that more supplicated techniques and tricks are already hide in the relatively easier and thighward tools learned in this lesson. In the reflection, I am very thankful to take in the course. And I want to explore more and go far away from the origin by combining the "standardization" computer thinking and our sense-making of "thick" data.  

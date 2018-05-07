@@ -173,7 +173,7 @@ From this course I have learnt so many techniques to deal with data analysis pro
 
 ```{r, echo = TRUE }
 library(corrplot)
-happiness <- read_csv("~/Downloads/2017.csv")
+happiness <- read_csv("2017.csv")
 other <- read_csv("~/Downloads/2016.csv") # I grab the older 2016 data because it also includes the region for each country
 other <- other[,1:2]
 drops <- c('Happiness.Rank', 'Whisker.high', 'Whisker.low') # Drop uneeded columns 

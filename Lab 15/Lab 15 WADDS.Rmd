@@ -11,7 +11,7 @@ library(tidyverse)
 library(modelr)
 library(data.table)
 options(na.action = na.warn)
-happiness <- read_csv("WorldHapRepo.csv")
+happiness <- read_csv("2017.csv")
 ```
 ##Team
 The Question:
@@ -169,6 +169,88 @@ help people solve problems. Actually these goals does not change, at least in co
 
 From this course I have learnt so many techniques to deal with data analysis problem by R. Compared with a lot of languages I have learnt here. I feel that R is one of the most easiest language, and it's actually a very powerful language used in Data Analysis. Although it is difficult for us to choose to best method to solve a single data science problem. It's very important for me to learn deeply so we could train ourself to solve more complex problems. If time traveled to the beginning of the semester. I would tell myself I could communicate with our teammates often, and read more books in order to prepare me for the class well. I would keep contributing my ideas and help my teammates to finish labs and projects. If I were tell myself to stop doing something, it would be like following: just stay here and do my work and submit! Be an activte person!
 
+## Derek
+
+```{r, echo = TRUE }
+library(corrplot)
+happiness <- read_csv("~/Downloads/2017.csv")
+other <- read_csv("~/Downloads/2016.csv") # I grab the older 2016 data because it also includes the region for each country
+other <- other[,1:2]
+drops <- c('Happiness.Rank', 'Whisker.high', 'Whisker.low') # Drop uneeded columns 
+happiness <- happiness[ , !(names(happiness) %in% drops)] 
+happiness <- left_join(happiness, other, by="Country") 
+happiness$Country<-as.factor(happiness$Country)
+# Filling in some missing data
+happiness[happiness$Country == "Taiwan Province of China" ,10] <- "Eastern Asia"
+happiness[happiness$Country == "Hong Kong S.A.R., China" ,10] <- "Eastern Asia"
+happiness[happiness$Country == "Central African Republic" ,10] <- "Sub-Saharan Africa"
+happiness[happiness$Country == "Mozambique" ,10] <- "Sub-Saharan Africa"
+happiness[happiness$Country == "Lesotho" ,10] <- "Sub-Saharan Africa"
+happiness$Region<-as.factor(happiness$Region)
+```
+
+I looked at whether the linear model is consistent across all types of countries. To seperate the countries into "types" I clustered them with kmeans based on the values *Family*, *Health..Life.Expectancy.*, *Freedom*, *Economy..GDP.per.Capita.*, *Generosity*, and *Trust..Government.Corruption.* into three clusters. So countries that are similar to each other will be catogrized the same. We end up with three groups that can be loosely thought of as 1st world countries, 3rd world countries and the countries inbetween. I plot these clusters with a sum of the statistics on the x-axis and Happiness.Score on the the y-axis and can see a nice positive linear relationship. We can also see that the clustering worked because we would expect countries that have similar scores to have similar happiness.
+
+```{r}
+#happiness$Health..Life.Expectancy. <- (happiness$Health..Life.Expectancy.-min(happiness$Health..Life.Expectancy.))/(max(happiness$Health..Life.Expectancy.)-min(happiness$Health..Life.Expectancy.))
+
+#happiness$Freedom <- (happiness$Freedom-min(happiness$Freedom))/(max(happiness$Freedom)-min(happiness$Freedom))
+
+#happiness$Family <- (happiness$Family-min(happiness$Family))/(max(happiness$Family)-min(happiness$Family))
+
+#happiness$Economy..GDP.per.Capita. <- (happiness$Economy..GDP.per.Capita.-min(happiness$Economy..GDP.per.Capita.))/(max(happiness$Economy..GDP.per.Capita.)-min(happiness$Economy..GDP.per.Capita.))
+
+#happiness$Trust..Government.Corruption. <- (happiness$Trust..Government.Corruption.-min(happiness$Trust..Government.Corruption.))/(max(happiness$Trust..Government.Corruption.)-min(happiness$Trust..Government.Corruption.))
+
+#happiness$Generosity <- (happiness$Generosity-min(happiness$Generosity))/(max(happiness$Generosity)-min(happiness$Generosity))
+
+happiness$Sum <- happiness$Freedom + happiness$Family + happiness$Health..Life.Expectancy. + happiness$Economy..GDP.per.Capita. + happiness$Trust..Government.Corruption. + happiness$Generosity
+```
+
+```{r}
+
+k2 <- kmeans(happiness[,3:8], centers = 3, nstart = 25)
+#table(k2$cluster, happiness$Region)
+
+happiness$cluster <- k2$cluster
+
+by_cluster <- happiness %>%
+  group_by(cluster) %>%
+  nest()
+
+calc_model <- function(df) {
+  lm(Happiness.Score~Sum, data=df)
+}
+
+by_cluster <- mutate(by_cluster,sum.fit=map(data,calc_model))
+by_cluster
+colors = as.factor(k2$cluster)
+
+ggplot(happiness, aes(x=Sum, y=Happiness.Score, col= colors, label=Country)) +
+  geom_point() +
+  geom_text(aes(label=ifelse(((Happiness.Score / Sum)<1.25) & (Happiness.Score<5.5) | Country=="Syria"| Happiness.Score < 3 ,as.character(Country),'')),hjust=0,vjust=0) +  
+  geom_abline(aes(intercept=by_cluster[[1,3]]$coef[[1]], slope= by_cluster[[1,3]]$coef[[2]], col = levels(colors)[1])) +
+  geom_abline(aes(intercept=by_cluster[[2,3]]$coef[[1]], slope= by_cluster[[2,3]]$coef[[2]], col = levels(colors)[2])) +
+  geom_abline(aes(intercept=by_cluster[[3,3]]$coef[[1]], slope= by_cluster[[3,3]]$coef[[2]], col = levels(colors)[3])) 
+```
+
+I also plotted the linear model for each cluster. Interestingly two clusters have almost identical slopes, but the cluster with the lowest scores has a noticibly smaller slope. It appears that in these countries. A question worth asking is if these countries have a lower slope because the relationship between the six statistics and hapiness changes at these lower levels or if all the countries in this 3rd group have a confounding factor. 
+
+```{r}
+res = resid(by_cluster[[1,3]])
+plot(by_cluster[[1,2]]$Sum, res) 
+
+res = resid(by_cluster[[2,3]])
+plot(by_cluster[[2,2]]$Sum, res)
+
+res = resid(by_cluster[[3,3]])
+plot(by_cluster[[3,2]]$Sum, res)
+```
+
+Looking at the residuals though, there does not appear to be any patterns for any of the clusters, so a confounding variable does not seem likely and our linear model is appropriate. North Korea is not in the dataset but I highly expect the country to fall into this 3rd cluster of countries. In this case it will have have a very difficult time increasing happiness, because the increase in happiness from improving conditions is not as significant as it is for countries that are already in a better situation. 
+
+Reflection: I havent changed my goals that I had from the begining of the semester. However over the course of the semester I have learned R and some useful data processing techniques I look forward to applying these techniques in future data related classes. If I could give myself advice at the beginning of the semester I would tell myself to focus more on time management.
+
 ##Will
 GDP per Capita
 
@@ -255,6 +337,8 @@ Sarah: I used permutation hypothesis testing to analyze whether there was a sign
 
 Abby: I analyzed generosity and happiness to see if increased generosity lead to an increase in overall happiness for citizens of different countries. By creating a linear model, I saw there was a slightly positive correlation between generosity and happiness, but the linear model did not fit the data very well. I then created a residual plot to see if it was possible that a confounding variable would have made a linear model inappropriate. Through my analysis of the residual plot I concluded that while the linear model did not fit the data well, it was still an appropriate model. For out team part, I found the dataset we wanted to use, described our overall question and why it was important, and contributed to the analysis of our linear model. I also ploted the residuals to make sure our linear model was not being impacted by confounding variables. Finally, I reflected on this last semester and how this class has impacted me.
 
-David: In this lab I have analyzed hapiness score and trust government corruption in the given data using linear regression, and I have used linear regression model significant relation between happiness score and Trust Government Corruption. I have also made historgram to shows that the distribution of Happiness Score of the 155 countries appears to be symmetric and approximate normal.Also I reflected what I have done for this semester and how this class affect my future career
+David: In this lab I have analyzed hapiness score and trust government corruption in the given data using linear regression, and I have used linear regression model significant relation between happiness score and Trust Government Corruption. I have also made historgram to shows that the distribution of Happiness Score of the 155 countries appears to be symmetric and approximate normal. Also I reflected what I have done for this semester and how this class affect my future career
+
+Derek: I clustered the the data into 3 subsets based on similarity and looked at these subsets to see if the linear model is consistent accross all kinds of countries. I found that most contries share a similar linear model between the 6 statistics and happiness but countries that score very low on the 6 statistics (and therefore low hapiness) follow a different model. 
 
 Will: For lab15, I try to discuss is whether GDP per Capital has a significant influence in Happiness Score. In order to analyze this question, I used the Null Hypothesis to figure out, whether it has statistics significant to show relationship between these two variables. Finally, happiness of different country and GDP per Capita has as a significantly positive association.
